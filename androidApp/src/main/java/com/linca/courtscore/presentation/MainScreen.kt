@@ -5,12 +5,14 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -42,6 +44,30 @@ private data class ActionButton(
 )
 
 @Composable
+private fun PagerIndicator(
+    pagerState: PagerState,
+    pageCount: Int,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
+    ) {
+        repeat(pageCount) { page ->
+            val isSelected = pagerState.currentPage == page
+            Box(
+                modifier = Modifier
+                    .size(4.dp)
+                    .background(
+                        color = if (isSelected) PrimaryTextColor else SecondaryTextColor.copy(alpha = 0.4f),
+                        shape = CircleShape
+                    )
+            )
+        }
+    }
+}
+
+@Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     onNewMatch: () -> Unit,
@@ -50,7 +76,7 @@ fun MainScreen(
     val actions = remember(onNewMatch, onSettingsClick) {
         listOf(
             ActionButton(
-                description = "Start new match",
+                description = "New match",
                 drawableId = R.drawable.tennis_ball_filled,
                 onClick = onNewMatch
             ),
@@ -126,7 +152,12 @@ fun MainScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(3.dp))
+            PagerIndicator(
+                pagerState = pagerState,
+                pageCount = actions.size
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
 
             Text(
                 text = currentActionLabel,
