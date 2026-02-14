@@ -51,12 +51,12 @@ fun MainScreen(
         listOf(
             ActionButton(
                 description = "Start new match",
-                drawableId = R.drawable.raquet,
+                drawableId = R.drawable.tennis_ball_filled,
                 onClick = onNewMatch
             ),
             ActionButton(
                 description = "Settings",
-                drawableId = R.drawable.settings,
+                drawableId = R.drawable.settings_filled,
                 onClick = onSettingsClick
             )
         )
@@ -119,8 +119,8 @@ fun MainScreen(
                         Icon(
                             painter = painterResource(action.drawableId),
                             contentDescription = null,
-                            tint = PadelBlue.copy(alpha = 0.7f),
-                            modifier = Modifier.size(25.dp)
+                            tint = PadelBlue,
+                            modifier = Modifier.size(35.dp)
                         )
                     }
                 }
@@ -132,7 +132,7 @@ fun MainScreen(
                 text = currentActionLabel,
                 style = MaterialTheme.typography.body2,
                 textAlign = TextAlign.Center,
-                color = SecondaryTextColor
+                color = PrimaryTextColor
             )
 
             Spacer(modifier = Modifier.weight(1f))

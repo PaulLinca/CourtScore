@@ -20,13 +20,12 @@ fun CourtScoreTheme(
     }
 }
 
-val BackgroundColor = Color(0xFF121214)
+val PadelBlue = Color(0xFF1E8FD5)
+val Orange = Color(0xFFF8A464)
+
+val BackgroundColor = Color(0xFF000000)
 val PrimaryTextColor = Color(0xFFfbfbfb)
 val SecondaryTextColor = Color(0xFFaaaab1)
-val AccentColor = Color(0xFFAEF864)
 val ElevatedBackgroundColor = Color(0xFF222327)
 
-val PadelBlue = Color(0xFF1E8FD5)
-val Yellow = Color(0xFFF8DF64)
-val Orange = Color(0xFFF8A464)
-val Red = Color(0xFFF86464)
+
