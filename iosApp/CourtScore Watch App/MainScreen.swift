@@ -1,7 +1,7 @@
 import SwiftUI
 import shared
 
-struct ContentView: View {
+struct MainScreen: View {
     @State private var selectedIndex = 0
     
     let menuItems: [(icon: String, label: String, destination: AnyView)] = [
@@ -9,12 +9,23 @@ struct ContentView: View {
         ("gear", "Settings", AnyView(SettingsView()))
     ]
     
+    init() {
+        for familyName in UIFont.familyNames {
+            print(familyName)
+            for fontName in UIFont.fontNames(forFamilyName: familyName) {
+                print("------ \(fontName)")
+            }
+
+        }
+        
+    }
+
     var body: some View {
+        
         NavigationStack {
             VStack(spacing: 10) {
                 Text("Court Score")
-                    .font(.title3)
-                    .fontWeight(.bold)
+                    .font(.collegeClean(size: 24))
                     .foregroundColor(.white)
 
 
@@ -63,3 +74,10 @@ extension Color {
         self.init(red: r, green: g, blue: b)
     }
 }
+
+extension Font {
+    static func collegeClean(size: CGFloat) -> Font {
+        return .custom("College Clean Italic", size: size)
+    }
+}
+
