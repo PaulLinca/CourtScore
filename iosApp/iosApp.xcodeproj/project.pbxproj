@@ -76,18 +76,8 @@
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		20E38F282F40FF7900E62C2F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"CourtScore-Watch-App-Info.plist",
-			);
-			target = 20E38EFC2F40E2E700E62C2F /* CourtScore Watch App */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		20E38F012F40E2E700E62C2F /* CourtScore Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (20E38F282F40FF7900E62C2F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "CourtScore Watch App"; sourceTree = "<group>"; };
+		20E38F012F40E2E700E62C2F /* CourtScore Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "CourtScore Watch App"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */

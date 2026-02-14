@@ -52,7 +52,7 @@ struct MatchView: View {
                     playerOneColor: colorSchemeManager.playerOneColor,
                     playerTwoColor: colorSchemeManager.playerTwoColor
                 )
-                
+                                
                 // Bottom buttons: Undo and Finish
                 HStack(spacing: 20) {
                     Button(action: viewModel.onUndo) {
@@ -148,7 +148,7 @@ struct CurrentGameScore: View {
                 primaryColor: playerTwoColor
             )
         }
-        .frame(height: 80)
+        .frame(height: 90)
     }
 }
 

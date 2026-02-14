@@ -23,11 +23,10 @@ struct MainScreen: View {
     var body: some View {
         
         NavigationStack {
-            VStack(spacing: 10) {
+            VStack() {
                 Text("Court Score")
                     .font(.collegeClean(size: 24))
                     .foregroundColor(.white)
-
 
                 TabView(selection: $selectedIndex) {
                     ForEach(0..<menuItems.count, id: \.self) { index in
@@ -38,24 +37,22 @@ struct MainScreen: View {
                                 .frame(width: 100, height: 100)
                                 .background(Color.clear)
                                 .clipShape(Circle())
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color(hex: "1E8FD5"), lineWidth: 2)
-                                )
+                                .overlay(Circle().stroke(Color(hex: "1E8FD5"), lineWidth: 2))
                         }
                         .buttonStyle(.plain)
                         .tag(index)
                     }
                 }
                 .tabViewStyle(.page)
-                .frame(height: 150)
+                .frame(height: 130)
+                
+                Spacer(minLength: 10)
 
                 Text(menuItems[selectedIndex].label)
                     .font(.headline)
                     .foregroundColor(.white)
                     .animation(.easeInOut, value: selectedIndex)
             }
-            .padding()
             .background(Color.black)
         }
     }
