@@ -1,0 +1,82 @@
+package com.linca.courtscorewear.presentation
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.wear.compose.navigation.SwipeDismissableNavHost
+import androidx.wear.compose.navigation.composable
+import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import com.linca.courtscorewear.data.PreferencesManager
+import com.linca.courtscorewear.presentation.theme.ColorSchemes
+import com.linca.courtscorewear.presentation.theme.CourtScoreTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+
+        super.onCreate(savedInstanceState)
+
+        setTheme(android.R.style.Theme_DeviceDefault)
+
+        val preferencesManager = PreferencesManager(this)
+
+        setContent {
+            val colorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.TealCoral.name)
+            val colorScheme = ColorSchemes.findByName(colorSchemeName)
+
+            WearApp(
+                colorScheme = colorScheme,
+                preferencesManager = preferencesManager
+            )
+        }
+    }
+}
+
+@Composable
+fun WearApp(
+    colorScheme: com.linca.courtscorewear.presentation.theme.ColorScheme,
+    preferencesManager: PreferencesManager
+) {
+    CourtScoreTheme(colorScheme = colorScheme) {
+        val navController = rememberSwipeDismissableNavController()
+
+        SwipeDismissableNavHost(
+            navController = navController,
+            startDestination = "start"
+        ) {
+            composable("start") {
+                MainScreen(
+                    onNewMatch = {
+                        navController.navigate("newMatch")
+                    },
+                    onSettingsClick = {
+                        navController.navigate("settings")
+                    }
+                )
+            }
+
+            composable("newMatch") {
+                MatchScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable("settings") {
+                SettingsScreen(
+                    preferencesManager = preferencesManager,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                        true
+                    }
+                )
+            }
+        }
+    }
+}
