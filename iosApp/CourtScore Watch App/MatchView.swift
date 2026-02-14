@@ -1,0 +1,353 @@
+import SwiftUI
+import Combine
+import shared
+
+struct MatchView: View {
+    @StateObject private var viewModel = MatchViewModelWrapper()
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        ZStack {
+            Color(hex: "121214")
+                .ignoresSafeArea()
+
+            VStack(spacing: 12) {
+                // Top row: Serving indicator, Score table, Winner indicator
+                HStack(alignment: .center, spacing: 0) {
+                    Spacer()
+
+                    ServingIndicator(
+                        isPlayerOneServing: viewModel.uiState.playerOneServing,
+                        onToggleServing: viewModel.toggleServing,
+                        enabled: !viewModel.uiState.isFinished,
+                        playerOneColor: Color(hex: "5076FF"),
+                        playerTwoColor: Color(hex: "F8A464")
+                    )
+
+                    ScoreTable(
+                        player1SetScores: viewModel.uiState.playerOneSetScores.map { $0.int32Value },
+                        player2SetScores: viewModel.uiState.playerTwoSetScores.map { $0.int32Value },
+                        playerOneColor: Color(hex: "5076FF"),
+                        playerTwoColor: Color(hex: "F8A464")
+                    )
+
+                    WinnerIndicator(
+                        playerOneWon: viewModel.uiState.playerOneWon,
+                        playerTwoWon: viewModel.uiState.playerTwoWon,
+                        playerOneColor: Color(hex: "5076FF"),
+                        playerTwoColor: Color(hex: "F8A464")
+                    )
+
+                    Spacer()
+                }
+
+                // Current game scores (main interactive buttons)
+                CurrentGameScore(
+                    player1GameScore: viewModel.uiState.playerOneGameScore,
+                    player2GameScore: viewModel.uiState.playerTwoGameScore,
+                    onPlayer1Score: viewModel.onPlayerOneScored,
+                    onPlayer2Score: viewModel.onPlayerTwoScored,
+                    enabled: !viewModel.uiState.isFinished,
+                    playerOneColor: Color(hex: "5076FF"),
+                    playerTwoColor: Color(hex: "F8A464")
+                )
+
+                // Bottom buttons: Undo and Finish
+                HStack(spacing: 10) {
+                    Button(action: viewModel.onUndo) {
+                        Image(systemName: "arrow.uturn.backward")
+                            .font(.system(size: 16))
+                            .foregroundColor(viewModel.uiState.isFinished ? Color(hex: "aaaab1").opacity(0.3) : Color(hex: "aaaab1"))
+                            .frame(width: 30, height: 30)
+                    }
+                    .disabled(viewModel.uiState.isFinished)
+                    .buttonStyle(.plain)
+                    .background(viewModel.uiState.isFinished ? Color(hex: "222327").opacity(0.3) : Color(hex: "222327"))
+                    .clipShape(Circle())
+
+                    Button(action: viewModel.onFinishClicked) {
+                        Image(systemName: "flag.checkered")
+                            .font(.system(size: 16))
+                            .foregroundColor(viewModel.uiState.isFinished ? Color(hex: "aaaab1").opacity(0.3) : Color(hex: "aaaab1"))
+                            .frame(width: 30, height: 30)
+                    }
+                    .disabled(viewModel.uiState.isFinished)
+                    .buttonStyle(.plain)
+                    .background(viewModel.uiState.isFinished ? Color(hex: "222327").opacity(0.3) : Color(hex: "222327"))
+                    .clipShape(Circle())
+                }
+            }
+            .padding(12)
+        }
+        .alert("Are you sure you want to end the match?", isPresented: Binding(
+            get: { viewModel.uiState.showFinishDialog },
+            set: { if !$0 { viewModel.onFinishCancelled() } }
+        )) {
+            Button("No", role: .cancel) {
+                viewModel.onFinishCancelled()
+            }
+            Button("Yes") {
+                viewModel.onFinishConfirmed()
+            }
+        }
+        .alert("Are you sure you want to leave the match?", isPresented: Binding(
+            get: { viewModel.uiState.showBackDialog },
+            set: { if !$0 { viewModel.onBackCancelled() } }
+        )) {
+            Button("No", role: .cancel) {
+                viewModel.onBackCancelled()
+            }
+            Button("Yes", role: .destructive) {
+                viewModel.onBackConfirmed()
+                dismiss()
+            }
+        }
+        .navigationBarBackButtonHidden(!viewModel.uiState.isFinished)
+        .toolbar {
+            if !viewModel.uiState.isFinished {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        let handled = viewModel.onBackPressed()
+                        if !handled {
+                            dismiss()
+                        }
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(Color(hex: "1E8FD5"))
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Current Game Score Component
+struct CurrentGameScore: View {
+    let player1GameScore: String
+    let player2GameScore: String
+    let onPlayer1Score: () -> Void
+    let onPlayer2Score: () -> Void
+    let enabled: Bool
+    let playerOneColor: Color
+    let playerTwoColor: Color
+
+    var body: some View {
+        HStack(spacing: 12) {
+            GameScoreButton(
+                score: player1GameScore,
+                onClick: onPlayer1Score,
+                enabled: enabled,
+                primaryColor: playerOneColor
+            )
+
+            GameScoreButton(
+                score: player2GameScore,
+                onClick: onPlayer2Score,
+                enabled: enabled,
+                primaryColor: playerTwoColor
+            )
+        }
+        .frame(height: 80)
+    }
+}
+
+// MARK: - Game Score Button
+struct GameScoreButton: View {
+    let score: String
+    let onClick: () -> Void
+    let enabled: Bool
+    let primaryColor: Color
+
+    var body: some View {
+        Button(action: onClick) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(enabled ? primaryColor : primaryColor.opacity(0.3), lineWidth: 2)
+                    .background(Color.clear)
+
+                Text(score)
+                    .font(.system(size: 48, weight: .bold))
+                    .foregroundColor(enabled ? primaryColor : primaryColor.opacity(0.3))
+            }
+        }
+        .disabled(!enabled)
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Score Table
+struct ScoreTable: View {
+    let player1SetScores: [Int32]
+    let player2SetScores: [Int32]
+    let playerOneColor: Color
+    let playerTwoColor: Color
+
+    var body: some View {
+        VStack(spacing: 2) {
+            HStack(spacing: 4) {
+                ForEach(Array(player1SetScores.enumerated()), id: \.offset) { _, score in
+                    Text("\(score)")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(playerOneColor)
+                        .padding(.horizontal, 4)
+                }
+            }
+
+            HStack(spacing: 4) {
+                ForEach(Array(player2SetScores.enumerated()), id: \.offset) { _, score in
+                    Text("\(score)")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(playerTwoColor)
+                        .padding(.horizontal, 4)
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Serving Indicator
+struct ServingIndicator: View {
+    let isPlayerOneServing: Bool
+    let onToggleServing: () -> Void
+    let enabled: Bool
+    let playerOneColor: Color
+    let playerTwoColor: Color
+
+    var body: some View {
+        Button(action: onToggleServing) {
+            VStack(spacing: 2) {
+                Image(systemName: "tennisball.fill")
+                    .font(.system(size: 10))
+                    .foregroundColor(isPlayerOneServing ?
+                        (enabled ? playerOneColor : playerOneColor.opacity(0.3)) :
+                        Color(hex: "aaaab1").opacity(0.3))
+
+                Spacer()
+
+                Image(systemName: "tennisball.fill")
+                    .font(.system(size: 10))
+                    .foregroundColor(!isPlayerOneServing ?
+                        (enabled ? playerTwoColor : playerTwoColor.opacity(0.3)) :
+                        Color(hex: "aaaab1").opacity(0.3))
+            }
+            .frame(width: 24, height: 24)
+        }
+        .disabled(!enabled)
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Winner Indicator
+struct WinnerIndicator: View {
+    let playerOneWon: Bool
+    let playerTwoWon: Bool
+    let playerOneColor: Color
+    let playerTwoColor: Color
+
+    var body: some View {
+        ZStack {
+            if playerOneWon {
+                Image(systemName: "crown.fill")
+                    .font(.system(size: 15))
+                    .foregroundColor(playerOneColor)
+            } else if playerTwoWon {
+                Image(systemName: "crown.fill")
+                    .font(.system(size: 15))
+                    .foregroundColor(playerTwoColor)
+            }
+        }
+        .frame(width: 24, height: 24)
+    }
+}
+
+// MARK: - ViewModel Wrapper
+class MatchViewModelWrapper: ObservableObject {
+    private let viewModel = MatchViewModel()
+    @Published var uiState: MatchUiState
+    private var timer: Timer?
+
+    init() {
+        self.uiState = viewModel.uiState.value as! MatchUiState
+
+        // Poll for state changes
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            let newState = self.viewModel.uiState.value as! MatchUiState
+            if self.hasStateChanged(newState) {
+                DispatchQueue.main.async {
+                    self.uiState = newState
+                }
+            }
+        }
+    }
+
+    deinit {
+        timer?.invalidate()
+    }
+
+    private func hasStateChanged(_ newState: MatchUiState) -> Bool {
+        return newState.playerOneGameScore != uiState.playerOneGameScore ||
+               newState.playerTwoGameScore != uiState.playerTwoGameScore ||
+               newState.isFinished != uiState.isFinished ||
+               newState.showFinishDialog != uiState.showFinishDialog ||
+               newState.showBackDialog != uiState.showBackDialog
+    }
+
+    func onPlayerOneScored() {
+        viewModel.onPlayerOneScored()
+        updateState()
+    }
+
+    func onPlayerTwoScored() {
+        viewModel.onPlayerTwoScored()
+        updateState()
+    }
+
+    func onUndo() {
+        viewModel.onUndo()
+        updateState()
+    }
+
+    func toggleServing() {
+        viewModel.toggleServing()
+        updateState()
+    }
+
+    func onFinishClicked() {
+        viewModel.onFinishClicked()
+        updateState()
+    }
+
+    func onFinishConfirmed() {
+        viewModel.onFinishConfirmed()
+        updateState()
+    }
+
+    func onFinishCancelled() {
+        viewModel.onFinishCancelled()
+        updateState()
+    }
+
+    func onBackPressed() -> Bool {
+        let result = viewModel.onBackPressed()
+        updateState()
+        return result
+    }
+
+    func onBackConfirmed() {
+        viewModel.onBackConfirmed()
+        updateState()
+    }
+
+    func onBackCancelled() {
+        viewModel.onBackCancelled()
+        updateState()
+    }
+
+    private func updateState() {
+        DispatchQueue.main.async {
+            self.uiState = self.viewModel.uiState.value as! MatchUiState
+        }
+    }
+}
+

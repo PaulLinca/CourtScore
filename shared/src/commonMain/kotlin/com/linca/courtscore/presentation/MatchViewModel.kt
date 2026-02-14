@@ -60,18 +60,17 @@ class MatchViewModel {
     fun onBackPressed(): Boolean {
         // Return true if we handled it (showed dialog), false if we should navigate back
         return if (engine.getScore().isFinished) {
-            false // Don't show dialog, allow navigation back
+            false
         } else {
             showBackDialog = true
             updateUiState()
-            true // We handled it by showing dialog
+            true
         }
     }
 
     fun onBackConfirmed() {
         showBackDialog = false
         updateUiState()
-        // The actual navigation will be handled by the UI
     }
 
     fun onBackCancelled() {
