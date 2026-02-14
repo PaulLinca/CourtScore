@@ -4,6 +4,7 @@ import shared
 
 struct MatchView: View {
     @StateObject private var viewModel = MatchViewModelWrapper()
+    @StateObject private var colorSchemeManager = ColorSchemeManager.shared
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -20,22 +21,22 @@ struct MatchView: View {
                         isPlayerOneServing: viewModel.uiState.playerOneServing,
                         onToggleServing: viewModel.toggleServing,
                         enabled: !viewModel.uiState.isFinished,
-                        playerOneColor: Color(hex: "5076FF"),
-                        playerTwoColor: Color(hex: "F8A464")
+                        playerOneColor: colorSchemeManager.playerOneColor,
+                        playerTwoColor: colorSchemeManager.playerTwoColor
                     )
 
                     ScoreTable(
                         player1SetScores: viewModel.uiState.playerOneSetScores.map { $0.int32Value },
                         player2SetScores: viewModel.uiState.playerTwoSetScores.map { $0.int32Value },
-                        playerOneColor: Color(hex: "5076FF"),
-                        playerTwoColor: Color(hex: "F8A464")
+                        playerOneColor: colorSchemeManager.playerOneColor,
+                        playerTwoColor: colorSchemeManager.playerTwoColor
                     )
 
                     WinnerIndicator(
                         playerOneWon: viewModel.uiState.playerOneWon,
                         playerTwoWon: viewModel.uiState.playerTwoWon,
-                        playerOneColor: Color(hex: "5076FF"),
-                        playerTwoColor: Color(hex: "F8A464")
+                        playerOneColor: colorSchemeManager.playerOneColor,
+                        playerTwoColor: colorSchemeManager.playerTwoColor
                     )
 
                     Spacer()
@@ -48,12 +49,12 @@ struct MatchView: View {
                     onPlayer1Score: viewModel.onPlayerOneScored,
                     onPlayer2Score: viewModel.onPlayerTwoScored,
                     enabled: !viewModel.uiState.isFinished,
-                    playerOneColor: Color(hex: "5076FF"),
-                    playerTwoColor: Color(hex: "F8A464")
+                    playerOneColor: colorSchemeManager.playerOneColor,
+                    playerTwoColor: colorSchemeManager.playerTwoColor
                 )
-
+                
                 // Bottom buttons: Undo and Finish
-                HStack(spacing: 10) {
+                HStack(spacing: 20) {
                     Button(action: viewModel.onUndo) {
                         Image(systemName: "arrow.uturn.backward")
                             .font(.system(size: 16))
