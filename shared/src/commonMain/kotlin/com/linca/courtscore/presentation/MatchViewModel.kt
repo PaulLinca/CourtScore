@@ -132,18 +132,14 @@ data class MatchUiState(
         }
 
         private fun buildPlayerOneSetScoresList(matchScore: MatchScore): List<Int> {
-            // Create a list with up to 3 set scores
             val scores = mutableListOf<Int>()
 
-            // Add scores from completed sets
             matchScore.completedSets.forEach { setScore ->
                 scores.add(setScore.playerOneGames)
             }
 
-            // Add current set games
             scores.add(matchScore.currentSet.playerOneGames)
 
-            // Fill up to 3 sets total with zeros
             while (scores.size < 3) {
                 scores.add(0)
             }
@@ -154,15 +150,12 @@ data class MatchUiState(
         private fun buildPlayerTwoSetScoresList(matchScore: MatchScore): List<Int> {
             val scores = mutableListOf<Int>()
 
-            // Add scores from completed sets
             matchScore.completedSets.forEach { setScore ->
                 scores.add(setScore.playerTwoGames)
             }
 
-            // Add current set games
             scores.add(matchScore.currentSet.playerTwoGames)
 
-            // Fill up to 3 sets total with zeros
             while (scores.size < 3) {
                 scores.add(0)
             }
