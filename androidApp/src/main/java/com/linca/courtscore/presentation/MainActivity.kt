@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
@@ -60,7 +59,7 @@ fun WearApp(
                 )
             }
 
-            composable("newMatch") {
+            composable(route = "newMatch") {
                 MatchScreen(
                     onNavigateBack = {
                         navController.popBackStack()

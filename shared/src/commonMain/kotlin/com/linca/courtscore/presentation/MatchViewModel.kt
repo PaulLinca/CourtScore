@@ -58,7 +58,6 @@ class MatchViewModel {
     }
 
     fun onBackPressed(): Boolean {
-        // Return true if we handled it (showed dialog), false if we should navigate back
         return if (engine.getScore().isFinished) {
             false
         } else {

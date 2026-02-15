@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,14 +32,18 @@ import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.SwipeToDismissBox
+import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.dialog.Alert
+import androidx.wear.compose.material.rememberSwipeToDismissBoxState
+import kotlinx.coroutines.flow.collectLatest
+import com.linca.courtscore.presentation.MatchUiState
 import com.linca.courtscore.presentation.MatchViewModel
 import com.linca.courtscorewear.R
 import com.linca.courtscorewear.presentation.theme.BackgroundColor
 import com.linca.courtscorewear.presentation.theme.ElevatedBackgroundColor
 import com.linca.courtscorewear.presentation.theme.LocalColorScheme
-import com.linca.courtscorewear.presentation.theme.Orange
 import com.linca.courtscorewear.presentation.theme.PadelBlue
 import com.linca.courtscorewear.presentation.theme.PrimaryTextColor
 import com.linca.courtscorewear.presentation.theme.SecondaryTextColor
@@ -51,13 +57,52 @@ fun MatchScreen(
     val uiState by viewModel.uiState.collectAsState()
     val colorScheme = LocalColorScheme.current
 
+    val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
+    LaunchedEffect(swipeToDismissBoxState) {
+        snapshotFlow { swipeToDismissBoxState.currentValue }
+            .collectLatest { value ->
+                if (value == SwipeToDismissValue.Dismissed) {
+                    if (!uiState.isFinished) {
+                        viewModel.onBackPressed()
+                        swipeToDismissBoxState.snapTo(SwipeToDismissValue.Default)
+                    } else {
+                        onNavigateBack()
+                    }
+                }
+            }
+    }
+
     BackHandler {
-        val handled = viewModel.onBackPressed()
-        if (!handled) {
-            // Match is finished, navigate back immediately
+        val isMatchFinished = viewModel.onBackPressed()
+        if (!isMatchFinished) {
             onNavigateBack()
         }
     }
+
+    SwipeToDismissBox(
+        state = swipeToDismissBoxState,
+        onDismissed = { /* handled in LaunchedEffect */ },
+        modifier = modifier
+    ) { isBackground ->
+        if (!isBackground) {
+            MatchScreenContent(
+                uiState = uiState,
+                viewModel = viewModel,
+                colorScheme = colorScheme,
+                onNavigateBack = onNavigateBack
+            )
+        }
+    }
+}
+
+@Composable
+private fun MatchScreenContent(
+    uiState: MatchUiState,
+    viewModel: MatchViewModel,
+    colorScheme: com.linca.courtscorewear.presentation.theme.ColorScheme,
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
 
     Box(
         modifier = modifier
@@ -241,7 +286,7 @@ fun MatchScreen(
                             onNavigateBack()
                         },
                         colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Orange
+                            backgroundColor = PadelBlue
                         )
                     ) {
                         Text(

@@ -6,7 +6,6 @@ import com.linca.courtscore.domain.model.Point
 import com.linca.courtscore.domain.model.SetScore
 
 class MatchEngine(
-    private val setsToWin: Int = 2,
     private val gamesToWinSet: Int = 6,
     private val tieBreakAt: Int = 6,
     private val tieBreakPointsToWin: Int = 7
@@ -31,7 +30,7 @@ class MatchEngine(
     fun undo() {
         if (history.isNotEmpty()) {
             score = history.removeAt(history.lastIndex)
-            // conservative: if we undo into/out of a tiebreak, recompute counters from displayed points.
+            // if we undo into/out of a tiebreak, recompute counters from displayed points.
             if (isTieBreakGame(score.currentSet)) {
                 tieBreakPlayerOnePoints = pointToTieBreakCount(score.currentGame.playerOne)
                 tieBreakPlayerTwoPoints = pointToTieBreakCount(score.currentGame.playerTwo)
@@ -43,7 +42,6 @@ class MatchEngine(
     }
 
     private fun addPoint(winnerIsPlayerOne: Boolean) {
-
         history.add(score)
 
         score = if (isTieBreakGame(score.currentSet)) {
@@ -173,7 +171,9 @@ class MatchEngine(
         val playerOneWonSet = hasWonSet(set.playerOneGames, set.playerTwoGames)
         val playerTwoWonSet = hasWonSet(set.playerTwoGames, set.playerOneGames)
 
-        if (!playerOneWonSet && !playerTwoWonSet) return current
+        if (!playerOneWonSet && !playerTwoWonSet) {
+            return current
+        }
 
         tieBreakPlayerOnePoints = 0
         tieBreakPlayerTwoPoints = 0
@@ -192,13 +192,15 @@ class MatchEngine(
     }
 
     private fun hasWonSet(winnerGames: Int, loserGames: Int): Boolean {
-        // Standard: first to 6 by 2; at 6-6 we go to tiebreak and the set ends 7-6.
-        if (winnerGames >= gamesToWinSet && (winnerGames - loserGames) >= 2) return true
-        if (winnerGames == tieBreakAt + 1 && loserGames == tieBreakAt) return true
+        if (winnerGames >= gamesToWinSet && (winnerGames - loserGames) >= 2) {
+            return true
+        }
+        if (winnerGames == tieBreakAt + 1 && loserGames == tieBreakAt) {
+            return true
+        }
         return false
     }
 
-    // Used only to rebuild tie break counters after an undo; it’s lossy for counts > 4.
     private fun pointToTieBreakCount(p: Point): Int = when (p) {
         Point.LOVE -> 0
         Point.FIFTEEN -> 1
