@@ -15,10 +15,8 @@ class MatchViewModel {
     private var playerOneServing = true
     private var showFinishDialog = false
     private var showBackDialog = false
-    private var gameWinner: Int? =
-        null // 1 for player one, 2 for player two, null for no recent win
-    private var setWinner: Int? =
-        null // 1 for player one, 2 for player two, null for no recent set win
+    private var gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
+    private var setWinner: Int? = null // 1 for player one, 2 for player two, null for no recent set win
 
     private val _uiState = MutableStateFlow(
         MatchUiState.from(
@@ -61,10 +59,7 @@ class MatchViewModel {
             engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
         val newSets = engine.getScore().playerOneSets + engine.getScore().playerTwoSets
 
-        // Check if a game was won
         gameWinner = if (newGames > previousGames) 2 else null
-
-        // Check if a set was won
         setWinner = if (newSets > previousSets) 2 else null
 
         playerOneServing = !playerOneServing

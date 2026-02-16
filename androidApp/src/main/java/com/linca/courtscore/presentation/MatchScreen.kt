@@ -5,8 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -34,9 +32,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,16 +49,16 @@ import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.dialog.Alert
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
-import com.linca.courtscore.presentation.theme.ColorScheme
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.delay
-import com.linca.courtscorewear.R
 import com.linca.courtscore.presentation.theme.BackgroundColor
+import com.linca.courtscore.presentation.theme.ColorScheme
 import com.linca.courtscore.presentation.theme.ElevatedBackgroundColor
 import com.linca.courtscore.presentation.theme.LocalColorScheme
 import com.linca.courtscore.presentation.theme.PadelBlue
 import com.linca.courtscore.presentation.theme.PrimaryTextColor
 import com.linca.courtscore.presentation.theme.SecondaryTextColor
+import com.linca.courtscorewear.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MatchScreen(
@@ -117,18 +115,15 @@ private fun MatchScreenContent(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Handle game winner animation
     LaunchedEffect(uiState.gameWinner) {
         if (uiState.gameWinner != null) {
             delay(1500)
             viewModel.onAnimationComplete()
         }
     }
-
-    // Handle set winner animation
     LaunchedEffect(uiState.setWinner) {
         if (uiState.setWinner != null) {
-            delay(2000) // Show set win animation slightly longer
+            delay(2000)
             viewModel.onSetAnimationComplete()
         }
     }
@@ -339,6 +334,11 @@ private fun MatchScreenContent(
             ) + fadeIn(animationSpec = tween(durationMillis = 400)),
             exit = fadeOut(animationSpec = tween(durationMillis = 400))
         ) {
+            val animationColor = when (uiState.setWinner) {
+                1 -> colorScheme.playerOneColor
+                2 -> colorScheme.playerTwoColor
+                else -> PrimaryTextColor
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -352,23 +352,14 @@ private fun MatchScreenContent(
                     Icon(
                         painter = painterResource(R.drawable.tennis_ball_filled),
                         contentDescription = "Set Won",
-                        tint = when (uiState.setWinner) {
-                            1 -> colorScheme.playerOneColor
-                            2 -> colorScheme.playerTwoColor
-                            else -> PrimaryTextColor
-                        },
-                        modifier = Modifier.size(32.dp)
+                        tint = animationColor,
+                        modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
                         text = "Set!",
                         style = MaterialTheme.typography.title2,
-                        fontWeight = FontWeight.Bold,
-                        color = when (uiState.setWinner) {
-                            1 -> colorScheme.playerOneColor
-                            2 -> colorScheme.playerTwoColor
-                            else -> PrimaryTextColor
-                        }
+                        color = animationColor
                     )
                 }
             }
@@ -409,7 +400,7 @@ fun CurrentGameScore(
             enabled = enabled,
             modifier = Modifier.weight(1f),
             primaryColor = playerOneColor,
-            showWinAnimation = gameWinner != null, // Animate when any player wins
+            showWinAnimation = gameWinner != null,
             onAnimationComplete = onAnimationComplete
         )
 
@@ -419,7 +410,7 @@ fun CurrentGameScore(
             enabled = enabled,
             modifier = Modifier.weight(1f),
             primaryColor = playerTwoColor,
-            showWinAnimation = gameWinner != null, // Animate when any player wins
+            showWinAnimation = gameWinner != null,
             onAnimationComplete = onAnimationComplete
         )
     }
@@ -482,7 +473,6 @@ private fun GameScoreButton(
 ) {
     val shouldAnimate = showWinAnimation && score == "0"
 
-    // Trigger animation complete callback after animation duration
     LaunchedEffect(showWinAnimation) {
         if (showWinAnimation) {
             delay(700)
@@ -514,7 +504,6 @@ private fun GameScoreButton(
                 targetState = if (shouldAnimate) "${score}_${System.currentTimeMillis()}" else score,
                 transitionSpec = {
                     if (shouldAnimate) {
-                        // When game is won, vertical slide animation
                         (slideInVertically(
                             initialOffsetY = { -it }, // Start from above
                             animationSpec = tween(
@@ -532,7 +521,6 @@ private fun GameScoreButton(
                                 ) + fadeOut(animationSpec = tween(durationMillis = 300))
                             )
                     } else {
-                        // Normal transition without animation
                         fadeIn(animationSpec = tween(0))
                             .togetherWith(fadeOut(animationSpec = tween(0)))
                     }
