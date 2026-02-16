@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,12 +31,12 @@ import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import com.linca.courtscorewear.R
 import com.linca.courtscore.presentation.theme.BackgroundColor
 import com.linca.courtscore.presentation.theme.PadelBlue
 import com.linca.courtscore.presentation.theme.PrimaryTextColor
 import com.linca.courtscore.presentation.theme.SecondaryTextColor
 import com.linca.courtscore.presentation.theme.logoStyle
+import com.linca.courtscorewear.R
 
 private data class ActionButton(
     val description: String,
@@ -116,10 +117,20 @@ fun MainScreen(
 
             Spacer(modifier = Modifier.height(3.dp))
 
+
+            val configuration = LocalConfiguration.current
+            val screenWidthDp = configuration.screenWidthDp
+
+            // Adjust height based on screen size
+            val buttonHeight = when {
+                screenWidthDp < 210 -> 100.dp
+                else -> 130.dp
+            }
+
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
-                    .height(100.dp)
+                    .height(height = buttonHeight)
                     .fillMaxSize(),
                 pageSpacing = 12.dp
             ) { pageIndex ->
@@ -131,7 +142,7 @@ fun MainScreen(
                     Button(
                         onClick = action.onClick,
                         modifier = Modifier
-                            .size(80.dp)
+                            .size(buttonHeight - 20.dp)
                             .border(
                                 width = 2.dp,
                                 color = PadelBlue,
