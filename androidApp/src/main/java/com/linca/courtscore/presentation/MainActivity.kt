@@ -1,4 +1,4 @@
-package com.linca.courtscorewear.presentation
+package com.linca.courtscore.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,9 +10,10 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.linca.courtscorewear.data.PreferencesManager
-import com.linca.courtscorewear.presentation.theme.ColorSchemes
-import com.linca.courtscorewear.presentation.theme.CourtScoreTheme
+import com.linca.courtscore.data.PreferencesManager
+import com.linca.courtscore.presentation.theme.ColorScheme
+import com.linca.courtscore.presentation.theme.ColorSchemes
+import com.linca.courtscore.presentation.theme.CourtScoreTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun WearApp(
-    colorScheme: com.linca.courtscorewear.presentation.theme.ColorScheme,
+    colorScheme: ColorScheme,
     preferencesManager: PreferencesManager
 ) {
     CourtScoreTheme(colorScheme = colorScheme) {

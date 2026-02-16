@@ -1,4 +1,4 @@
-package com.linca.courtscorewear.presentation
+package com.linca.courtscore.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,11 +31,11 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.linca.courtscorewear.R
-import com.linca.courtscorewear.presentation.theme.BackgroundColor
-import com.linca.courtscorewear.presentation.theme.PadelBlue
-import com.linca.courtscorewear.presentation.theme.PrimaryTextColor
-import com.linca.courtscorewear.presentation.theme.SecondaryTextColor
-import com.linca.courtscorewear.presentation.theme.logoStyle
+import com.linca.courtscore.presentation.theme.BackgroundColor
+import com.linca.courtscore.presentation.theme.PadelBlue
+import com.linca.courtscore.presentation.theme.PrimaryTextColor
+import com.linca.courtscore.presentation.theme.SecondaryTextColor
+import com.linca.courtscore.presentation.theme.logoStyle
 
 private data class ActionButton(
     val description: String,

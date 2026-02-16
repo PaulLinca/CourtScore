@@ -1,4 +1,4 @@
-package com.linca.courtscorewear.presentation
+package com.linca.courtscore.presentation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -37,16 +38,15 @@ import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.dialog.Alert
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
+import com.linca.courtscore.presentation.theme.ColorScheme
 import kotlinx.coroutines.flow.collectLatest
-import com.linca.courtscore.presentation.MatchUiState
-import com.linca.courtscore.presentation.MatchViewModel
 import com.linca.courtscorewear.R
-import com.linca.courtscorewear.presentation.theme.BackgroundColor
-import com.linca.courtscorewear.presentation.theme.ElevatedBackgroundColor
-import com.linca.courtscorewear.presentation.theme.LocalColorScheme
-import com.linca.courtscorewear.presentation.theme.PadelBlue
-import com.linca.courtscorewear.presentation.theme.PrimaryTextColor
-import com.linca.courtscorewear.presentation.theme.SecondaryTextColor
+import com.linca.courtscore.presentation.theme.BackgroundColor
+import com.linca.courtscore.presentation.theme.ElevatedBackgroundColor
+import com.linca.courtscore.presentation.theme.LocalColorScheme
+import com.linca.courtscore.presentation.theme.PadelBlue
+import com.linca.courtscore.presentation.theme.PrimaryTextColor
+import com.linca.courtscore.presentation.theme.SecondaryTextColor
 
 @Composable
 fun MatchScreen(
@@ -99,7 +99,7 @@ fun MatchScreen(
 private fun MatchScreenContent(
     uiState: MatchUiState,
     viewModel: MatchViewModel,
-    colorScheme: com.linca.courtscorewear.presentation.theme.ColorScheme,
+    colorScheme: ColorScheme,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -312,9 +312,19 @@ fun CurrentGameScore(
     playerTwoColor: Color,
     modifier: Modifier
 ) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp
+
+    // Adjust vertical padding based on screen size
+    val verticalPadding = when {
+        screenWidthDp < 210 -> 0.dp
+        else -> 10.dp
+    }
+
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = modifier
+            .padding(vertical = verticalPadding),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         GameScoreButton(
             score = player1GameScore,

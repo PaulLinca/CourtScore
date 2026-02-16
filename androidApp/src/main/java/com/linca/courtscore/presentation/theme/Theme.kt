@@ -1,4 +1,4 @@
-package com.linca.courtscorewear.presentation.theme
+package com.linca.courtscore.presentation.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider

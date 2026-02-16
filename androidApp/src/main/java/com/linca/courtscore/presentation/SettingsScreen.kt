@@ -1,4 +1,4 @@
-package com.linca.courtscorewear.presentation
+package com.linca.courtscore.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,13 +31,13 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import com.linca.courtscorewear.data.PreferencesManager
-import com.linca.courtscorewear.presentation.theme.BackgroundColor
-import com.linca.courtscorewear.presentation.theme.ColorScheme
-import com.linca.courtscorewear.presentation.theme.ColorSchemes
-import com.linca.courtscorewear.presentation.theme.ElevatedBackgroundColor
-import com.linca.courtscorewear.presentation.theme.PadelBlue
-import com.linca.courtscorewear.presentation.theme.PrimaryTextColor
+import com.linca.courtscore.data.PreferencesManager
+import com.linca.courtscore.presentation.theme.BackgroundColor
+import com.linca.courtscore.presentation.theme.ColorScheme
+import com.linca.courtscore.presentation.theme.ColorSchemes
+import com.linca.courtscore.presentation.theme.ElevatedBackgroundColor
+import com.linca.courtscore.presentation.theme.PadelBlue
+import com.linca.courtscore.presentation.theme.PrimaryTextColor
 import kotlinx.coroutines.launch
 
 @Composable
