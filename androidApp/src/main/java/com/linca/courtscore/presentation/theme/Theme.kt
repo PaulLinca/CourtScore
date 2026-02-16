@@ -6,11 +6,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.material.MaterialTheme
 
-val LocalColorScheme = staticCompositionLocalOf { ColorSchemes.BlueOrange }
+val LocalColorScheme = staticCompositionLocalOf { ColorSchemes.SunsetOcean }
 
 @Composable
 fun CourtScoreTheme(
-    colorScheme: ColorScheme = ColorSchemes.BlueOrange,
+    colorScheme: ColorScheme = ColorSchemes.SunsetOcean,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(LocalColorScheme provides colorScheme) {

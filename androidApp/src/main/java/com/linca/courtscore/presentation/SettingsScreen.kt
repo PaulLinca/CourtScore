@@ -45,7 +45,7 @@ fun SettingsScreen(
     preferencesManager: PreferencesManager,
     onNavigateBack: () -> Boolean
 ) {
-    val currentColorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.TealCoral.name)
+    val currentColorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
 

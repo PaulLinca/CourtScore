@@ -19,7 +19,7 @@ class PreferencesManager(private val context: Context) {
 
     val colorSchemeFlow: Flow<String> = context.dataStore.data
         .map { preferences ->
-            preferences[COLOR_SCHEME_KEY] ?: ColorSchemes.TealCoral.name
+            preferences[COLOR_SCHEME_KEY] ?: ColorSchemes.SunsetOcean.name
         }
 
     suspend fun saveColorScheme(schemeName: String) {

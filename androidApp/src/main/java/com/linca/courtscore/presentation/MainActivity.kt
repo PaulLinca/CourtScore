@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         val preferencesManager = PreferencesManager(this)
 
         setContent {
-            val colorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.TealCoral.name)
+            val colorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)
             val colorScheme = ColorSchemes.findByName(colorSchemeName)
 
             WearApp(
