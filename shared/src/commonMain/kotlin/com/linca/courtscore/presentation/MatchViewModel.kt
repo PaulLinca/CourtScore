@@ -1,5 +1,6 @@
 package com.linca.courtscore.presentation
 
+import com.linca.courtscore.domain.model.GameScore
 import com.linca.courtscore.domain.model.MatchScore
 import com.linca.courtscore.domain.model.Point
 import com.linca.courtscore.engine.MatchEngine
@@ -14,30 +15,57 @@ class MatchViewModel {
     private var playerOneServing = true
     private var showFinishDialog = false
     private var showBackDialog = false
-    private var gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
+    private var gameWinner: Int? =
+        null // 1 for player one, 2 for player two, null for no recent win
+    private var setWinner: Int? =
+        null // 1 for player one, 2 for player two, null for no recent set win
 
-    private val _uiState = MutableStateFlow(MatchUiState.from(engine.getScore(), playerOneServing, showFinishDialog, showBackDialog, gameWinner))
+    private val _uiState = MutableStateFlow(
+        MatchUiState.from(
+            engine.getScore(),
+            playerOneServing,
+            showFinishDialog,
+            showBackDialog,
+            gameWinner,
+            setWinner
+        )
+    )
     val uiState: StateFlow<MatchUiState> = _uiState.asStateFlow()
 
     fun onPlayerOneScored() {
-        val previousGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
-        engine.pointForPlayerOne()
-        val newGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+        val previousGames =
+            engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+        val previousSets = engine.getScore().playerOneSets + engine.getScore().playerTwoSets
 
-        // Check if a game was won
+        engine.pointForPlayerOne()
+
+        val newGames =
+            engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+        val newSets = engine.getScore().playerOneSets + engine.getScore().playerTwoSets
+
         gameWinner = if (newGames > previousGames) 1 else null
+        setWinner = if (newSets > previousSets) 1 else null
 
         playerOneServing = !playerOneServing
         updateUiState()
     }
 
     fun onPlayerTwoScored() {
-        val previousGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+        val previousGames =
+            engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+        val previousSets = engine.getScore().playerOneSets + engine.getScore().playerTwoSets
+
         engine.pointForPlayerTwo()
-        val newGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+
+        val newGames =
+            engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+        val newSets = engine.getScore().playerOneSets + engine.getScore().playerTwoSets
 
         // Check if a game was won
         gameWinner = if (newGames > previousGames) 2 else null
+
+        // Check if a set was won
+        setWinner = if (newSets > previousSets) 2 else null
 
         playerOneServing = !playerOneServing
         updateUiState()
@@ -45,6 +73,11 @@ class MatchViewModel {
 
     fun onAnimationComplete() {
         gameWinner = null
+        updateUiState()
+    }
+
+    fun onSetAnimationComplete() {
+        setWinner = null
         updateUiState()
     }
 
@@ -96,7 +129,14 @@ class MatchViewModel {
     }
 
     private fun updateUiState() {
-        _uiState.value = MatchUiState.from(engine.getScore(), playerOneServing, showFinishDialog, showBackDialog, gameWinner)
+        _uiState.value = MatchUiState.from(
+            engine.getScore(),
+            playerOneServing,
+            showFinishDialog,
+            showBackDialog,
+            gameWinner,
+            setWinner
+        )
     }
 }
 
@@ -111,13 +151,21 @@ data class MatchUiState(
     val playerTwoWon: Boolean,
     val showFinishDialog: Boolean,
     val showBackDialog: Boolean,
-    val gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
+    val gameWinner: Int? = null,
+    val setWinner: Int? = null
 ) {
     companion object {
-        fun from(matchScore: MatchScore, playerOneServing: Boolean, showFinishDialog: Boolean, showBackDialog: Boolean, gameWinner: Int? = null): MatchUiState {
+        fun from(
+            matchScore: MatchScore,
+            playerOneServing: Boolean,
+            showFinishDialog: Boolean,
+            showBackDialog: Boolean,
+            gameWinner: Int? = null,
+            setWinner: Int? = null
+        ): MatchUiState {
             return MatchUiState(
                 playerOneGameScore = formatGameScore(matchScore.currentGame, isPlayerOne = true),
-                playerTwoGameScore = formatGameScore(matchScore.currentGame, isPlayerTwo = true),
+                playerTwoGameScore = formatGameScore(matchScore.currentGame),
                 playerOneSetScores = buildPlayerOneSetScoresList(matchScore),
                 playerTwoSetScores = buildPlayerTwoSetScoresList(matchScore),
                 isFinished = matchScore.isFinished,
@@ -126,11 +174,15 @@ data class MatchUiState(
                 playerTwoWon = matchScore.playerTwoSets >= 2,
                 showFinishDialog = showFinishDialog,
                 showBackDialog = showBackDialog,
-                gameWinner = gameWinner
+                gameWinner = gameWinner,
+                setWinner = setWinner
             )
         }
 
-        private fun formatGameScore(gameScore: com.linca.courtscore.domain.model.GameScore, isPlayerOne: Boolean = false, isPlayerTwo: Boolean = false): String {
+        private fun formatGameScore(
+            gameScore: GameScore,
+            isPlayerOne: Boolean = false
+        ): String {
             return if (gameScore.isTieBreak) {
                 // In tiebreak, display actual numerical scores
                 if (isPlayerOne) {
@@ -139,7 +191,6 @@ data class MatchUiState(
                     gameScore.tieBreakPlayerTwoPoints.toString()
                 }
             } else {
-                // Standard game scoring
                 val point = if (isPlayerOne) gameScore.playerOne else gameScore.playerTwo
                 when (point) {
                     Point.LOVE -> "0"

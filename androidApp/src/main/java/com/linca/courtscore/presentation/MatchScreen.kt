@@ -2,12 +2,15 @@ package com.linca.courtscore.presentation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -119,6 +122,14 @@ private fun MatchScreenContent(
         if (uiState.gameWinner != null) {
             delay(1500)
             viewModel.onAnimationComplete()
+        }
+    }
+
+    // Handle set winner animation
+    LaunchedEffect(uiState.setWinner) {
+        if (uiState.setWinner != null) {
+            delay(2000) // Show set win animation slightly longer
+            viewModel.onSetAnimationComplete()
         }
     }
 
@@ -317,6 +328,50 @@ private fun MatchScreenContent(
                     }
                 }
             )
+        }
+
+        // Subtle Set Winner Animation Overlay
+        AnimatedVisibility(
+            visible = uiState.setWinner != null,
+            enter = scaleIn(
+                animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+                initialScale = 0.8f
+            ) + fadeIn(animationSpec = tween(durationMillis = 400)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 400))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(BackgroundColor.copy(alpha = 0.7f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.tennis_ball_filled),
+                        contentDescription = "Set Won",
+                        tint = when (uiState.setWinner) {
+                            1 -> colorScheme.playerOneColor
+                            2 -> colorScheme.playerTwoColor
+                            else -> PrimaryTextColor
+                        },
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text(
+                        text = "Set!",
+                        style = MaterialTheme.typography.title2,
+                        fontWeight = FontWeight.Bold,
+                        color = when (uiState.setWinner) {
+                            1 -> colorScheme.playerOneColor
+                            2 -> colorScheme.playerTwoColor
+                            else -> PrimaryTextColor
+                        }
+                    )
+                }
+            }
         }
     }
 }
