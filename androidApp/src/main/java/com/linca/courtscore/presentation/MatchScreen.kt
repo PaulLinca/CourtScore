@@ -1,6 +1,16 @@
 package com.linca.courtscore.presentation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +50,7 @@ import androidx.wear.compose.material.dialog.Alert
 import androidx.wear.compose.material.rememberSwipeToDismissBoxState
 import com.linca.courtscore.presentation.theme.ColorScheme
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.delay
 import com.linca.courtscorewear.R
 import com.linca.courtscore.presentation.theme.BackgroundColor
 import com.linca.courtscore.presentation.theme.ElevatedBackgroundColor
@@ -103,6 +114,13 @@ private fun MatchScreenContent(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // Handle game winner animation
+    LaunchedEffect(uiState.gameWinner) {
+        if (uiState.gameWinner != null) {
+            delay(1500)
+            viewModel.onAnimationComplete()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -155,6 +173,8 @@ private fun MatchScreenContent(
                 enabled = !uiState.isFinished,
                 playerOneColor = colorScheme.playerOneColor,
                 playerTwoColor = colorScheme.playerTwoColor,
+                gameWinner = uiState.gameWinner,
+                onAnimationComplete = viewModel::onAnimationComplete,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -310,6 +330,8 @@ fun CurrentGameScore(
     enabled: Boolean = true,
     playerOneColor: Color,
     playerTwoColor: Color,
+    gameWinner: Int? = null,
+    onAnimationComplete: () -> Unit = {},
     modifier: Modifier
 ) {
     val configuration = LocalConfiguration.current
@@ -331,7 +353,9 @@ fun CurrentGameScore(
             onClick = onPlayer1Score,
             enabled = enabled,
             modifier = Modifier.weight(1f),
-            primaryColor = playerOneColor
+            primaryColor = playerOneColor,
+            showWinAnimation = gameWinner != null, // Animate when any player wins
+            onAnimationComplete = onAnimationComplete
         )
 
         GameScoreButton(
@@ -339,7 +363,9 @@ fun CurrentGameScore(
             onClick = onPlayer2Score,
             enabled = enabled,
             modifier = Modifier.weight(1f),
-            primaryColor = playerTwoColor
+            primaryColor = playerTwoColor,
+            showWinAnimation = gameWinner != null, // Animate when any player wins
+            onAnimationComplete = onAnimationComplete
         )
     }
 }
@@ -395,13 +421,24 @@ private fun GameScoreButton(
     modifier: Modifier = Modifier,
     primaryColor: Color,
     textColor: Color = primaryColor,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    showWinAnimation: Boolean = false,
+    onAnimationComplete: () -> Unit = {}
 ) {
+    val shouldAnimate = showWinAnimation && score == "0"
+
+    // Trigger animation complete callback after animation duration
+    LaunchedEffect(showWinAnimation) {
+        if (showWinAnimation) {
+            delay(700)
+            onAnimationComplete()
+        }
+    }
+
     Button(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent,
             disabledBackgroundColor = Color.Transparent
@@ -418,12 +455,48 @@ private fun GameScoreButton(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = score,
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (enabled) textColor else textColor.copy(alpha = 0.3f)
-            )
+            AnimatedContent(
+                targetState = if (shouldAnimate) "${score}_${System.currentTimeMillis()}" else score,
+                transitionSpec = {
+                    if (shouldAnimate) {
+                        // When game is won, vertical slide animation
+                        (slideInVertically(
+                            initialOffsetY = { -it }, // Start from above
+                            animationSpec = tween(
+                                durationMillis = 400,
+                                easing = FastOutSlowInEasing
+                            )
+                        ) + fadeIn(animationSpec = tween(durationMillis = 400)))
+                            .togetherWith(
+                                slideOutVertically(
+                                    targetOffsetY = { it }, // Exit downward
+                                    animationSpec = tween(
+                                        durationMillis = 300,
+                                        easing = FastOutLinearInEasing
+                                    )
+                                ) + fadeOut(animationSpec = tween(durationMillis = 300))
+                            )
+                    } else {
+                        // Normal transition without animation
+                        fadeIn(animationSpec = tween(0))
+                            .togetherWith(fadeOut(animationSpec = tween(0)))
+                    }
+                },
+                label = "score_animation"
+            ) { targetState ->
+                // Extract actual score (remove timestamp if present)
+                val displayScore = if (targetState.contains("_")) {
+                    targetState.substringBefore("_")
+                } else {
+                    targetState
+                }
+                Text(
+                    text = displayScore,
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (enabled) textColor else textColor.copy(alpha = 0.3f)
+                )
+            }
         }
     }
 }

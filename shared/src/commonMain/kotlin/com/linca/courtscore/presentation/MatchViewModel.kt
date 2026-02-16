@@ -14,19 +14,37 @@ class MatchViewModel {
     private var playerOneServing = true
     private var showFinishDialog = false
     private var showBackDialog = false
+    private var gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
 
-    private val _uiState = MutableStateFlow(MatchUiState.from(engine.getScore(), playerOneServing, showFinishDialog, showBackDialog))
+    private val _uiState = MutableStateFlow(MatchUiState.from(engine.getScore(), playerOneServing, showFinishDialog, showBackDialog, gameWinner))
     val uiState: StateFlow<MatchUiState> = _uiState.asStateFlow()
 
     fun onPlayerOneScored() {
+        val previousGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
         engine.pointForPlayerOne()
+        val newGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+
+        // Check if a game was won
+        gameWinner = if (newGames > previousGames) 1 else null
+
         playerOneServing = !playerOneServing
         updateUiState()
     }
 
     fun onPlayerTwoScored() {
+        val previousGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
         engine.pointForPlayerTwo()
+        val newGames = engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
+
+        // Check if a game was won
+        gameWinner = if (newGames > previousGames) 2 else null
+
         playerOneServing = !playerOneServing
+        updateUiState()
+    }
+
+    fun onAnimationComplete() {
+        gameWinner = null
         updateUiState()
     }
 
@@ -78,7 +96,7 @@ class MatchViewModel {
     }
 
     private fun updateUiState() {
-        _uiState.value = MatchUiState.from(engine.getScore(), playerOneServing, showFinishDialog, showBackDialog)
+        _uiState.value = MatchUiState.from(engine.getScore(), playerOneServing, showFinishDialog, showBackDialog, gameWinner)
     }
 }
 
@@ -92,10 +110,11 @@ data class MatchUiState(
     val playerOneWon: Boolean,
     val playerTwoWon: Boolean,
     val showFinishDialog: Boolean,
-    val showBackDialog: Boolean
+    val showBackDialog: Boolean,
+    val gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
 ) {
     companion object {
-        fun from(matchScore: MatchScore, playerOneServing: Boolean, showFinishDialog: Boolean, showBackDialog: Boolean): MatchUiState {
+        fun from(matchScore: MatchScore, playerOneServing: Boolean, showFinishDialog: Boolean, showBackDialog: Boolean, gameWinner: Int? = null): MatchUiState {
             return MatchUiState(
                 playerOneGameScore = formatGameScore(matchScore.currentGame, isPlayerOne = true),
                 playerTwoGameScore = formatGameScore(matchScore.currentGame, isPlayerTwo = true),
@@ -106,7 +125,8 @@ data class MatchUiState(
                 playerOneWon = matchScore.playerOneSets >= 2,
                 playerTwoWon = matchScore.playerTwoSets >= 2,
                 showFinishDialog = showFinishDialog,
-                showBackDialog = showBackDialog
+                showBackDialog = showBackDialog,
+                gameWinner = gameWinner
             )
         }
 
