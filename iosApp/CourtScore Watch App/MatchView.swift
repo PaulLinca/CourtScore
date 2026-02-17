@@ -6,6 +6,14 @@ struct MatchView: View {
     @StateObject private var viewModel = MatchViewModelWrapper()
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
     @Environment(\.dismiss) var dismiss
+    @State private var showSetAnimation = false
+
+    private var setWinnerColor: Color {
+        guard let winner = viewModel.uiState.setWinner?.int32Value else {
+            return Color(hex: "eeeff0")
+        }
+        return winner == 1 ? colorSchemeManager.playerOneColor : colorSchemeManager.playerTwoColor
+    }
 
     var body: some View {
         ZStack {
@@ -50,7 +58,9 @@ struct MatchView: View {
                     onPlayer2Score: viewModel.onPlayerTwoScored,
                     enabled: !viewModel.uiState.isFinished,
                     playerOneColor: colorSchemeManager.playerOneColor,
-                    playerTwoColor: colorSchemeManager.playerTwoColor
+                    playerTwoColor: colorSchemeManager.playerTwoColor,
+                    gameWinner: viewModel.uiState.gameWinner?.int32Value,
+                    onAnimationComplete: viewModel.onAnimationComplete
                 )
                                 
                 // Bottom buttons: Undo and Finish
@@ -79,6 +89,59 @@ struct MatchView: View {
                 }
             }
             .padding(12)
+
+            // Enhanced Set Winner Animation Overlay
+            if viewModel.uiState.setWinner != nil {
+                ZStack {
+                    Color(hex: "121214")
+                        .opacity(0.85)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+
+                    ZStack {
+                        // Subtle pulse effect behind everything
+                        Circle()
+                            .fill(setWinnerColor.opacity(0.15))
+                            .frame(width: 100, height: 100)
+                            .scaleEffect(showSetAnimation ? 1.5 : 0.5)
+                            .opacity(showSetAnimation ? 0.0 : 0.3)
+                            .animation(.easeOut(duration: 0.8), value: showSetAnimation)
+
+                        VStack(spacing: 12) {
+                            // Tennis ball with rotation and bounce
+                            Image(systemName: "tennisball.fill")
+                                .font(.system(size: 32))
+                                .foregroundColor(setWinnerColor)
+                                .shadow(color: setWinnerColor.opacity(0.5), radius: 8, x: 0, y: 0)
+                                .rotationEffect(.degrees(showSetAnimation ? 360 : 0))
+                                .scaleEffect(showSetAnimation ? 1.0 : 0.3)
+                                .animation(.spring(response: 0.6, dampingFraction: 0.6), value: showSetAnimation)
+
+                            // "Set!" text with multiple animation effects
+                            Text("Set!")
+                                .font(.system(size: 32))
+                                .foregroundColor(setWinnerColor)
+                                .shadow(color: setWinnerColor.opacity(0.3), radius: 4, x: 0, y: 2)
+                                .scaleEffect(showSetAnimation ? 1.0 : 0.5)
+                                .opacity(showSetAnimation ? 1.0 : 0.0)
+                                .animation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.1), value: showSetAnimation)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .transition(.asymmetric(
+                    insertion: .scale(scale: 0.7).combined(with: .opacity),
+                    removal: .scale(scale: 1.2).combined(with: .opacity)
+                ))
+                .onAppear {
+                    withAnimation {
+                        showSetAnimation = true
+                    }
+                }
+                .onDisappear {
+                    showSetAnimation = false
+                }
+            }
         }
         .alert("Are you sure you want to end the match?", isPresented: Binding(
             get: { viewModel.uiState.showFinishDialog },
@@ -101,6 +164,13 @@ struct MatchView: View {
             Button("Yes", role: .destructive) {
                 viewModel.onBackConfirmed()
                 dismiss()
+            }
+        }
+        .onChange(of: viewModel.uiState.setWinner) { newValue in
+            if newValue != nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    viewModel.onSetAnimationComplete()
+                }
             }
         }
         .navigationBarBackButtonHidden(!viewModel.uiState.isFinished)
@@ -131,6 +201,8 @@ struct CurrentGameScore: View {
     let enabled: Bool
     let playerOneColor: Color
     let playerTwoColor: Color
+    let gameWinner: Int32?
+    let onAnimationComplete: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
@@ -138,14 +210,18 @@ struct CurrentGameScore: View {
                 score: player1GameScore,
                 onClick: onPlayer1Score,
                 enabled: enabled,
-                primaryColor: playerOneColor
+                primaryColor: playerOneColor,
+                showWinAnimation: gameWinner != nil,
+                onAnimationComplete: onAnimationComplete
             )
 
             GameScoreButton(
                 score: player2GameScore,
                 onClick: onPlayer2Score,
                 enabled: enabled,
-                primaryColor: playerTwoColor
+                primaryColor: playerTwoColor,
+                showWinAnimation: gameWinner != nil,
+                onAnimationComplete: onAnimationComplete
             )
         }
         .frame(height: 90)
@@ -158,6 +234,10 @@ struct GameScoreButton: View {
     let onClick: () -> Void
     let enabled: Bool
     let primaryColor: Color
+    let showWinAnimation: Bool
+    let onAnimationComplete: () -> Void
+
+    @State private var animationTrigger = UUID()
 
     var body: some View {
         Button(action: onClick) {
@@ -166,13 +246,36 @@ struct GameScoreButton: View {
                     .stroke(enabled ? primaryColor : primaryColor.opacity(0.3), lineWidth: 2)
                     .background(Color.clear)
 
-                Text(score)
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundColor(enabled ? primaryColor : primaryColor.opacity(0.3))
+                // Use AnimatedContent-like behavior with transition
+                ZStack {
+                    if showWinAnimation && score == "0" {
+                        Text(score)
+                            .font(.system(size: 48, weight: .bold))
+                            .foregroundColor(enabled ? primaryColor : primaryColor.opacity(0.3))
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .top).combined(with: .opacity),
+                                removal: .move(edge: .bottom).combined(with: .opacity)
+                            ))
+                            .id(animationTrigger)
+                    } else {
+                        Text(score)
+                            .font(.system(size: 48, weight: .bold))
+                            .foregroundColor(enabled ? primaryColor : primaryColor.opacity(0.3))
+                    }
+                }
+                .animation(.easeInOut(duration: 0.4), value: animationTrigger)
             }
         }
         .disabled(!enabled)
         .buttonStyle(.plain)
+        .onChange(of: showWinAnimation) { newValue in
+            if newValue {
+                animationTrigger = UUID()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    onAnimationComplete()
+                }
+            }
+        }
     }
 }
 
@@ -291,7 +394,9 @@ class MatchViewModelWrapper: ObservableObject {
                newState.playerTwoGameScore != uiState.playerTwoGameScore ||
                newState.isFinished != uiState.isFinished ||
                newState.showFinishDialog != uiState.showFinishDialog ||
-               newState.showBackDialog != uiState.showBackDialog
+               newState.showBackDialog != uiState.showBackDialog ||
+               newState.gameWinner != uiState.gameWinner ||
+               newState.setWinner != uiState.setWinner
     }
 
     func onPlayerOneScored() {
@@ -342,6 +447,16 @@ class MatchViewModelWrapper: ObservableObject {
 
     func onBackCancelled() {
         viewModel.onBackCancelled()
+        updateState()
+    }
+
+    func onAnimationComplete() {
+        viewModel.onAnimationComplete()
+        updateState()
+    }
+
+    func onSetAnimationComplete() {
+        viewModel.onSetAnimationComplete()
         updateState()
     }
 
