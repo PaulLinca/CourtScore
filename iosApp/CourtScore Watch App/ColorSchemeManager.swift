@@ -11,21 +11,21 @@ class ColorSchemeManager: ObservableObject {
     }
 
     private init() {
-        self.selectedSchemeName = UserDefaults.standard.string(forKey: "selectedColorScheme") ?? "Blue & Orange"
+        self.selectedSchemeName = UserDefaults.standard.string(forKey: "selectedColorScheme") ?? "Sunset & Ocean"
     }
 
     let colorSchemes: [ColorSchemeOption] = [
-        ColorSchemeOption(name: "Teal & Coral", playerOneColor: Color(hex: "008080"), playerTwoColor: Color(hex: "FF7F50")),
-        ColorSchemeOption(name: "Blue & Orange", playerOneColor: Color(hex: "5076FF"), playerTwoColor: Color(hex: "F8A464")),
-        ColorSchemeOption(name: "Red & Cream", playerOneColor: Color(hex: "A4193D"), playerTwoColor: Color(hex: "FFDFB9")),
+        ColorSchemeOption(name: "Sunset & Ocean", playerOneColor: Color(hex: "FF7E5F"), playerTwoColor: Color(hex: "00D4FF")),
         ColorSchemeOption(name: "Pink & Yellow", playerOneColor: Color(hex: "d3687f"), playerTwoColor: Color(hex: "CBCE91")),
+        ColorSchemeOption(name: "Lavender & Peach", playerOneColor: Color(hex: "9B59B6"), playerTwoColor: Color(hex: "FFB347")),
         ColorSchemeOption(name: "Cyan & Magenta", playerOneColor: Color(hex: "00BCD4"), playerTwoColor: Color(hex: "E91E63")),
         ColorSchemeOption(name: "Yellow & Red", playerOneColor: Color(hex: "FDD20E"), playerTwoColor: Color(hex: "c72d1b")),
-        ColorSchemeOption(name: "Indigo & Lime", playerOneColor: Color(hex: "4831D4"), playerTwoColor: Color(hex: "CCF381"))
+        ColorSchemeOption(name: "Mint & Coral", playerOneColor: Color(hex: "3EECAC"), playerTwoColor: Color(hex: "FF6B6B")),
+        ColorSchemeOption(name: "Forest & Sky", playerOneColor: Color(hex: "27AE60"), playerTwoColor: Color(hex: "3498DB"))
     ]
 
     var selectedScheme: ColorSchemeOption {
-        colorSchemes.first { $0.name == selectedSchemeName } ?? colorSchemes[1]
+        colorSchemes.first { $0.name == selectedSchemeName } ?? colorSchemes[0]
     }
 
     var playerOneColor: Color {
