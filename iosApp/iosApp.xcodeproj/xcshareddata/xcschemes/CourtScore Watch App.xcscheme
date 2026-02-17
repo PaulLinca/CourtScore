@@ -58,21 +58,12 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "20E38EF72F40E2E700E62C2F"
-            BuildableName = "CourtScore.app"
-            BlueprintName = "CourtScore"
-            ReferencedContainer = "container:iosApp.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
             BlueprintIdentifier = "20E38EFC2F40E2E700E62C2F"
             BuildableName = "CourtScore Watch App.app"
             BlueprintName = "CourtScore Watch App"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
