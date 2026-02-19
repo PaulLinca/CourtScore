@@ -1,5 +1,6 @@
 package com.linca.courtscore.presentation
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,6 +34,7 @@ import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
+import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.linca.courtscore.data.PreferencesManager
@@ -38,6 +44,7 @@ import com.linca.courtscore.presentation.theme.ColorSchemes
 import com.linca.courtscore.presentation.theme.ElevatedBackgroundColor
 import com.linca.courtscore.presentation.theme.PadelBlue
 import com.linca.courtscore.presentation.theme.PrimaryTextColor
+import com.linca.courtscorewear.R
 import kotlinx.coroutines.launch
 
 @Composable
@@ -46,8 +53,10 @@ fun SettingsScreen(
     onNavigateBack: () -> Boolean
 ) {
     val currentColorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)
+    val currentLanguage by preferencesManager.languageFlow.collectAsState(initial = "system")
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -61,7 +70,49 @@ fun SettingsScreen(
         ) {
             item {
                 Text(
-                    text = "Color Scheme",
+                    text = stringResource(R.string.language),
+                    style = MaterialTheme.typography.title3,
+                    color = PrimaryTextColor,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            item {
+                LanguageCard(
+                    languageName = stringResource(R.string.english),
+                    drawableId = R.drawable.gbr,
+                    languageCode = "en",
+                    isSelected = currentLanguage == "en",
+                    onSelect = {
+                        coroutineScope.launch {
+                            preferencesManager.saveLanguage("en")
+                            (context as? ComponentActivity)?.recreate()
+                        }
+                    }
+                )
+            }
+
+            item {
+                LanguageCard(
+                    languageName = stringResource(R.string.spanish),
+                    languageCode = "es",
+                    drawableId = R.drawable.spain,
+                    isSelected = currentLanguage == "es",
+                    onSelect = {
+                        coroutineScope.launch {
+                            preferencesManager.saveLanguage("es")
+                            (context as? ComponentActivity)?.recreate()
+                        }
+                    }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.color_scheme),
                     style = MaterialTheme.typography.title3,
                     color = PrimaryTextColor,
                     fontWeight = FontWeight.Bold,
@@ -94,7 +145,7 @@ fun SettingsScreen(
                     )
                 ) {
                     Text(
-                        text = "Done",
+                        text = stringResource(R.string.done),
                         style = MaterialTheme.typography.button,
                         color = PrimaryTextColor
                     )
@@ -155,3 +206,37 @@ fun ColorSchemeCard(
         }
     )
 }
+
+@Composable
+fun LanguageCard(
+    languageName: String,
+    @Suppress("UNUSED_PARAMETER") languageCode: String,
+    drawableId: Int,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    Chip(
+        onClick = onSelect,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        colors = ChipDefaults.chipColors(
+            backgroundColor = if (isSelected) PadelBlue.copy(alpha = 0.3f) else ElevatedBackgroundColor
+        ),
+        label = {
+            Row {
+                Spacer(Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(drawableId),
+                    contentDescription = languageName,
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .align(alignment = Alignment.CenterVertically)
+                )
+                Spacer(Modifier.weight(1f))
+            }
+
+        }
+    )
+}
+

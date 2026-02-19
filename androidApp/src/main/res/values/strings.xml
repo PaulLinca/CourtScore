@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Court Score</string>
+
+    <!-- Main Screen -->
+    <string name="app_title">Court Score</string>
+    <string name="new_match">New match</string>
+    <string name="settings">Settings</string>
+
+    <!-- Settings Screen -->
+    <string name="color_scheme">Color Scheme</string>
+    <string name="language">Language</string>
+    <string name="done">Done</string>
+    <string name="english">English</string>
+    <string name="spanish">Spanish</string>
+
+    <!-- Match Screen -->
+    <string name="undo">Undo</string>
+    <string name="finish">Finish</string>
+    <string name="finish_dialog_title">Are you sure you want to end the match?</string>
+    <string name="back_dialog_title">Are you sure you want to leave the match?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="set_won">Set!</string>
+    <string name="player_one_serving">Player one serving</string>
+    <string name="player_two_serving">Player two serving</string>
+    <string name="player_one_won">Player one won</string>
+    <string name="player_two_won">Player two won</string>
+    <string name="set_won_description">Set Won</string>
 </resources>

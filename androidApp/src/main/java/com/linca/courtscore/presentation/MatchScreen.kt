@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -200,7 +201,7 @@ private fun MatchScreenContent(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.undo),
-                        contentDescription = "Undo",
+                        contentDescription = stringResource(R.string.undo),
                         tint = if (uiState.isFinished) SecondaryTextColor.copy(alpha = 0.3f) else SecondaryTextColor,
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -222,7 +223,7 @@ private fun MatchScreenContent(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.finish),
-                        contentDescription = "Finish",
+                        contentDescription = stringResource(R.string.finish),
                         tint = if (uiState.isFinished) SecondaryTextColor.copy(alpha = 0.3f) else SecondaryTextColor,
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -237,7 +238,7 @@ private fun MatchScreenContent(
                 backgroundColor = BackgroundColor,
                 title = {
                     Text(
-                        text = "Are you sure you want to end the match?",
+                        text = stringResource(R.string.finish_dialog_title),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body2
                     )
@@ -245,7 +246,7 @@ private fun MatchScreenContent(
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.finish),
-                        contentDescription = "Finish",
+                        contentDescription = stringResource(R.string.finish),
                         tint = SecondaryTextColor,
                         modifier = Modifier.size(24.dp)
                     )
@@ -257,7 +258,7 @@ private fun MatchScreenContent(
                             backgroundColor = ElevatedBackgroundColor
                         )
                     ) {
-                        Text("No", color = PrimaryTextColor, style = MaterialTheme.typography.body2)
+                        Text(stringResource(R.string.no), color = PrimaryTextColor, style = MaterialTheme.typography.body2)
                     }
                 },
                 positiveButton = {
@@ -268,7 +269,7 @@ private fun MatchScreenContent(
                         )
                     ) {
                         Text(
-                            "Yes",
+                            stringResource(R.string.yes),
                             color = PrimaryTextColor,
                             style = MaterialTheme.typography.body2
                         )
@@ -282,7 +283,7 @@ private fun MatchScreenContent(
                 backgroundColor = BackgroundColor,
                 title = {
                     Text(
-                        text = "Are you sure you want to leave the match?",
+                        text = stringResource(R.string.back_dialog_title),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body2
                     )
@@ -290,7 +291,7 @@ private fun MatchScreenContent(
                 icon = {
                     Icon(
                         painter = painterResource(R.drawable.undo),
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.undo),
                         tint = SecondaryTextColor,
                         modifier = Modifier.size(24.dp)
                     )
@@ -302,7 +303,7 @@ private fun MatchScreenContent(
                             backgroundColor = ElevatedBackgroundColor
                         )
                     ) {
-                        Text("No", color = PrimaryTextColor, style = MaterialTheme.typography.body2)
+                        Text(stringResource(R.string.no), color = PrimaryTextColor, style = MaterialTheme.typography.body2)
                     }
                 },
                 positiveButton = {
@@ -316,7 +317,7 @@ private fun MatchScreenContent(
                         )
                     ) {
                         Text(
-                            "Yes",
+                            stringResource(R.string.yes),
                             color = PrimaryTextColor,
                             style = MaterialTheme.typography.body2
                         )
@@ -351,13 +352,13 @@ private fun MatchScreenContent(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.tennis_ball_filled),
-                        contentDescription = "Set Won",
+                        contentDescription = stringResource(R.string.set_won_description),
                         tint = animationColor,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
-                        text = "Set!",
+                        text = stringResource(R.string.set_won),
                         style = MaterialTheme.typography.title2,
                         color = animationColor
                     )
@@ -568,7 +569,7 @@ fun ServingIndicator(
         ) {
             Icon(
                 painter = painterResource(R.drawable.tennis_ball),
-                contentDescription = "Player one serving",
+                contentDescription = stringResource(R.string.player_one_serving),
                 tint = if (isPlayerOneServing)
                     (if (enabled) playerOneColor else playerOneColor.copy(alpha = 0.3f))
                 else
@@ -580,7 +581,7 @@ fun ServingIndicator(
 
             Icon(
                 painter = painterResource(R.drawable.tennis_ball),
-                contentDescription = "Player two serving",
+                contentDescription = stringResource(R.string.player_two_serving),
                 tint = if (!isPlayerOneServing)
                     (if (enabled) playerTwoColor else playerTwoColor.copy(alpha = 0.3f))
                 else
@@ -606,7 +607,7 @@ fun WinnerIndicator(
             playerOneWon -> {
                 Icon(
                     painter = painterResource(R.drawable.winner),
-                    contentDescription = "Player one won",
+                    contentDescription = stringResource(R.string.player_one_won),
                     tint = playerOneColor,
                     modifier = Modifier.size(15.dp)
                 )
@@ -615,7 +616,7 @@ fun WinnerIndicator(
             playerTwoWon -> {
                 Icon(
                     painter = painterResource(R.drawable.winner),
-                    contentDescription = "Player two won",
+                    contentDescription = stringResource(R.string.player_two_won),
                     tint = playerTwoColor,
                     modifier = Modifier.size(15.dp)
                 )

@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
@@ -74,15 +75,19 @@ fun MainScreen(
     onNewMatch: () -> Unit,
     onSettingsClick: () -> Unit = {}
 ) {
-    val actions = remember(onNewMatch, onSettingsClick) {
+    val newMatchLabel = stringResource(R.string.new_match)
+    val settingsLabel = stringResource(R.string.settings)
+    val appTitle = stringResource(R.string.app_title)
+
+    val actions = remember(onNewMatch, onSettingsClick, newMatchLabel, settingsLabel) {
         listOf(
             ActionButton(
-                description = "New match",
+                description = newMatchLabel,
                 drawableId = R.drawable.tennis_ball_filled,
                 onClick = onNewMatch
             ),
             ActionButton(
-                description = "Settings",
+                description = settingsLabel,
                 drawableId = R.drawable.settings_filled,
                 onClick = onSettingsClick
             )
@@ -109,7 +114,7 @@ fun MainScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "Court Score",
+                text = appTitle,
                 textAlign = TextAlign.Center,
                 color = PrimaryTextColor,
                 style = logoStyle

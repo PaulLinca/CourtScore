@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Court Score</string>
+
+    <!-- Main Screen -->
+    <string name="app_title">Court Score</string>
+    <string name="new_match">Nuevo partido</string>
+    <string name="settings">Configuración</string>
+
+    <!-- Settings Screen -->
+    <string name="color_scheme">Esquema de colores</string>
+    <string name="language">Idioma</string>
+    <string name="done">Listo</string>
+    <string name="english">Inglés</string>
+    <string name="spanish">Español</string>
+
+    <!-- Match Screen -->
+    <string name="undo">Deshacer</string>
+    <string name="finish">Finalizar</string>
+    <string name="finish_dialog_title">¿Estás seguro de que quieres terminar el partido?</string>
+    <string name="back_dialog_title">¿Estás seguro de que quieres salir del partido?</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="set_won">¡Set!</string>
+    <string name="player_one_serving">Jugador uno sirviendo</string>
+    <string name="player_two_serving">Jugador dos sirviendo</string>
+    <string name="player_one_won">Jugador uno ganó</string>
+    <string name="player_two_won">Jugador dos ganó</string>
+    <string name="set_won_description">Set Ganado</string>
+</resources>
+

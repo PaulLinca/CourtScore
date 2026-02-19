@@ -1,5 +1,6 @@
 package com.linca.courtscore.presentation
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,12 +11,30 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import com.linca.courtscore.data.LocaleHelper
 import com.linca.courtscore.data.PreferencesManager
 import com.linca.courtscore.presentation.theme.ColorScheme
 import com.linca.courtscore.presentation.theme.ColorSchemes
 import com.linca.courtscore.presentation.theme.CourtScoreTheme
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
+    private lateinit var preferencesManager: PreferencesManager
+
+    override fun attachBaseContext(newBase: Context) {
+        preferencesManager = PreferencesManager(newBase)
+        val languageCode = runBlocking {
+            preferencesManager.languageFlow.first()
+        }
+        val context = if (languageCode != "system") {
+            LocaleHelper.setLocale(newBase, languageCode)
+        } else {
+            newBase
+        }
+        super.attachBaseContext(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
 
@@ -23,7 +42,6 @@ class MainActivity : ComponentActivity() {
 
         setTheme(android.R.style.Theme_DeviceDefault)
 
-        val preferencesManager = PreferencesManager(this)
 
         setContent {
             val colorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)

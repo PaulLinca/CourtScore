@@ -15,6 +15,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class PreferencesManager(private val context: Context) {
     companion object {
         private val COLOR_SCHEME_KEY = stringPreferencesKey("color_scheme")
+        private val LANGUAGE_KEY = stringPreferencesKey("language")
     }
 
     val colorSchemeFlow: Flow<String> = context.dataStore.data
@@ -22,9 +23,20 @@ class PreferencesManager(private val context: Context) {
             preferences[COLOR_SCHEME_KEY] ?: ColorSchemes.SunsetOcean.name
         }
 
+    val languageFlow: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[LANGUAGE_KEY] ?: "system"
+        }
+
     suspend fun saveColorScheme(schemeName: String) {
         context.dataStore.edit { preferences ->
             preferences[COLOR_SCHEME_KEY] = schemeName
+        }
+    }
+
+    suspend fun saveLanguage(language: String) {
+        context.dataStore.edit { preferences ->
+            preferences[LANGUAGE_KEY] = language
         }
     }
 }
