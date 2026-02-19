@@ -110,6 +110,21 @@ fun SettingsScreen(
             }
 
             item {
+                LanguageCard(
+                    languageName = stringResource(R.string.catalan),
+                    languageCode = "ca",
+                    drawableId = R.drawable.catalonia,
+                    isSelected = currentLanguage == "ca",
+                    onSelect = {
+                        coroutineScope.launch {
+                            preferencesManager.saveLanguage("ca")
+                            (context as? ComponentActivity)?.recreate()
+                        }
+                    }
+                )
+            }
+
+            item {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.color_scheme),

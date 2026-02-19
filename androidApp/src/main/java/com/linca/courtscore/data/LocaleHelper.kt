@@ -9,6 +9,7 @@ object LocaleHelper {
         val locale = when (languageCode) {
             "en" -> Locale.ENGLISH
             "es" -> Locale("es")
+            "ca" -> Locale("ca")
             else -> Locale.getDefault()
         }
 
@@ -24,6 +25,7 @@ object LocaleHelper {
         return when (languageCode) {
             "en" -> Locale.ENGLISH
             "es" -> Locale("es")
+            "ca" -> Locale("ca")
             else -> Locale.getDefault()
         }
     }
