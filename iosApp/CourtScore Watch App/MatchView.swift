@@ -8,6 +8,24 @@ struct MatchView: View {
     @Environment(\.dismiss) var dismiss
     @State private var showSetAnimation = false
 
+    // Detect screen size for responsive layout
+    private var isSmallWatch: Bool {
+        WKInterfaceDevice.current().screenBounds.width <= 176 // 40mm and smaller watches (162-176px)
+    }
+
+    // Adaptive sizing based on screen size
+    private var vStackSpacing: CGFloat { isSmallWatch ? 8 : 12 }
+    private var horizontalPadding: CGFloat { isSmallWatch ? 8 : 12 }
+    private var bottomPadding: CGFloat { isSmallWatch ? 8 : 12 }
+    private var topPadding: CGFloat { isSmallWatch ? 8 : 0 }
+    private var gameScoreSpacing: CGFloat { isSmallWatch ? 8 : 12 }
+    private var gameScoreHeight: CGFloat { isSmallWatch ? 70 : 90 }
+    private var bottomButtonSpacing: CGFloat { isSmallWatch ? 12 : 20 }
+    private var bottomButtonSize: CGFloat { isSmallWatch ? 26 : 30 }
+    private var bottomButtonIconSize: CGFloat { isSmallWatch ? 14 : 16 }
+    private var scoreFontSize: CGFloat { isSmallWatch ? 40 : 48 }
+    private var scoreCornerRadius: CGFloat { isSmallWatch ? 10 : 12 }
+
     private var setWinnerColor: Color {
         guard let winner = viewModel.uiState.setWinner?.int32Value else {
             return Color(hex: "eeeff0")
@@ -20,7 +38,7 @@ struct MatchView: View {
             Color(hex: "121214")
                 .ignoresSafeArea()
 
-            VStack(spacing: 12) {
+            VStack(spacing: vStackSpacing) {
                 // Top row: Serving indicator, Score table, Winner indicator
                 HStack(alignment: .center, spacing: 0) {
                     Spacer()
@@ -49,6 +67,7 @@ struct MatchView: View {
 
                     Spacer()
                 }
+                .padding(.top, topPadding)
 
                 // Current game scores (main interactive buttons)
                 CurrentGameScore(
@@ -60,16 +79,20 @@ struct MatchView: View {
                     playerOneColor: colorSchemeManager.playerOneColor,
                     playerTwoColor: colorSchemeManager.playerTwoColor,
                     gameWinner: viewModel.uiState.gameWinner?.int32Value,
-                    onAnimationComplete: viewModel.onAnimationComplete
+                    onAnimationComplete: viewModel.onAnimationComplete,
+                    spacing: gameScoreSpacing,
+                    height: gameScoreHeight,
+                    fontSize: scoreFontSize,
+                    cornerRadius: scoreCornerRadius
                 )
                                 
                 // Bottom buttons: Undo and Finish
-                HStack(spacing: 20) {
+                HStack(spacing: bottomButtonSpacing) {
                     Button(action: viewModel.onUndo) {
                         Image(systemName: "arrow.uturn.backward")
-                            .font(.system(size: 16))
+                            .font(.system(size: bottomButtonIconSize))
                             .foregroundColor(viewModel.uiState.isFinished ? Color(hex: "aaaab1").opacity(0.3) : Color(hex: "aaaab1"))
-                            .frame(width: 30, height: 30)
+                            .frame(width: bottomButtonSize, height: bottomButtonSize)
                     }
                     .disabled(viewModel.uiState.isFinished)
                     .buttonStyle(.plain)
@@ -78,9 +101,9 @@ struct MatchView: View {
 
                     Button(action: viewModel.onFinishClicked) {
                         Image(systemName: "flag.checkered")
-                            .font(.system(size: 16))
+                            .font(.system(size: bottomButtonIconSize))
                             .foregroundColor(viewModel.uiState.isFinished ? Color(hex: "aaaab1").opacity(0.3) : Color(hex: "aaaab1"))
-                            .frame(width: 30, height: 30)
+                            .frame(width: bottomButtonSize, height: bottomButtonSize)
                     }
                     .disabled(viewModel.uiState.isFinished)
                     .buttonStyle(.plain)
@@ -88,7 +111,8 @@ struct MatchView: View {
                     .clipShape(Circle())
                 }
             }
-            .padding(12)
+            .padding(.horizontal, horizontalPadding)
+            .padding(.bottom, bottomPadding)
 
             // Enhanced Set Winner Animation Overlay
             if viewModel.uiState.setWinner != nil {
@@ -108,18 +132,18 @@ struct MatchView: View {
                             .animation(.easeOut(duration: 0.8), value: showSetAnimation)
 
                         VStack(spacing: 12) {
-                            // Tennis ball with rotation and bounce
+                            // Tennis ball with rotation and bounce (2 full rotations for visibility)
                             Image(systemName: "tennisball.fill")
-                                .font(.system(size: 32))
+                                .font(.system(size: 36))
                                 .foregroundColor(setWinnerColor)
                                 .shadow(color: setWinnerColor.opacity(0.5), radius: 8, x: 0, y: 0)
-                                .rotationEffect(.degrees(showSetAnimation ? 360 : 0))
+                                .rotationEffect(.degrees(showSetAnimation ? 720 : 0))
                                 .scaleEffect(showSetAnimation ? 1.0 : 0.3)
-                                .animation(.spring(response: 0.6, dampingFraction: 0.6), value: showSetAnimation)
+                                .animation(.spring(response: 0.7, dampingFraction: 0.5), value: showSetAnimation)
 
                             // "Set!" text with multiple animation effects
                             Text("Set!")
-                                .font(.system(size: 32))
+                                .font(.system(size: 32, weight: .bold))
                                 .foregroundColor(setWinnerColor)
                                 .shadow(color: setWinnerColor.opacity(0.3), radius: 4, x: 0, y: 2)
                                 .scaleEffect(showSetAnimation ? 1.0 : 0.5)
@@ -203,16 +227,22 @@ struct CurrentGameScore: View {
     let playerTwoColor: Color
     let gameWinner: Int32?
     let onAnimationComplete: () -> Void
+    let spacing: CGFloat
+    let height: CGFloat
+    let fontSize: CGFloat
+    let cornerRadius: CGFloat
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: spacing) {
             GameScoreButton(
                 score: player1GameScore,
                 onClick: onPlayer1Score,
                 enabled: enabled,
                 primaryColor: playerOneColor,
                 showWinAnimation: gameWinner != nil,
-                onAnimationComplete: onAnimationComplete
+                onAnimationComplete: onAnimationComplete,
+                fontSize: fontSize,
+                cornerRadius: cornerRadius
             )
 
             GameScoreButton(
@@ -221,10 +251,12 @@ struct CurrentGameScore: View {
                 enabled: enabled,
                 primaryColor: playerTwoColor,
                 showWinAnimation: gameWinner != nil,
-                onAnimationComplete: onAnimationComplete
+                onAnimationComplete: onAnimationComplete,
+                fontSize: fontSize,
+                cornerRadius: cornerRadius
             )
         }
-        .frame(height: 90)
+        .frame(height: height)
     }
 }
 
@@ -236,13 +268,15 @@ struct GameScoreButton: View {
     let primaryColor: Color
     let showWinAnimation: Bool
     let onAnimationComplete: () -> Void
+    let fontSize: CGFloat
+    let cornerRadius: CGFloat
 
     @State private var animationTrigger = UUID()
 
     var body: some View {
         Button(action: onClick) {
             ZStack {
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(enabled ? primaryColor : primaryColor.opacity(0.3), lineWidth: 2)
                     .background(Color.clear)
 
@@ -250,7 +284,7 @@ struct GameScoreButton: View {
                 ZStack {
                     if showWinAnimation && score == "0" {
                         Text(score)
-                            .font(.system(size: 48, weight: .bold))
+                            .font(.system(size: fontSize, weight: .bold))
                             .foregroundColor(enabled ? primaryColor : primaryColor.opacity(0.3))
                             .transition(.asymmetric(
                                 insertion: .move(edge: .top).combined(with: .opacity),
@@ -259,7 +293,7 @@ struct GameScoreButton: View {
                             .id(animationTrigger)
                     } else {
                         Text(score)
-                            .font(.system(size: 48, weight: .bold))
+                            .font(.system(size: fontSize, weight: .bold))
                             .foregroundColor(enabled ? primaryColor : primaryColor.opacity(0.3))
                     }
                 }
