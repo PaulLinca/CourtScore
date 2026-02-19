@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp"
+    android:height="800dp"
+    android:viewportWidth="36"
+    android:viewportHeight="36">
+
+  <!-- Rounded wide rectangle (3:2 ratio, centered vertically) -->
+  <path
+      android:pathData="M36,27a4,4 0,0 1,-4 4H4a4,4 0,0 1,-4 -4V9a4,4 0,0 1,4 -4h28a4,4 0,0 1,4 4v18z"
+      android:fillColor="#FFC400"/>
+
+  <!-- Stripe height = 2.6667 -->
+
+  <!-- Red stripes -->
+  <path
+      android:pathData="M0,8.6667h36v2.6667H0z"
+      android:fillColor="#DA121A"/>
+
+  <path
+      android:pathData="M0,14h36v2.6667H0z"
+      android:fillColor="#DA121A"/>
+
+  <path
+      android:pathData="M0,19.3334h36v2.6667H0z"
+      android:fillColor="#DA121A"/>
+
+  <path
+      android:pathData="M0,24.6667h36v2.6667H0z"
+      android:fillColor="#DA121A"/>
+
+</vector>

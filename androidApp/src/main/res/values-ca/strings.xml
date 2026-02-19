@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Court Score</string>
+
+    <!-- Main Screen -->
+    <string name="app_title">Court Score</string>
+    <string name="new_match">Nou partit</string>
+    <string name="settings">Configuració</string>
+
+    <!-- Settings Screen -->
+    <string name="color_scheme">Esquema de colors</string>
+    <string name="language">Idioma</string>
+    <string name="done">Fet</string>
+    <string name="english">Anglès</string>
+    <string name="spanish">Espanyol</string>
+    <string name="catalan">Català</string>
+
+    <!-- Match Screen -->
+    <string name="undo">Desfer</string>
+    <string name="finish">Finalitzar</string>
+    <string name="finish_dialog_title">Estàs segur que vols acabar el partit?</string>
+    <string name="back_dialog_title">Estàs segur que vols sortir del partit?</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+    <string name="set_won">Set!</string>
+    <string name="player_one_serving">Jugador un servint</string>
+    <string name="player_two_serving">Jugador dos servint</string>
+    <string name="player_one_won">Jugador un ha guanyat</string>
+    <string name="player_two_won">Jugador dos ha guanyat</string>
+    <string name="set_won_description">Set Guanyat</string>
+</resources>
+
