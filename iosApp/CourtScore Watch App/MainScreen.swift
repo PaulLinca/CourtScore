@@ -9,6 +9,17 @@ struct MainScreen: View {
         ("gear", "Settings", AnyView(SettingsView()))
     ]
     
+    // Detect screen size for responsive layout
+    private var isSmallWatch: Bool {
+        WKInterfaceDevice.current().screenBounds.width <= 176
+    }
+
+    private var topPadding: CGFloat { isSmallWatch ? 20 : 8 }
+    private var titleFontSize: CGFloat { isSmallWatch ? 22 : 24 }
+    private var iconSize: CGFloat { isSmallWatch ? 35 : 40 }
+    private var iconFrameSize: CGFloat { isSmallWatch ? 85 : 100 }
+    private var tabViewHeight: CGFloat { isSmallWatch ? 110 : 130 }
+
     init() {
         for familyName in UIFont.familyNames {
             print(familyName)
@@ -23,18 +34,21 @@ struct MainScreen: View {
     var body: some View {
         
         NavigationStack {
-            VStack() {
+            VStack(spacing: 0) {
+                Spacer()
+                    .frame(height: topPadding)
+
                 Text("Court Score")
-                    .font(.collegeClean(size: 24))
+                    .font(.collegeClean(size: titleFontSize))
                     .foregroundColor(.white)
 
                 TabView(selection: $selectedIndex) {
                     ForEach(0..<menuItems.count, id: \.self) { index in
                         NavigationLink(destination: menuItems[index].destination) {
                             Image(systemName: menuItems[index].icon)
-                                .font(.system(size: 40))
+                                .font(.system(size: iconSize))
                                 .foregroundColor(Color(hex: "1E8FD5"))
-                                .frame(width: 100, height: 100)
+                                .frame(width: iconFrameSize, height: iconFrameSize)
                                 .background(Color.clear)
                                 .clipShape(Circle())
                                 .overlay(Circle().stroke(Color(hex: "1E8FD5"), lineWidth: 2))
@@ -44,8 +58,8 @@ struct MainScreen: View {
                     }
                 }
                 .tabViewStyle(.page)
-                .frame(height: 130)
-                
+                .frame(height: tabViewHeight)
+
                 Spacer(minLength: 10)
 
                 Text(menuItems[selectedIndex].label)
