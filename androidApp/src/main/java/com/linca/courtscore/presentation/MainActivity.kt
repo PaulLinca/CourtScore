@@ -42,7 +42,6 @@ class MainActivity : ComponentActivity() {
 
         setTheme(android.R.style.Theme_DeviceDefault)
 
-
         setContent {
             val colorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)
             val colorScheme = ColorSchemes.findByName(colorSchemeName)

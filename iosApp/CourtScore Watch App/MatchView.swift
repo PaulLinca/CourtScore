@@ -39,7 +39,6 @@ struct MatchView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: vStackSpacing) {
-                // Top row: Serving indicator, Score table, Winner indicator
                 HStack(alignment: .center, spacing: 0) {
                     Spacer()
 
@@ -69,7 +68,6 @@ struct MatchView: View {
                 }
                 .padding(.top, topPadding)
 
-                // Current game scores (main interactive buttons)
                 CurrentGameScore(
                     player1GameScore: viewModel.uiState.playerOneGameScore,
                     player2GameScore: viewModel.uiState.playerTwoGameScore,
@@ -86,7 +84,6 @@ struct MatchView: View {
                     cornerRadius: scoreCornerRadius
                 )
                                 
-                // Bottom buttons: Undo and Finish
                 HStack(spacing: bottomButtonSpacing) {
                     Button(action: viewModel.onUndo) {
                         Image(systemName: "arrow.uturn.backward")
@@ -114,7 +111,6 @@ struct MatchView: View {
             .padding(.horizontal, horizontalPadding)
             .padding(.bottom, bottomPadding)
 
-            // Enhanced Set Winner Animation Overlay
             if viewModel.uiState.setWinner != nil {
                 ZStack {
                     Color(hex: "121214")
@@ -123,7 +119,6 @@ struct MatchView: View {
                         .transition(.opacity)
 
                     ZStack {
-                        // Subtle pulse effect behind everything
                         Circle()
                             .fill(setWinnerColor.opacity(0.15))
                             .frame(width: 100, height: 100)

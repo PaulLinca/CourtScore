@@ -205,7 +205,6 @@ fun ColorSchemeCard(
                                 shape = CircleShape
                             )
                     )
-
                     Box(
                         modifier = Modifier
                             .size(24.dp)
@@ -250,7 +249,6 @@ fun LanguageCard(
                 )
                 Spacer(Modifier.weight(1f))
             }
-
         }
     )
 }

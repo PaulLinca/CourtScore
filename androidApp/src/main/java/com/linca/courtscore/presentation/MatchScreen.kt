@@ -326,7 +326,6 @@ private fun MatchScreenContent(
             )
         }
 
-        // Subtle Set Winner Animation Overlay
         AnimatedVisibility(
             visible = uiState.setWinner != null,
             enter = scaleIn(

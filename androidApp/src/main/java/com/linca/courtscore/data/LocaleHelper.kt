@@ -20,14 +20,5 @@ object LocaleHelper {
 
         return context.createConfigurationContext(config)
     }
-
-    fun getLocaleFromLanguageCode(languageCode: String): Locale {
-        return when (languageCode) {
-            "en" -> Locale.ENGLISH
-            "es" -> Locale("es")
-            "ca" -> Locale("ca")
-            else -> Locale.getDefault()
-        }
-    }
 }
 
