@@ -3,12 +3,15 @@ import shared
 
 struct MainScreen: View {
     @State private var selectedIndex = 0
-    
-    let menuItems: [(icon: String, label: String, destination: AnyView)] = [
-        ("tennisball.fill", "New Match", AnyView(MatchView())),
-        ("gear", "Settings", AnyView(SettingsView()))
-    ]
-    
+    @StateObject private var languageManager = LanguageManager.shared
+
+    var menuItems: [(icon: String, label: String, destination: AnyView)] {
+        [
+            ("tennisball.fill", "new_match".localized(), AnyView(MatchView())),
+            ("gear", "settings".localized(), AnyView(SettingsView()))
+        ]
+    }
+
     // Detect screen size for responsive layout
     private var isSmallWatch: Bool {
         WKInterfaceDevice.current().screenBounds.width <= 176

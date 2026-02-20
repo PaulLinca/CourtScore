@@ -1,0 +1,27 @@
+/* Main Screen */
+"app_title" = "Court Score";
+"new_match" = "Nuevo partido";
+"settings" = "Configuración";
+
+/* Settings Screen */
+"color_scheme" = "Esquema de colores";
+"language" = "Idioma";
+"done" = "Listo";
+"english" = "Inglés";
+"spanish" = "Español";
+"catalan" = "Catalán";
+
+/* Match Screen */
+"undo" = "Deshacer";
+"finish" = "Finalizar";
+"finish_dialog_title" = "¿Estás seguro de que quieres terminar el partido?";
+"back_dialog_title" = "¿Estás seguro de que quieres salir del partido?";
+"yes" = "Sí";
+"no" = "No";
+"set_won" = "¡Set!";
+"player_one_serving" = "Jugador uno sirviendo";
+"player_two_serving" = "Jugador dos sirviendo";
+"player_one_won" = "Jugador uno ganó";
+"player_two_won" = "Jugador dos ganó";
+"set_won_description" = "Set Ganado";
+

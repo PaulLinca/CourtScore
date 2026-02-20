@@ -6,5 +6,13 @@
 	<array>
 		<string>college_clean_italic.ttf</string>
 	</array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>es</string>
+		<string>ca</string>
+	</array>
 </dict>
 </plist>

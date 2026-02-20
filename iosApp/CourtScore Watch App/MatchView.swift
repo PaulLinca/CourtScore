@@ -137,7 +137,7 @@ struct MatchView: View {
                                 .animation(.spring(response: 0.7, dampingFraction: 0.5), value: showSetAnimation)
 
                             // "Set!" text with multiple animation effects
-                            Text("Set!")
+                            Text("set_won".localized())
                                 .font(.system(size: 32, weight: .bold))
                                 .foregroundColor(setWinnerColor)
                                 .shadow(color: setWinnerColor.opacity(0.3), radius: 4, x: 0, y: 2)
@@ -162,25 +162,25 @@ struct MatchView: View {
                 }
             }
         }
-        .alert("Are you sure you want to end the match?", isPresented: Binding(
+        .alert("finish_dialog_title".localized(), isPresented: Binding(
             get: { viewModel.uiState.showFinishDialog },
             set: { if !$0 { viewModel.onFinishCancelled() } }
         )) {
-            Button("No", role: .cancel) {
+            Button("no".localized(), role: .cancel) {
                 viewModel.onFinishCancelled()
             }
-            Button("Yes") {
+            Button("yes".localized()) {
                 viewModel.onFinishConfirmed()
             }
         }
-        .alert("Are you sure you want to leave the match?", isPresented: Binding(
+        .alert("back_dialog_title".localized(), isPresented: Binding(
             get: { viewModel.uiState.showBackDialog },
             set: { if !$0 { viewModel.onBackCancelled() } }
         )) {
-            Button("No", role: .cancel) {
+            Button("no".localized(), role: .cancel) {
                 viewModel.onBackCancelled()
             }
-            Button("Yes", role: .destructive) {
+            Button("yes".localized(), role: .destructive) {
                 viewModel.onBackConfirmed()
                 dismiss()
             }
