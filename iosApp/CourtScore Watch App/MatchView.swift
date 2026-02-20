@@ -35,7 +35,7 @@ struct MatchView: View {
 
     var body: some View {
         ZStack {
-            Color(hex: "121214")
+            Color(hex: "000000")
                 .ignoresSafeArea()
 
             VStack(spacing: vStackSpacing) {
@@ -113,7 +113,7 @@ struct MatchView: View {
 
             if viewModel.uiState.setWinner != nil {
                 ZStack {
-                    Color(hex: "121214")
+                    Color(hex: "000000")
                         .opacity(0.85)
                         .ignoresSafeArea()
                         .transition(.opacity)

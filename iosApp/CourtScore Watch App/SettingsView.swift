@@ -48,7 +48,7 @@ struct SettingsView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
-        .background(Color(hex: "121214"))
+        .background(Color(hex: "000000"))
     }
 }
 
