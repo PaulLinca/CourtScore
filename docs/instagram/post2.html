@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CourtScore – Post 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #111;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* ====== CAROUSEL CONTAINER ====== */
+    .carousel-wrapper {
+      display: flex;
+      gap: 32px;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hint {
+      color: rgba(255,255,255,0.3);
+      font-size: 18px;
+      font-family: 'Inter', sans-serif;
+      letter-spacing: 2px;
+    }
+    .slides-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* ====== SINGLE SLIDE ====== */
+    .slide {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* SLIDE A – "during a match" */
+    .slide-a {
+      background: #0a0a0a;
+      justify-content: flex-end;
+      padding-bottom: 80px;
+    }
+    .slide-a .bg-image {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 35%, rgba(41,171,226,0.12) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 70%, rgba(255,107,53,0.1) 0%, transparent 55%);
+    }
+
+    /* Watch mockup */
+    .watch-wrap {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+    }
+    .watch-frame {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .watch-label {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 20px;
+    }
+    .watch-img {
+      width: 290px;
+      border-radius: 48px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 40px rgba(41,171,226,0.2);
+    }
+    .watch-img-set {
+      width: 290px;
+      border-radius: 48px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 40px rgba(255,107,53,0.25);
+    }
+
+    /* Bottom text */
+    .bottom-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 80px;
+      text-align: center;
+    }
+    .tag {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #29ABE2;
+      margin-bottom: 24px;
+    }
+    .headline {
+      font-size: 74px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: #ffffff;
+      margin-bottom: 28px;
+    }
+    .headline em {
+      font-style: normal;
+      color: #FF6B35;
+    }
+    .sub {
+      font-size: 30px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+    }
+
+    /* --- SLIDE B – Set celebration --- */
+    .slide-b {
+      background: #0a0a0a;
+      align-items: center;
+      justify-content: space-between;
+      padding: 80px 80px 72px;
+    }
+    .slide-b .glow-ring {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 107, 53, 0.15);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: inset 0 0 120px rgba(255,107,53,0.08);
+    }
+    .slide-b .glow-ring-2 {
+      position: absolute;
+      width: 900px;
+      height: 900px;
+      border-radius: 50%;
+      border: 1px solid rgba(41,171,226,0.1);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .top-label {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      position: relative;
+      z-index: 2;
+    }
+    .center-block {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .big-emoji {
+      font-size: 96px;
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+    .set-watch {
+      width: 340px;
+      border-radius: 56px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 60px rgba(255,107,53,0.3);
+      margin-bottom: 52px;
+    }
+    .slide-b .headline {
+      font-size: 80px;
+      font-weight: 900;
+      color: white;
+      line-height: 1.0;
+      margin-bottom: 20px;
+    }
+    .slide-b .headline em {
+      color: #FF6B35;
+      font-style: normal;
+    }
+    .slide-b .sub {
+      font-size: 30px;
+      color: rgba(255,255,255,0.45);
+    }
+    .bottom-tag {
+      font-size: 22px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* --- SLIDE C – Download CTA --- */
+    .slide-c {
+      background: #0a0a0a;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .slide-c .bg-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 45%, rgba(41,171,226,0.2) 0%, transparent 60%);
+    }
+    .slide-c .court-lines {
+      position: absolute;
+      inset: 0;
+      opacity: 0.05;
+    }
+    .slide-c .court-lines svg { width: 100%; height: 100%; }
+    .slide-c .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 80px;
+    }
+    .slide-c .logo {
+      width: 160px;
+      height: 160px;
+      border-radius: 36px;
+      margin-bottom: 52px;
+      box-shadow: 0 0 70px rgba(41,171,226,0.45), 0 30px 60px rgba(0,0,0,0.5);
+    }
+    .slide-c .headline {
+      font-size: 100px;
+      font-weight: 900;
+      line-height: 1.0;
+      color: white;
+      margin-bottom: 36px;
+    }
+    .slide-c .headline em {
+      font-style: normal;
+      color: #29ABE2;
+    }
+    .slide-c .sub {
+      font-size: 32px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.55;
+      margin-bottom: 72px;
+    }
+    .slide-c .cta-btn {
+      background: #FF6B35;
+      color: #0a0a0a;
+      font-size: 32px;
+      font-weight: 900;
+      padding: 30px 88px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+      margin-bottom: 36px;
+    }
+    .slide-c .store-hint {
+      font-size: 22px;
+      color: rgba(255,255,255,0.2);
+      font-weight: 600;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="slides-row">
+
+    <!-- SLIDE A: In-match view -->
+    <div class="slide slide-a">
+      <div class="bg-image"></div>
+
+      <div class="watch-wrap">
+        <div class="watch-frame">
+          <div class="watch-label">Live match</div>
+          <img class="watch-img" src="../ss_apple_match.png" alt="Match screen">
+        </div>
+        <div class="watch-frame">
+          <div class="watch-label">Set won!</div>
+          <img class="watch-img-set" src="../ss_apple_set.png" alt="Set screen">
+        </div>
+      </div>
+
+      <div class="bottom-content">
+        <div class="tag">Real-time scoring</div>
+        <h1 class="headline">Never lose<br>track <em>again.</em></h1>
+        <p class="sub">Tap your wrist to score each point.<br>That's literally it.</p>
+      </div>
+    </div>
+
+
+    <!-- SLIDE C: Download CTA -->
+    <div class="slide slide-c">
+      <div class="bg-glow"></div>
+      <div class="court-lines">
+        <svg viewBox="0 0 1080 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="80" y="80" width="920" height="920" fill="none" stroke="white" stroke-width="6"/>
+          <line x1="80" y1="540" x2="1000" y2="540" stroke="white" stroke-width="4"/>
+          <line x1="540" y1="260" x2="540" y2="820" stroke="white" stroke-width="3"/>
+          <line x1="80" y1="260" x2="1000" y2="260" stroke="white" stroke-width="3"/>
+          <line x1="80" y1="820" x2="1000" y2="820" stroke="white" stroke-width="3"/>
+        </svg>
+      </div>
+
+      <div class="content">
+        <img class="logo" src="../cs_logo_1024.png" alt="Court Score">
+        <h1 class="headline">Get CourtScore.<br>It's <em>free.</em></h1>
+        <p class="sub">Track your padel score right from<br>your Apple Watch. No phone needed.</p>
+        <div class="cta-btn">Download on App Store</div>
+        <div class="store-hint">Search "CourtScore"</div>
+      </div>
+    </div>
+
+    <!-- SLIDE B: Set celebration -->
+    <div class="slide slide-b">
+      <div class="glow-ring"></div>
+      <div class="glow-ring-2"></div>
+
+      <div class="top-label">Court Score</div>
+
+      <div class="center-block">
+        <img class="set-watch" src="../ss_apple_set.png" alt="Set celebration">
+        <h2 class="headline">When you <em>win</em><br>the set 🎾</h2>
+        <p class="sub">Court Score knows it before<br>you've even finished celebrating.</p>
+      </div>
+
+      <div class="bottom-tag">#Padel &nbsp;·&nbsp; #CourtScore</div>
+    </div>
+
+  </div>
+</body>
+</html>

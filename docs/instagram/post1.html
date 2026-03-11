@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CourtScore – Post 1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #111;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .slide {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Background padel court lines */
+    .court-lines {
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+    }
+    .court-lines svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Glow blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .blob-1 {
+      width: 600px; height: 600px;
+      background: #29ABE2;
+      top: -200px; left: -200px;
+      opacity: 0.18;
+    }
+    .blob-2 {
+      width: 400px; height: 400px;
+      background: #FF6B35;
+      bottom: -150px; right: -100px;
+      opacity: 0.14;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 0 80px;
+    }
+
+    .logo {
+      width: 140px;
+      height: 140px;
+      border-radius: 32px;
+      margin-bottom: 56px;
+      box-shadow: 0 0 60px rgba(41, 171, 226, 0.4);
+    }
+
+    .eyebrow {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #29ABE2;
+      margin-bottom: 32px;
+    }
+
+    .headline {
+      font-size: 96px;
+      font-weight: 900;
+      line-height: 1.0;
+      color: #ffffff;
+      margin-bottom: 40px;
+    }
+    .headline em {
+      font-style: normal;
+      color: #29ABE2;
+    }
+
+    .sub {
+      font-size: 32px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.5;
+      max-width: 780px;
+    }
+
+    .badge {
+      margin-top: 72px;
+      background: rgba(41, 171, 226, 0.12);
+      border: 2px solid rgba(41, 171, 226, 0.35);
+      border-radius: 100px;
+      padding: 18px 48px;
+      font-size: 28px;
+      font-weight: 700;
+      color: #29ABE2;
+      letter-spacing: 2px;
+    }
+
+    .bottom-tag {
+      position: absolute;
+      bottom: 48px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide">
+    <!-- Background court lines -->
+    <div class="court-lines">
+      <svg viewBox="0 0 1080 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer border -->
+        <rect x="80" y="80" width="920" height="920" fill="none" stroke="white" stroke-width="6"/>
+        <!-- Net line (horizontal center) -->
+        <line x1="80" y1="540" x2="1000" y2="540" stroke="white" stroke-width="4"/>
+        <!-- Service boxes vertical center -->
+        <line x1="540" y1="260" x2="540" y2="820" stroke="white" stroke-width="3"/>
+        <!-- Service line top -->
+        <line x1="80" y1="260" x2="1000" y2="260" stroke="white" stroke-width="3"/>
+        <!-- Service line bottom -->
+        <line x1="80" y1="820" x2="1000" y2="820" stroke="white" stroke-width="3"/>
+      </svg>
+    </div>
+
+    <!-- Glow blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Main content -->
+    <div class="content">
+      <img class="logo" src="../cs_logo_1024.png" alt="Court Score logo">
+      <div class="eyebrow">Smartwatch App</div>
+      <h1 class="headline">Your score.<br>On your <em>wrist.</em></h1>
+      <p class="sub">Stop arguing about the score mid-rally.<br>Use Court.</p>
+      <div class="badge">Get it for free</div>
+    </div>
+
+<!--    <div class="bottom-tag">#CourtScore &nbsp;·&nbsp; #Padel &nbsp;·&nbsp; #AppleWatch</div>-->
+  </div>
+</body>
+</html>

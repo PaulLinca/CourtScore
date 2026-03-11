@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CourtScore – Post 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #111;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .slides-row {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* ===== SHARED SLIDE BASE ===== */
+    .slide {
+      width: 1080px;
+      height: 1080px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #0a0a0a;
+    }
+
+    /* ===== SLIDE A: Features grid ===== */
+    .slide-a {
+      padding: 80px;
+      justify-content: space-between;
+    }
+
+    .slide-a .header {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      z-index: 2;
+      position: relative;
+    }
+    .mini-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 18px;
+    }
+    .app-name {
+      font-size: 44px;
+      font-weight: 900;
+      color: white;
+    }
+    .app-name span {
+      color: #29ABE2;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      z-index: 2;
+      position: relative;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 44px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .feature-card .icon {
+      font-size: 52px;
+      line-height: 1;
+    }
+    .feature-card .title {
+      font-size: 32px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+    }
+    .feature-card .desc {
+      font-size: 22px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.5;
+    }
+    .feature-card.highlight {
+      border-color: rgba(41,171,226,0.35);
+      background: rgba(41,171,226,0.07);
+    }
+    .feature-card.highlight .title {
+      color: #29ABE2;
+    }
+
+    .bottom-cta {
+      z-index: 2;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cta-text {
+      font-size: 30px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.3);
+    }
+    .cta-badge {
+      background: #29ABE2;
+      color: #0a0a0a;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 22px 56px;
+      border-radius: 100px;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+    .blob-1 {
+      width: 500px; height: 500px;
+      background: #29ABE2;
+      top: -180px; right: -180px;
+      opacity: 0.1;
+    }
+    .blob-2 {
+      width: 350px; height: 350px;
+      background: #FF6B35;
+      bottom: -100px; left: -80px;
+      opacity: 0.09;
+    }
+
+
+    /* ===== SLIDE B: "Get it now" closer ===== */
+    .slide-b {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .slide-b .bg-glow {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 50% 40%, rgba(41,171,226,0.22) 0%, transparent 60%);
+    }
+
+    .court-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.04;
+    }
+    .court-bg svg { width: 100%; height: 100%; }
+
+    .slide-b .content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 80px;
+    }
+
+    .slide-b .logo-big {
+      width: 200px;
+      height: 200px;
+      border-radius: 44px;
+      margin-bottom: 56px;
+      box-shadow: 0 0 80px rgba(41,171,226,0.5), 0 40px 80px rgba(0,0,0,0.5);
+    }
+
+    .slide-b .headline {
+      font-size: 88px;
+      font-weight: 900;
+      color: white;
+      line-height: 1.0;
+      margin-bottom: 32px;
+    }
+    .slide-b .headline em {
+      font-style: normal;
+      color: #29ABE2;
+    }
+
+    .slide-b .sub {
+      font-size: 34px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.5;
+      margin-bottom: 64px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 64px;
+    }
+    .pill {
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 100px;
+      padding: 16px 36px;
+      font-size: 24px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+    }
+    .pill.active {
+      background: rgba(41,171,226,0.15);
+      border-color: rgba(41,171,226,0.4);
+      color: #29ABE2;
+    }
+
+    .slide-b .dl-badge {
+      background: white;
+      color: #0a0a0a;
+      font-size: 30px;
+      font-weight: 900;
+      padding: 28px 80px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+    }
+
+    .slide-b .hashtags {
+      position: absolute;
+      bottom: 48px;
+      font-size: 22px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="slides-row">
+
+    <!-- SLIDE A: Features overview -->
+    <div class="slide slide-a">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+
+      <div class="header">
+        <img class="mini-logo" src="../cs_logo_1024.png" alt="Court Score">
+        <div class="app-name">Court<span>Score</span></div>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card highlight">
+          <div class="icon">🎾</div>
+          <div class="title">Real-time scoring</div>
+          <div class="desc">Track every point, game and set right from your wrist.</div>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🎨</div>
+          <div class="title">Custom colours</div>
+          <div class="desc">Pick your favourite colour scheme to match your vibe.</div>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🌍</div>
+          <div class="title">Multi-language</div>
+          <div class="desc">Available in English, Spanish, Catalan and more.</div>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⚡️</div>
+          <div class="title">Super simple</div>
+          <div class="desc">One tap to score. No fuss. Just play.</div>
+        </div>
+      </div>
+
+      <div class="bottom-cta">
+        <div class="cta-text">Available now<br>on Apple Watch</div>
+        <div class="cta-text">Coming soon<br>for Wear OS</div>
+      </div>
+    </div>
+
+    <!-- SLIDE B: Closer / CTA -->
+    <div class="slide slide-b">
+      <div class="bg-glow"></div>
+
+      <!-- Court lines background -->
+      <div class="court-bg">
+        <svg viewBox="0 0 1080 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="80" y="80" width="920" height="920" fill="none" stroke="white" stroke-width="6"/>
+          <line x1="80" y1="540" x2="1000" y2="540" stroke="white" stroke-width="4"/>
+          <line x1="540" y1="80" x2="540" y2="540" stroke="white" stroke-width="3"/>
+          <line x1="80" y1="310" x2="1000" y2="310" stroke="white" stroke-width="3"/>
+          <line x1="80" y1="770" x2="1000" y2="770" stroke="white" stroke-width="3"/>
+        </svg>
+      </div>
+
+      <div class="content">
+        <img class="logo-big" src="../cs_logo_1024.png" alt="Court Score">
+
+        <h1 class="headline">Padel players,<br>this one's <em>for you.</em></h1>
+        <p class="sub">Free. Simple. Always on your wrist.<br>Download Court Score today.</p>
+
+        <div class="pill-row">
+          <div class="pill active">#Padel</div>
+          <div class="pill">#AppleWatch</div>
+          <div class="pill active">#CourtScore</div>
+          <div class="pill">#PadelLife</div>
+          <div class="pill">#WatchApp</div>
+        </div>
+
+        <div class="dl-badge">Search "Court Score" on App Store</div>
+      </div>
+
+      <div class="hashtags">#Padel &nbsp;·&nbsp; #CourtScore &nbsp;·&nbsp; #AppleWatch</div>
+    </div>
+
+  </div>
+</body>
+</html>

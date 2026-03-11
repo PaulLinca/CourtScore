@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CourtScore – Instagram Posts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      font-family: 'Inter', sans-serif;
+      color: white;
+      padding: 60px 40px;
+    }
+    h1 { font-size: 36px; font-weight: 900; margin-bottom: 8px; }
+    h1 span { color: #29ABE2; }
+    .subtitle { font-size: 18px; color: rgba(255,255,255,0.4); margin-bottom: 48px; }
+
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .post-block {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .post-info {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+    }
+    .post-number {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #29ABE2;
+    }
+    .post-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+    }
+    .post-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.35);
+    }
+    .post-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    a.link-btn {
+      display: inline-block;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+    a.link-btn:hover {
+      background: rgba(41,171,226,0.15);
+      border-color: #29ABE2;
+      color: #29ABE2;
+    }
+    .instructions {
+      margin-top: 56px;
+      padding: 32px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      font-size: 16px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.8;
+    }
+    .instructions strong { color: rgba(255,255,255,0.7); }
+  </style>
+</head>
+<body>
+  <h1>Court<span>Score</span> — Instagram Posts</h1>
+  <p class="subtitle">3 posts ready to screenshot &amp; share</p>
+
+  <div class="posts">
+
+    <div class="post-block">
+      <div class="post-info">
+        <span class="post-number">Post 01</span>
+        <span class="post-name">Hero intro — "Your score. On your wrist."</span>
+      </div>
+      <p class="post-desc">Single slide. Logo centred, bold headline, subtle padel court background. Great as a first impression post.</p>
+      <div class="post-links">
+        <a class="link-btn" href="post1.html" target="_blank">Open Post 1</a>
+      </div>
+    </div>
+
+    <div class="post-block">
+      <div class="post-info">
+        <span class="post-number">Post 02</span>
+        <span class="post-name">In-action carousel — "Never lose track again."</span>
+      </div>
+      <p class="post-desc">Two slides. Shows the live match screen and the "Set!" celebration. Designed to post as a 2-slide carousel.</p>
+      <div class="post-links">
+        <a class="link-btn" href="post2.html" target="_blank">Open Post 2 (both slides)</a>
+      </div>
+    </div>
+
+    <div class="post-block">
+      <div class="post-info">
+        <span class="post-number">Post 03</span>
+        <span class="post-name">Features + CTA — "This one's for you."</span>
+      </div>
+      <p class="post-desc">Two slides. Feature grid on the first, closing CTA with hashtags on the second. Perfect as a pinned/highlight post.</p>
+      <div class="post-links">
+        <a class="link-btn" href="post3.html" target="_blank">Open Post 3 (both slides)</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="instructions">
+    <strong>How to export each slide:</strong><br>
+    1. Open the post file in Chrome or Safari<br>
+    2. For posts with two slides, the page shows them side-by-side — zoom the browser to centre one at a time<br>
+    3. Use your screenshot tool to capture exactly 1080×1080px, or use browser DevTools → device emulation → set to 1080×1080<br>
+    4. Save as PNG and upload to Instagram as a carousel or single image
+  </div>
+</body>
+</html>
