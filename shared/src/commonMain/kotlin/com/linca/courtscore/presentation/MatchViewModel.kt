@@ -2,7 +2,7 @@ package com.linca.courtscore.presentation
 
 import com.linca.courtscore.domain.model.GameScore
 import com.linca.courtscore.domain.model.MatchScore
-import com.linca.courtscore.domain.model.Point
+import com.linca.courtscore.domain.model.pointToDisplayString
 import com.linca.courtscore.engine.MatchEngine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +15,10 @@ class MatchViewModel {
     private var playerOneServing = true
     private var showFinishDialog = false
     private var showBackDialog = false
-    private var gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
-    private var setWinner: Int? = null // 1 for player one, 2 for player two, null for no recent set win
+    private var gameWinner: Int? =
+        null // 1 for player one, 2 for player two, null for no recent win
+    private var setWinner: Int? =
+        null // 1 for player one, 2 for player two, null for no recent set win
 
     private val _uiState = MutableStateFlow(
         MatchUiState.from(
@@ -187,13 +189,7 @@ data class MatchUiState(
                 }
             } else {
                 val point = if (isPlayerOne) gameScore.playerOne else gameScore.playerTwo
-                when (point) {
-                    Point.LOVE -> "0"
-                    Point.FIFTEEN -> "15"
-                    Point.THIRTY -> "30"
-                    Point.FORTY -> "40"
-                    Point.ADVANTAGE -> "AD"
-                }
+                pointToDisplayString(point)
             }
         }
 

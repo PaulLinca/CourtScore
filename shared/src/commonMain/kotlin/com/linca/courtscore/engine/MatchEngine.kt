@@ -4,6 +4,8 @@ import com.linca.courtscore.domain.model.GameScore
 import com.linca.courtscore.domain.model.MatchScore
 import com.linca.courtscore.domain.model.Point
 import com.linca.courtscore.domain.model.SetScore
+import com.linca.courtscore.domain.model.pointToTieBreakCount
+import com.linca.courtscore.domain.model.tieBreakCountToPoint
 
 class MatchEngine(
     private val gamesToWinSet: Int = 6,
@@ -199,21 +201,5 @@ class MatchEngine(
             return true
         }
         return false
-    }
-
-    private fun pointToTieBreakCount(p: Point): Int = when (p) {
-        Point.LOVE -> 0
-        Point.FIFTEEN -> 1
-        Point.THIRTY -> 2
-        Point.FORTY -> 3
-        Point.ADVANTAGE -> 4
-    }
-
-    private fun tieBreakCountToPoint(count: Int): Point = when (count) {
-        0 -> Point.LOVE
-        1 -> Point.FIFTEEN
-        2 -> Point.THIRTY
-        3 -> Point.FORTY
-        else -> Point.ADVANTAGE
     }
 }

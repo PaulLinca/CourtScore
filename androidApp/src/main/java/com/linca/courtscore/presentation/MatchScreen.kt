@@ -527,7 +527,6 @@ private fun GameScoreButton(
                 },
                 label = "score_animation"
             ) { targetState ->
-                // Extract actual score (remove timestamp if present)
                 val displayScore = if (targetState.contains("_")) {
                     targetState.substringBefore("_")
                 } else {
