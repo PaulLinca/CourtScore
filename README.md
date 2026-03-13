@@ -1,5 +1,7 @@
 # CourtScore
 
+![CourtScore](docs/instagram/linkedin.png)
+
 **Your score. On your wrist.**
 
 A smartwatch app for tracking padel tennis match scores in real-time — built for players who need to stay focused on the game, not on keeping count.
