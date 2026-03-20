@@ -10,3 +10,5 @@ local.properties
 xcuserdata
 
 .kotlin/
+/androidApp/release/androidApp-release.aab
+/.claude/settings.local.json

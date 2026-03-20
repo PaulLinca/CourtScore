@@ -1,10 +1,12 @@
 package com.linca.courtscore.presentation
 
+import android.graphics.BlurMaskFilter
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,11 +31,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -339,6 +350,22 @@ private fun MatchScreenContent(
                 2 -> colorScheme.playerTwoColor
                 else -> PrimaryTextColor
             }
+
+            var glowStarted by remember { mutableStateOf(false) }
+            val glowScale by animateFloatAsState(
+                targetValue = if (glowStarted) 1.5f else 0.5f,
+                animationSpec = tween(durationMillis = 800, easing = FastOutLinearInEasing),
+                label = "glow_scale"
+            )
+            val glowAlpha by animateFloatAsState(
+                targetValue = if (glowStarted) 0f else 0.3f,
+                animationSpec = tween(durationMillis = 800, easing = FastOutLinearInEasing),
+                label = "glow_alpha"
+            )
+            LaunchedEffect(Unit) {
+                glowStarted = true
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -349,16 +376,38 @@ private fun MatchScreenContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.tennis_ball_filled),
-                        contentDescription = stringResource(R.string.set_won_description),
-                        tint = animationColor,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(contentAlignment = Alignment.Center) {
+                        Box(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .graphicsLayer(scaleX = glowScale, scaleY = glowScale, alpha = glowAlpha)
+                                .background(animationColor.copy(alpha = 0.15f), CircleShape)
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.tennis_ball_filled),
+                            contentDescription = stringResource(R.string.set_won_description),
+                            tint = animationColor,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .drawBehind {
+                                    drawIntoCanvas { canvas ->
+                                        val paint = Paint()
+                                        val frameworkPaint = paint.asFrameworkPaint()
+                                        frameworkPaint.maskFilter = BlurMaskFilter(20f, BlurMaskFilter.Blur.NORMAL)
+                                        frameworkPaint.color = animationColor.copy(alpha = 0.5f).toArgb()
+                                        canvas.drawCircle(
+                                            center = Offset(size.width / 2, size.height / 2),
+                                            radius = size.minDimension / 2,
+                                            paint = paint
+                                        )
+                                    }
+                                }
+                        )
+                    }
                     Spacer(modifier = Modifier.size(8.dp))
                     Text(
                         text = stringResource(R.string.set_won),
-                        style = MaterialTheme.typography.title2,
+                        style = MaterialTheme.typography.title1,
                         color = animationColor
                     )
                 }
