@@ -37,5 +37,6 @@
     <string name="player_one_won">Jugador un ha guanyat</string>
     <string name="player_two_won">Jugador dos ha guanyat</string>
     <string name="set_won_description">Set Guanyat</string>
+    <string name="golden_point_won">Golden!</string>
 </resources>
 

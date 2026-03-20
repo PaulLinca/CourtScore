@@ -21,6 +21,7 @@ class MatchViewModel {
     private var setWinner: Int? = null // 1 for player one, 2 for player two, null for no recent set win
     private var scoringTypeChosen = false
     private var showScoringTypeDialog = false
+    private var goldenPointWinner: Int? = null
 
     private val _uiState = MutableStateFlow(
         MatchUiState.from(
@@ -31,7 +32,8 @@ class MatchViewModel {
             gameWinner,
             setWinner,
             engine.getScoringType(),
-            showScoringTypeDialog
+            showScoringTypeDialog,
+            goldenPointWinner
         )
     )
     val uiState: StateFlow<MatchUiState> = _uiState.asStateFlow()
@@ -40,6 +42,7 @@ class MatchViewModel {
         val previousGames =
             engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
         val previousSets = engine.getScore().playerOneSets + engine.getScore().playerTwoSets
+        val wasAtGoldenPointDeuce = isAtGoldenPointDeuce()
 
         engine.pointForPlayerOne()
 
@@ -49,6 +52,7 @@ class MatchViewModel {
 
         gameWinner = if (newGames > previousGames) 1 else null
         setWinner = if (newSets > previousSets) 1 else null
+        goldenPointWinner = if (wasAtGoldenPointDeuce && newGames > previousGames) 1 else null
 
         playerOneServing = !playerOneServing
         checkForFirstDeuce()
@@ -59,6 +63,7 @@ class MatchViewModel {
         val previousGames =
             engine.getScore().currentSet.playerOneGames + engine.getScore().currentSet.playerTwoGames
         val previousSets = engine.getScore().playerOneSets + engine.getScore().playerTwoSets
+        val wasAtGoldenPointDeuce = isAtGoldenPointDeuce()
 
         engine.pointForPlayerTwo()
 
@@ -68,10 +73,19 @@ class MatchViewModel {
 
         gameWinner = if (newGames > previousGames) 2 else null
         setWinner = if (newSets > previousSets) 2 else null
+        goldenPointWinner = if (wasAtGoldenPointDeuce && newGames > previousGames) 2 else null
 
         playerOneServing = !playerOneServing
         checkForFirstDeuce()
         updateUiState()
+    }
+
+    private fun isAtGoldenPointDeuce(): Boolean {
+        val game = engine.getScore().currentGame
+        return engine.getScoringType() == ScoringType.GOLDEN_POINT
+            && !game.isTieBreak
+            && game.playerOne == Point.FORTY
+            && game.playerTwo == Point.FORTY
     }
 
     private fun checkForFirstDeuce() {
@@ -94,10 +108,16 @@ class MatchViewModel {
         updateUiState()
     }
 
+    fun onGoldenPointAnimationComplete() {
+        goldenPointWinner = null
+        updateUiState()
+    }
+
     fun onUndo() {
         engine.undo()
         playerOneServing = !playerOneServing
         showScoringTypeDialog = false
+        goldenPointWinner = null
         updateUiState()
     }
 
@@ -163,7 +183,8 @@ class MatchViewModel {
             gameWinner,
             setWinner,
             engine.getScoringType(),
-            showScoringTypeDialog
+            showScoringTypeDialog,
+            goldenPointWinner
         )
     }
 }
@@ -182,7 +203,8 @@ data class MatchUiState(
     val gameWinner: Int? = null,
     val setWinner: Int? = null,
     val scoringType: ScoringType = ScoringType.ADVANTAGE,
-    val showScoringTypeDialog: Boolean = false
+    val showScoringTypeDialog: Boolean = false,
+    val goldenPointWinner: Int? = null
 ) {
     companion object {
         fun from(
@@ -193,7 +215,8 @@ data class MatchUiState(
             gameWinner: Int? = null,
             setWinner: Int? = null,
             scoringType: ScoringType = ScoringType.ADVANTAGE,
-            showScoringTypeDialog: Boolean = false
+            showScoringTypeDialog: Boolean = false,
+            goldenPointWinner: Int? = null
         ): MatchUiState {
             return MatchUiState(
                 playerOneGameScore = formatGameScore(matchScore.currentGame, isPlayerOne = true),
@@ -209,7 +232,8 @@ data class MatchUiState(
                 gameWinner = gameWinner,
                 setWinner = setWinner,
                 scoringType = scoringType,
-                showScoringTypeDialog = showScoringTypeDialog
+                showScoringTypeDialog = showScoringTypeDialog,
+                goldenPointWinner = goldenPointWinner
             )
         }
 

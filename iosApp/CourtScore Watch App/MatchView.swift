@@ -77,6 +77,7 @@ struct MatchView: View {
                     playerOneColor: colorSchemeManager.playerOneColor,
                     playerTwoColor: colorSchemeManager.playerTwoColor,
                     gameWinner: viewModel.uiState.gameWinner?.int32Value,
+                    goldenWinner: viewModel.showGoldenPointAnimation ? viewModel.goldenWinnerPlayer : 0,
                     onAnimationComplete: viewModel.onAnimationComplete,
                     spacing: gameScoreSpacing,
                     height: gameScoreHeight,
@@ -232,6 +233,13 @@ struct MatchView: View {
                 }
             }
         }
+        .onChange(of: viewModel.showGoldenPointAnimation) { newValue in
+            if newValue {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    viewModel.onGoldenPointAnimationComplete()
+                }
+            }
+        }
         .navigationBarBackButtonHidden(!viewModel.uiState.isFinished)
         .toolbar {
             if !viewModel.uiState.isFinished {
@@ -261,6 +269,7 @@ struct CurrentGameScore: View {
     let playerOneColor: Color
     let playerTwoColor: Color
     let gameWinner: Int32?
+    let goldenWinner: Int
     let onAnimationComplete: () -> Void
     let spacing: CGFloat
     let height: CGFloat
@@ -275,6 +284,7 @@ struct CurrentGameScore: View {
                 enabled: enabled,
                 primaryColor: playerOneColor,
                 showWinAnimation: gameWinner != nil,
+                isGoldenPointWin: goldenWinner == 1,
                 onAnimationComplete: onAnimationComplete,
                 fontSize: fontSize,
                 cornerRadius: cornerRadius
@@ -286,6 +296,7 @@ struct CurrentGameScore: View {
                 enabled: enabled,
                 primaryColor: playerTwoColor,
                 showWinAnimation: gameWinner != nil,
+                isGoldenPointWin: goldenWinner == 2,
                 onAnimationComplete: onAnimationComplete,
                 fontSize: fontSize,
                 cornerRadius: cornerRadius
@@ -302,18 +313,30 @@ struct GameScoreButton: View {
     let enabled: Bool
     let primaryColor: Color
     let showWinAnimation: Bool
+    let isGoldenPointWin: Bool
     let onAnimationComplete: () -> Void
     let fontSize: CGFloat
     let cornerRadius: CGFloat
 
     @State private var animationTrigger = UUID()
 
+    private let goldenColor = Color(hex: "FFD700")
+
     var body: some View {
         Button(action: onClick) {
             ZStack {
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(enabled ? primaryColor : primaryColor.opacity(0.3), lineWidth: 2)
+                    .stroke(
+                        isGoldenPointWin ? goldenColor : (enabled ? primaryColor : primaryColor.opacity(0.3)),
+                        lineWidth: isGoldenPointWin ? 3 : 2
+                    )
                     .background(Color.clear)
+
+                if isGoldenPointWin {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(goldenColor.opacity(0.18))
+                        .transition(.opacity)
+                }
 
                 // Use AnimatedContent-like behavior with transition
                 ZStack {
@@ -337,6 +360,7 @@ struct GameScoreButton: View {
         }
         .disabled(!enabled)
         .buttonStyle(.plain)
+        .animation(.easeInOut(duration: 0.3), value: isGoldenPointWin)
         .onChange(of: showWinAnimation) { newValue in
             if newValue {
                 animationTrigger = UUID()
@@ -438,7 +462,11 @@ class MatchViewModelWrapper: ObservableObject {
     private let viewModel = MatchViewModel()
     @Published var uiState: MatchUiState
     @Published var showScoringTypeDialog = false
+    @Published var showGoldenPointAnimation = false
+    @Published var goldenWinnerPlayer: Int = 0
     private var scoringTypeChosen = false
+    private var chosenTypeName = ""
+    private var wasAtGoldenPointDeuce = false
     private var timer: Timer?
 
     init() {
@@ -491,11 +519,33 @@ class MatchViewModelWrapper: ObservableObject {
             showScoringTypeDialog = false
             scoringTypeChosen = false
         }
+        wasAtGoldenPointDeuce = false
         updateState()
     }
 
-    func onPlayerOneScored() { viewModel.onPlayerOneScored(); updateState() }
-    func onPlayerTwoScored() { viewModel.onPlayerTwoScored(); updateState() }
+    func onPlayerOneScored() {
+        wasAtGoldenPointDeuce = isAtGoldenPointDeuce()
+        viewModel.onPlayerOneScored()
+        updateState()
+    }
+
+    func onPlayerTwoScored() {
+        wasAtGoldenPointDeuce = isAtGoldenPointDeuce()
+        viewModel.onPlayerTwoScored()
+        updateState()
+    }
+
+    private func isAtGoldenPointDeuce() -> Bool {
+        return chosenTypeName == "Golden Point"
+            && uiState.playerOneGameScore == "40"
+            && uiState.playerTwoGameScore == "40"
+    }
+
+    func onGoldenPointAnimationComplete() {
+        showGoldenPointAnimation = false
+        goldenWinnerPlayer = 0
+        wasAtGoldenPointDeuce = false
+    }
     func toggleServing() { viewModel.toggleServing(); updateState() }
     func onFinishClicked() { viewModel.onFinishClicked(); updateState() }
     func onFinishConfirmed() { viewModel.onFinishConfirmed(); updateState() }
@@ -513,6 +563,7 @@ class MatchViewModelWrapper: ObservableObject {
     func onBackCancelled() { viewModel.onBackCancelled(); updateState() }
 
     private func applyScoringType(_ name: String) {
+        chosenTypeName = name
         switch name {
         case "Advantage":    viewModel.setScoringTypeAdvantage()
         case "Golden Point": viewModel.setScoringTypeGoldenPoint()
@@ -528,11 +579,17 @@ class MatchViewModelWrapper: ObservableObject {
     }
 
     private func applyNewState(_ newState: MatchUiState) {
+        let previousGameWinner = uiState.gameWinner
         uiState = newState
         if !scoringTypeChosen
             && newState.playerOneGameScore == "40"
             && newState.playerTwoGameScore == "40" {
             showScoringTypeDialog = true
+        }
+        if wasAtGoldenPointDeuce && newState.gameWinner != nil && previousGameWinner == nil {
+            goldenWinnerPlayer = Int(newState.gameWinner!.int32Value)
+            showGoldenPointAnimation = true
+            wasAtGoldenPointDeuce = false
         }
     }
 }

@@ -37,4 +37,5 @@
     <string name="player_one_won">Player one won</string>
     <string name="player_two_won">Player two won</string>
     <string name="set_won_description">Set Won</string>
+    <string name="golden_point_won">Golden!</string>
 </resources>

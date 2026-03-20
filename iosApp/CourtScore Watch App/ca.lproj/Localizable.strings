@@ -31,4 +31,5 @@
 "player_one_won" = "Jugador un ha guanyat";
 "player_two_won" = "Jugador dos ha guanyat";
 "set_won_description" = "Set Guanyat";
+"golden_point_won" = "Golden!";
 

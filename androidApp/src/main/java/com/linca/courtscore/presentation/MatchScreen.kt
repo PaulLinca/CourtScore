@@ -158,6 +158,12 @@ private fun MatchScreenContent(
             viewModel.onSetAnimationComplete()
         }
     }
+    LaunchedEffect(uiState.goldenPointWinner) {
+        if (uiState.goldenPointWinner != null) {
+            delay(500)
+            viewModel.onGoldenPointAnimationComplete()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -211,6 +217,7 @@ private fun MatchScreenContent(
                 playerOneColor = colorScheme.playerOneColor,
                 playerTwoColor = colorScheme.playerTwoColor,
                 gameWinner = uiState.gameWinner,
+                goldenPointWinner = uiState.goldenPointWinner,
                 onAnimationComplete = viewModel::onAnimationComplete,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -438,8 +445,10 @@ private fun MatchScreenContent(
                 }
             }
         }
+
     }
 }
+
 
 @Composable
 fun CurrentGameScore(
@@ -451,6 +460,7 @@ fun CurrentGameScore(
     playerOneColor: Color,
     playerTwoColor: Color,
     gameWinner: Int? = null,
+    goldenPointWinner: Int? = null,
     onAnimationComplete: () -> Unit = {},
     modifier: Modifier
 ) {
@@ -475,6 +485,7 @@ fun CurrentGameScore(
             modifier = Modifier.weight(1f),
             primaryColor = playerOneColor,
             showWinAnimation = gameWinner != null,
+            isGoldenPointWin = goldenPointWinner == 1,
             onAnimationComplete = onAnimationComplete
         )
 
@@ -485,6 +496,7 @@ fun CurrentGameScore(
             modifier = Modifier.weight(1f),
             primaryColor = playerTwoColor,
             showWinAnimation = gameWinner != null,
+            isGoldenPointWin = goldenPointWinner == 2,
             onAnimationComplete = onAnimationComplete
         )
     }
@@ -543,8 +555,10 @@ private fun GameScoreButton(
     textColor: Color = primaryColor,
     enabled: Boolean = true,
     showWinAnimation: Boolean = false,
+    isGoldenPointWin: Boolean = false,
     onAnimationComplete: () -> Unit = {}
 ) {
+    val goldenColor = Color(0xFFFFD700)
     val shouldAnimate = showWinAnimation && score == "0"
 
     LaunchedEffect(showWinAnimation) {
@@ -568,12 +582,25 @@ private fun GameScoreButton(
             modifier = Modifier
                 .fillMaxSize()
                 .border(
-                    width = 2.dp,
-                    color = if (enabled) primaryColor else primaryColor.copy(alpha = 0.3f),
+                    width = if (isGoldenPointWin) 3.dp else 2.dp,
+                    color = if (isGoldenPointWin) goldenColor
+                            else if (enabled) primaryColor else primaryColor.copy(alpha = 0.3f),
                     shape = RoundedCornerShape(12.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
+            AnimatedVisibility(
+                visible = isGoldenPointWin,
+                enter = fadeIn(animationSpec = tween(200)),
+                exit = fadeOut(animationSpec = tween(600))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(goldenColor.copy(alpha = 0.18f), RoundedCornerShape(12.dp))
+                )
+            }
+
             AnimatedContent(
                 targetState = if (shouldAnimate) "${score}_${System.currentTimeMillis()}" else score,
                 transitionSpec = {
