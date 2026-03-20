@@ -7,6 +7,7 @@
 "color_scheme" = "Esquema de colors";
 "language" = "Idioma";
 "scoring_type" = "Tipus de puntuació";
+"scoring_ask_every_time_desc" = "Triar a cada 40-40";
 "scoring_advantage_desc" = "Deuce/avantatge tradicional";
 "scoring_golden_point_desc" = "Punt decisiu a deuce";
 "scoring_star_point_desc" = "Punt decisiu a deuce";
@@ -16,6 +17,8 @@
 "catalan" = "Català";
 
 /* Match Screen */
+"deuce_choose_type" = "40-40! Tria el desempat";
+"advantage" = "Avantatge";
 "undo" = "Desfer";
 "finish" = "Finalitzar";
 "finish_dialog_title" = "Estàs segur que vols acabar el partit?";

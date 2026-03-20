@@ -5,7 +5,7 @@ import shared
 struct ScoringTypeOption: Identifiable {
     let id = UUID()
     let name: String
-    let type: ScoringType
+    let type: ScoringType? // nil = ask every time
     let description: String
 }
 
@@ -19,10 +19,15 @@ class ScoringTypeManager: ObservableObject {
     }
 
     private init() {
-        self.selectedTypeName = UserDefaults.standard.string(forKey: "selectedScoringType") ?? "Advantage"
+        self.selectedTypeName = UserDefaults.standard.string(forKey: "selectedScoringType") ?? "Ask Every Time"
     }
 
     let scoringTypes: [ScoringTypeOption] = [
+        ScoringTypeOption(
+            name: "Ask Every Time",
+            type: nil,
+            description: "scoring_ask_every_time_desc".localized()
+        ),
         ScoringTypeOption(
             name: "Advantage",
             type: ScoringType.advantage,
@@ -42,6 +47,11 @@ class ScoringTypeManager: ObservableObject {
 
     var selectedType: ScoringTypeOption {
         scoringTypes.first { $0.name == selectedTypeName } ?? scoringTypes[0]
+    }
+
+    // nil = ask every time
+    var selectedScoringType: ScoringType? {
+        selectedType.type
     }
 }
 

@@ -10,6 +10,8 @@
     <string name="color_scheme">Color Scheme</string>
     <string name="language">Language</string>
     <string name="scoring_type">Scoring Type</string>
+    <string name="scoring_ask_every_time">Ask every time</string>
+    <string name="scoring_ask_every_time_desc">Choose at 40-40 each match</string>
     <string name="scoring_advantage_desc">Traditional deuce/advantage</string>
     <string name="scoring_golden_point_desc">Deciding point at deuce</string>
     <string name="scoring_star_point_desc">Deciding point at deuce</string>
@@ -19,6 +21,10 @@
     <string name="catalan">Catalan</string>
 
     <!-- Match Screen -->
+    <string name="deuce_choose_type">40-40! Choose tiebreaker</string>
+    <string name="scoring_advantage">Advantage</string>
+    <string name="scoring_golden_point">Golden Point</string>
+    <string name="scoring_star_point">Star Point</string>
     <string name="undo">Undo</string>
     <string name="finish">Finish</string>
     <string name="finish_dialog_title">Are you sure you want to end the match?</string>

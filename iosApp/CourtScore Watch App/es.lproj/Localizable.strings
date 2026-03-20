@@ -7,6 +7,7 @@
 "color_scheme" = "Esquema de colores";
 "language" = "Idioma";
 "scoring_type" = "Tipo de puntuación";
+"scoring_ask_every_time_desc" = "Elegir en cada 40-40";
 "scoring_advantage_desc" = "Deuce/ventaja tradicional";
 "scoring_golden_point_desc" = "Punto decisivo en deuce";
 "scoring_star_point_desc" = "Punto decisivo en deuce";
@@ -16,6 +17,8 @@
 "catalan" = "Catalán";
 
 /* Match Screen */
+"deuce_choose_type" = "40-40! Elige el desempate";
+"advantage" = "Ventaja";
 "undo" = "Deshacer";
 "finish" = "Finalizar";
 "finish_dialog_title" = "¿Estás seguro de que quieres terminar el partido?";

@@ -55,7 +55,7 @@ fun SettingsScreen(
 ) {
     val currentColorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)
     val currentLanguage by preferencesManager.languageFlow.collectAsState(initial = "system")
-    val currentScoringType by preferencesManager.scoringTypeFlow.collectAsState(initial = ScoringType.ADVANTAGE)
+    val currentScoringType by preferencesManager.scoringTypeFlow.collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
     val context = LocalContext.current
@@ -140,9 +140,21 @@ fun SettingsScreen(
 
             item {
                 ScoringTypeCard(
-                    typeName = "Advantage",
+                    typeName = stringResource(R.string.scoring_ask_every_time),
+                    description = stringResource(R.string.scoring_ask_every_time_desc),
+                    isSelected = currentScoringType == null,
+                    onSelect = {
+                        coroutineScope.launch {
+                            preferencesManager.saveScoringType(null)
+                        }
+                    }
+                )
+            }
+
+            item {
+                ScoringTypeCard(
+                    typeName = stringResource(R.string.scoring_advantage),
                     description = stringResource(R.string.scoring_advantage_desc),
-                    type = ScoringType.ADVANTAGE,
                     isSelected = currentScoringType == ScoringType.ADVANTAGE,
                     onSelect = {
                         coroutineScope.launch {
@@ -154,9 +166,8 @@ fun SettingsScreen(
 
             item {
                 ScoringTypeCard(
-                    typeName = "Golden Point",
+                    typeName = stringResource(R.string.scoring_golden_point),
                     description = stringResource(R.string.scoring_golden_point_desc),
-                    type = ScoringType.GOLDEN_POINT,
                     isSelected = currentScoringType == ScoringType.GOLDEN_POINT,
                     onSelect = {
                         coroutineScope.launch {
@@ -168,9 +179,8 @@ fun SettingsScreen(
 
             item {
                 ScoringTypeCard(
-                    typeName = "Star Point",
+                    typeName = stringResource(R.string.scoring_star_point),
                     description = stringResource(R.string.scoring_star_point_desc),
-                    type = ScoringType.STAR_POINT,
                     isSelected = currentScoringType == ScoringType.STAR_POINT,
                     onSelect = {
                         coroutineScope.launch {
@@ -313,7 +323,6 @@ fun LanguageCard(
 fun ScoringTypeCard(
     typeName: String,
     description: String,
-    @Suppress("UNUSED_PARAMETER") type: ScoringType,
     isSelected: Boolean,
     onSelect: () -> Unit
 ) {

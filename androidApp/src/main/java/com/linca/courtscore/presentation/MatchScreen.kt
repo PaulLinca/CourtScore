@@ -52,8 +52,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
+import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
+import androidx.wear.compose.material.Chip
+import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.SwipeToDismissBox
@@ -83,12 +87,17 @@ fun MatchScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colorScheme = LocalColorScheme.current
-    val currentScoringType by (preferencesManager?.scoringTypeFlow?.collectAsState(initial = ScoringType.ADVANTAGE)
-        ?: remember { kotlinx.coroutines.flow.MutableStateFlow(ScoringType.ADVANTAGE) }.collectAsState())
 
-    // Update scoring type when preference changes
-    LaunchedEffect(currentScoringType) {
-        viewModel.setScoringType(currentScoringType)
+    // On match start, apply the saved scoring type if one is set.
+    // If null (ask every time), the in-match dialog will handle it at first deuce.
+    LaunchedEffect(Unit) {
+        var applied = false
+        preferencesManager?.scoringTypeFlow?.collect { type ->
+            if (!applied) {
+                applied = true
+                if (type != null) viewModel.onScoringTypeSelected(type)
+            }
+        }
     }
 
     val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
@@ -344,6 +353,12 @@ private fun MatchScreenContent(
                         )
                     }
                 }
+            )
+        }
+
+        if (uiState.showScoringTypeDialog) {
+            ScoringTypeSelectionDialog(
+                onScoringTypeSelected = viewModel::onScoringTypeSelected
             )
         }
 
@@ -645,6 +660,82 @@ fun ServingIndicator(
                     SecondaryTextColor.copy(alpha = 0.3f),
                 modifier = Modifier.size(10.dp)
             )
+        }
+    }
+}
+
+@Composable
+private fun ScoringTypeSelectionDialog(
+    onScoringTypeSelected: (ScoringType) -> Unit
+) {
+    val listState = rememberScalingLazyListState()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundColor)
+    ) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Text(
+                    text = stringResource(R.string.deuce_choose_type),
+                    style = MaterialTheme.typography.body2,
+                    color = PrimaryTextColor,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+            item {
+                Chip(
+                    onClick = { onScoringTypeSelected(ScoringType.ADVANTAGE) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 2.dp),
+                    colors = ChipDefaults.chipColors(backgroundColor = ElevatedBackgroundColor),
+                    label = {
+                        Text(
+                            text = stringResource(R.string.scoring_advantage),
+                            style = MaterialTheme.typography.body2,
+                            color = PrimaryTextColor
+                        )
+                    }
+                )
+            }
+            item {
+                Chip(
+                    onClick = { onScoringTypeSelected(ScoringType.GOLDEN_POINT) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 2.dp),
+                    colors = ChipDefaults.chipColors(backgroundColor = ElevatedBackgroundColor),
+                    label = {
+                        Text(
+                            text = stringResource(R.string.scoring_golden_point),
+                            style = MaterialTheme.typography.body2,
+                            color = PrimaryTextColor
+                        )
+                    }
+                )
+            }
+            item {
+                Chip(
+                    onClick = { onScoringTypeSelected(ScoringType.STAR_POINT) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 2.dp),
+                    colors = ChipDefaults.chipColors(backgroundColor = ElevatedBackgroundColor),
+                    label = {
+                        Text(
+                            text = stringResource(R.string.scoring_star_point),
+                            style = MaterialTheme.typography.body2,
+                            color = PrimaryTextColor
+                        )
+                    }
+                )
+            }
         }
     }
 }

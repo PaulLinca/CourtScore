@@ -19,6 +19,8 @@ class MatchViewModel {
     private var showBackDialog = false
     private var gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
     private var setWinner: Int? = null // 1 for player one, 2 for player two, null for no recent set win
+    private var scoringTypeChosen = false
+    private var showScoringTypeDialog = false
 
     private val _uiState = MutableStateFlow(
         MatchUiState.from(
@@ -28,7 +30,8 @@ class MatchViewModel {
             showBackDialog,
             gameWinner,
             setWinner,
-            engine.getScoringType()
+            engine.getScoringType(),
+            showScoringTypeDialog
         )
     )
     val uiState: StateFlow<MatchUiState> = _uiState.asStateFlow()
@@ -48,6 +51,7 @@ class MatchViewModel {
         setWinner = if (newSets > previousSets) 1 else null
 
         playerOneServing = !playerOneServing
+        checkForFirstDeuce()
         updateUiState()
     }
 
@@ -66,6 +70,23 @@ class MatchViewModel {
         setWinner = if (newSets > previousSets) 2 else null
 
         playerOneServing = !playerOneServing
+        checkForFirstDeuce()
+        updateUiState()
+    }
+
+    private fun checkForFirstDeuce() {
+        if (!scoringTypeChosen) {
+            val game = engine.getScore().currentGame
+            if (!game.isTieBreak && game.playerOne == Point.FORTY && game.playerTwo == Point.FORTY) {
+                showScoringTypeDialog = true
+            }
+        }
+    }
+
+    fun onScoringTypeSelected(type: ScoringType) {
+        engine.setScoringType(type)
+        scoringTypeChosen = true
+        showScoringTypeDialog = false
         updateUiState()
     }
 
@@ -82,6 +103,7 @@ class MatchViewModel {
     fun onUndo() {
         engine.undo()
         playerOneServing = !playerOneServing
+        showScoringTypeDialog = false
         updateUiState()
     }
 
@@ -139,7 +161,8 @@ class MatchViewModel {
             showBackDialog,
             gameWinner,
             setWinner,
-            engine.getScoringType()
+            engine.getScoringType(),
+            showScoringTypeDialog
         )
     }
 }
@@ -157,7 +180,8 @@ data class MatchUiState(
     val showBackDialog: Boolean,
     val gameWinner: Int? = null,
     val setWinner: Int? = null,
-    val scoringType: ScoringType = ScoringType.ADVANTAGE
+    val scoringType: ScoringType = ScoringType.ADVANTAGE,
+    val showScoringTypeDialog: Boolean = false
 ) {
     companion object {
         fun from(
@@ -167,7 +191,8 @@ data class MatchUiState(
             showBackDialog: Boolean,
             gameWinner: Int? = null,
             setWinner: Int? = null,
-            scoringType: ScoringType = ScoringType.ADVANTAGE
+            scoringType: ScoringType = ScoringType.ADVANTAGE,
+            showScoringTypeDialog: Boolean = false
         ): MatchUiState {
             return MatchUiState(
                 playerOneGameScore = formatGameScore(matchScore.currentGame, isPlayerOne = true),
@@ -182,7 +207,8 @@ data class MatchUiState(
                 showBackDialog = showBackDialog,
                 gameWinner = gameWinner,
                 setWinner = setWinner,
-                scoringType = scoringType
+                scoringType = scoringType,
+                showScoringTypeDialog = showScoringTypeDialog
             )
         }
 

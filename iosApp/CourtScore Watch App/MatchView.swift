@@ -5,7 +5,6 @@ import shared
 struct MatchView: View {
     @StateObject private var viewModel = MatchViewModelWrapper()
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
-    @StateObject private var scoringTypeManager = ScoringTypeManager.shared
     @Environment(\.dismiss) var dismiss
     @State private var showSetAnimation = false
 
@@ -161,6 +160,56 @@ struct MatchView: View {
                 .onDisappear {
                     showSetAnimation = false
                 }
+            }
+
+            if viewModel.uiState.showScoringTypeDialog {
+                ZStack {
+                    Color(hex: "000000")
+                        .ignoresSafeArea()
+
+                    VStack(spacing: 6) {
+                        Text("deuce_choose_type".localized())
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundColor(Color(hex: "eeeff0"))
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 2)
+
+                        Button(action: { viewModel.onScoringTypeSelected(ScoringType.advantage) }) {
+                            Text("advantage".localized())
+                                .font(.system(size: 13))
+                                .foregroundColor(Color(hex: "eeeff0"))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 6)
+                        }
+                        .buttonStyle(.plain)
+                        .background(Color(hex: "222327"))
+                        .cornerRadius(8)
+
+                        Button(action: { viewModel.onScoringTypeSelected(ScoringType.goldenPoint) }) {
+                            Text("Golden Point")
+                                .font(.system(size: 13))
+                                .foregroundColor(Color(hex: "eeeff0"))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 6)
+                        }
+                        .buttonStyle(.plain)
+                        .background(Color(hex: "222327"))
+                        .cornerRadius(8)
+
+                        Button(action: { viewModel.onScoringTypeSelected(ScoringType.starPoint) }) {
+                            Text("Star Point")
+                                .font(.system(size: 13))
+                                .foregroundColor(Color(hex: "eeeff0"))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 6)
+                        }
+                        .buttonStyle(.plain)
+                        .background(Color(hex: "222327"))
+                        .cornerRadius(8)
+                    }
+                    .padding(.horizontal, 14)
+                }
+                .transition(.opacity)
             }
         }
         .alert("finish_dialog_title".localized(), isPresented: Binding(
@@ -401,9 +450,10 @@ class MatchViewModelWrapper: ObservableObject {
     private var timer: Timer?
 
     init() {
-        // Set the scoring type from saved preferences
-        let savedScoringType = ScoringTypeManager.shared.selectedType.type
-        viewModel.setScoringType(type: savedScoringType)
+        // Apply saved scoring type if one is set; if nil (ask every time), the in-match dialog handles it
+        if let savedType = ScoringTypeManager.shared.selectedScoringType {
+            viewModel.onScoringTypeSelected(type: savedType)
+        }
 
         self.uiState = viewModel.uiState.value as! MatchUiState
 
@@ -431,7 +481,8 @@ class MatchViewModelWrapper: ObservableObject {
                newState.showBackDialog != uiState.showBackDialog ||
                newState.gameWinner != uiState.gameWinner ||
                newState.setWinner != uiState.setWinner ||
-               newState.scoringType != uiState.scoringType
+               newState.scoringType != uiState.scoringType ||
+               newState.showScoringTypeDialog != uiState.showScoringTypeDialog
     }
 
     func onPlayerOneScored() {
@@ -492,6 +543,11 @@ class MatchViewModelWrapper: ObservableObject {
 
     func onSetAnimationComplete() {
         viewModel.onSetAnimationComplete()
+        updateState()
+    }
+
+    func onScoringTypeSelected(_ type: ScoringType) {
+        viewModel.onScoringTypeSelected(type: type)
         updateState()
     }
 

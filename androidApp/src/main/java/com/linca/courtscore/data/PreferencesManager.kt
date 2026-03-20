@@ -30,12 +30,14 @@ class PreferencesManager(private val context: Context) {
             preferences[LANGUAGE_KEY] ?: "system"
         }
 
-    val scoringTypeFlow: Flow<ScoringType> = context.dataStore.data
+    // null = ask every time (in-match dialog)
+    val scoringTypeFlow: Flow<ScoringType?> = context.dataStore.data
         .map { preferences ->
             when (preferences[SCORING_TYPE_KEY]) {
+                "ADVANTAGE" -> ScoringType.ADVANTAGE
                 "GOLDEN_POINT" -> ScoringType.GOLDEN_POINT
                 "STAR_POINT" -> ScoringType.STAR_POINT
-                else -> ScoringType.ADVANTAGE
+                else -> null
             }
         }
 
@@ -51,9 +53,10 @@ class PreferencesManager(private val context: Context) {
         }
     }
 
-    suspend fun saveScoringType(scoringType: ScoringType) {
+    // null = ask every time
+    suspend fun saveScoringType(scoringType: ScoringType?) {
         context.dataStore.edit { preferences ->
-            preferences[SCORING_TYPE_KEY] = scoringType.name
+            preferences[SCORING_TYPE_KEY] = scoringType?.name ?: "ASK_EVERY_TIME"
         }
     }
 }

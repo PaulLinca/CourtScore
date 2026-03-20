@@ -10,6 +10,8 @@
     <string name="color_scheme">Esquema de colors</string>
     <string name="language">Idioma</string>
     <string name="scoring_type">Tipus de puntuació</string>
+    <string name="scoring_ask_every_time">Preguntar sempre</string>
+    <string name="scoring_ask_every_time_desc">Triar a cada 40-40</string>
     <string name="scoring_advantage_desc">Deuce/avantatge tradicional</string>
     <string name="scoring_golden_point_desc">Punt decisiu a deuce</string>
     <string name="scoring_star_point_desc">Punt decisiu a deuce</string>
@@ -19,6 +21,10 @@
     <string name="catalan">Català</string>
 
     <!-- Match Screen -->
+    <string name="deuce_choose_type">40-40! Tria el desempat</string>
+    <string name="scoring_advantage">Avantatge</string>
+    <string name="scoring_golden_point">Golden Point</string>
+    <string name="scoring_star_point">Star Point</string>
     <string name="undo">Desfer</string>
     <string name="finish">Finalitzar</string>
     <string name="finish_dialog_title">Estàs segur que vols acabar el partit?</string>

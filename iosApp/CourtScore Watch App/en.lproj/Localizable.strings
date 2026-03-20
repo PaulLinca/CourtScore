@@ -7,6 +7,7 @@
 "color_scheme" = "Color Scheme";
 "language" = "Language";
 "scoring_type" = "Scoring Type";
+"scoring_ask_every_time_desc" = "Choose at 40-40 each match";
 "scoring_advantage_desc" = "Traditional deuce/advantage";
 "scoring_golden_point_desc" = "Deciding point at deuce";
 "scoring_star_point_desc" = "Deciding point at deuce";
@@ -16,6 +17,8 @@
 "catalan" = "Catalan";
 
 /* Match Screen */
+"deuce_choose_type" = "40-40! Choose tiebreaker";
+"advantage" = "Advantage";
 "undo" = "Undo";
 "finish" = "Finish";
 "finish_dialog_title" = "Are you sure you want to end the match?";
