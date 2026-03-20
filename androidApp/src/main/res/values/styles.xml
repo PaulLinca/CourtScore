@@ -1,6 +1,6 @@
 <resources>
     <style name="MainActivityTheme.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#1e8fd5</item>
+        <item name="windowSplashScreenBackground">#000000</item>
         <item name="postSplashScreenTheme">@android:style/Theme.DeviceDefault</item>
     </style>
 </resources>
