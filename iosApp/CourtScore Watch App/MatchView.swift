@@ -5,6 +5,7 @@ import shared
 struct MatchView: View {
     @StateObject private var viewModel = MatchViewModelWrapper()
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
+    @StateObject private var scoringTypeManager = ScoringTypeManager.shared
     @Environment(\.dismiss) var dismiss
     @State private var showSetAnimation = false
 
@@ -400,6 +401,10 @@ class MatchViewModelWrapper: ObservableObject {
     private var timer: Timer?
 
     init() {
+        // Set the scoring type from saved preferences
+        let savedScoringType = ScoringTypeManager.shared.selectedType.type
+        viewModel.setScoringType(type: savedScoringType)
+
         self.uiState = viewModel.uiState.value as! MatchUiState
 
         // Poll for state changes
@@ -425,7 +430,8 @@ class MatchViewModelWrapper: ObservableObject {
                newState.showFinishDialog != uiState.showFinishDialog ||
                newState.showBackDialog != uiState.showBackDialog ||
                newState.gameWinner != uiState.gameWinner ||
-               newState.setWinner != uiState.setWinner
+               newState.setWinner != uiState.setWinner ||
+               newState.scoringType != uiState.scoringType
     }
 
     func onPlayerOneScored() {

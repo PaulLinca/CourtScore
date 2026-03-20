@@ -6,6 +6,10 @@
 /* Settings Screen */
 "color_scheme" = "Color Scheme";
 "language" = "Language";
+"scoring_type" = "Scoring Type";
+"scoring_advantage_desc" = "Traditional deuce/advantage";
+"scoring_golden_point_desc" = "Deciding point at deuce";
+"scoring_star_point_desc" = "Deciding point at deuce";
 "done" = "Done";
 "english" = "English";
 "spanish" = "Spanish";

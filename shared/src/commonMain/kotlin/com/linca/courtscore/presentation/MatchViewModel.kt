@@ -2,6 +2,8 @@ package com.linca.courtscore.presentation
 
 import com.linca.courtscore.domain.model.GameScore
 import com.linca.courtscore.domain.model.MatchScore
+import com.linca.courtscore.domain.model.Point
+import com.linca.courtscore.domain.model.ScoringType
 import com.linca.courtscore.domain.model.pointToDisplayString
 import com.linca.courtscore.engine.MatchEngine
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,10 +17,8 @@ class MatchViewModel {
     private var playerOneServing = true
     private var showFinishDialog = false
     private var showBackDialog = false
-    private var gameWinner: Int? =
-        null // 1 for player one, 2 for player two, null for no recent win
-    private var setWinner: Int? =
-        null // 1 for player one, 2 for player two, null for no recent set win
+    private var gameWinner: Int? = null // 1 for player one, 2 for player two, null for no recent win
+    private var setWinner: Int? = null // 1 for player one, 2 for player two, null for no recent set win
 
     private val _uiState = MutableStateFlow(
         MatchUiState.from(
@@ -27,7 +27,8 @@ class MatchViewModel {
             showFinishDialog,
             showBackDialog,
             gameWinner,
-            setWinner
+            setWinner,
+            engine.getScoringType()
         )
     )
     val uiState: StateFlow<MatchUiState> = _uiState.asStateFlow()
@@ -89,6 +90,11 @@ class MatchViewModel {
         updateUiState()
     }
 
+    fun setScoringType(type: ScoringType) {
+        engine.setScoringType(type)
+        updateUiState()
+    }
+
     fun onFinishClicked() {
         showFinishDialog = true
         updateUiState()
@@ -132,7 +138,8 @@ class MatchViewModel {
             showFinishDialog,
             showBackDialog,
             gameWinner,
-            setWinner
+            setWinner,
+            engine.getScoringType()
         )
     }
 }
@@ -149,7 +156,8 @@ data class MatchUiState(
     val showFinishDialog: Boolean,
     val showBackDialog: Boolean,
     val gameWinner: Int? = null,
-    val setWinner: Int? = null
+    val setWinner: Int? = null,
+    val scoringType: ScoringType = ScoringType.ADVANTAGE
 ) {
     companion object {
         fun from(
@@ -158,7 +166,8 @@ data class MatchUiState(
             showFinishDialog: Boolean,
             showBackDialog: Boolean,
             gameWinner: Int? = null,
-            setWinner: Int? = null
+            setWinner: Int? = null,
+            scoringType: ScoringType = ScoringType.ADVANTAGE
         ): MatchUiState {
             return MatchUiState(
                 playerOneGameScore = formatGameScore(matchScore.currentGame, isPlayerOne = true),
@@ -172,7 +181,8 @@ data class MatchUiState(
                 showFinishDialog = showFinishDialog,
                 showBackDialog = showBackDialog,
                 gameWinner = gameWinner,
-                setWinner = setWinner
+                setWinner = setWinner,
+                scoringType = scoringType
             )
         }
 

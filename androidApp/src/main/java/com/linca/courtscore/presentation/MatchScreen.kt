@@ -68,6 +68,8 @@ import com.linca.courtscore.presentation.theme.LocalColorScheme
 import com.linca.courtscore.presentation.theme.PadelBlue
 import com.linca.courtscore.presentation.theme.PrimaryTextColor
 import com.linca.courtscore.presentation.theme.SecondaryTextColor
+import com.linca.courtscore.data.PreferencesManager
+import com.linca.courtscore.domain.model.ScoringType
 import com.linca.courtscorewear.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -76,10 +78,18 @@ import kotlinx.coroutines.flow.collectLatest
 fun MatchScreen(
     modifier: Modifier = Modifier,
     viewModel: MatchViewModel = remember { MatchViewModel() },
+    preferencesManager: PreferencesManager? = null,
     onNavigateBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colorScheme = LocalColorScheme.current
+    val currentScoringType by (preferencesManager?.scoringTypeFlow?.collectAsState(initial = ScoringType.ADVANTAGE)
+        ?: remember { kotlinx.coroutines.flow.MutableStateFlow(ScoringType.ADVANTAGE) }.collectAsState())
+
+    // Update scoring type when preference changes
+    LaunchedEffect(currentScoringType) {
+        viewModel.setScoringType(currentScoringType)
+    }
 
     val swipeToDismissBoxState = rememberSwipeToDismissBoxState()
     LaunchedEffect(swipeToDismissBoxState) {

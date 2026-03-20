@@ -3,6 +3,7 @@ package com.linca.courtscore.engine
 import com.linca.courtscore.domain.model.GameScore
 import com.linca.courtscore.domain.model.MatchScore
 import com.linca.courtscore.domain.model.Point
+import com.linca.courtscore.domain.model.ScoringType
 import com.linca.courtscore.domain.model.SetScore
 import com.linca.courtscore.domain.model.pointToTieBreakCount
 import com.linca.courtscore.domain.model.tieBreakCountToPoint
@@ -10,7 +11,8 @@ import com.linca.courtscore.domain.model.tieBreakCountToPoint
 class MatchEngine(
     private val gamesToWinSet: Int = 6,
     private val tieBreakAt: Int = 6,
-    private val tieBreakPointsToWin: Int = 7
+    private val tieBreakPointsToWin: Int = 7,
+    private var scoringType: ScoringType = ScoringType.ADVANTAGE
 ) {
     private val history = mutableListOf<MatchScore>()
 
@@ -20,6 +22,12 @@ class MatchEngine(
     private var tieBreakPlayerTwoPoints: Int = 0
 
     fun getScore(): MatchScore = score
+
+    fun setScoringType(type: ScoringType) {
+        scoringType = type
+    }
+
+    fun getScoringType(): ScoringType = scoringType
 
     fun pointForPlayerOne() = addPoint(winnerIsPlayerOne = true)
 
@@ -98,6 +106,7 @@ class MatchEngine(
     private fun applyStandardPoint(current: MatchScore, winnerIsPlayerOne: Boolean): MatchScore {
         val currentGame = current.currentGame
 
+        // Handle advantage/deuce scenarios
         if (currentGame.playerOne == Point.ADVANTAGE || currentGame.playerTwo == Point.ADVANTAGE) {
             return when {
                 winnerIsPlayerOne && currentGame.playerOne == Point.ADVANTAGE -> winGame(
@@ -119,14 +128,24 @@ class MatchEngine(
             }
         }
 
+        // Handle 40-40 (deuce) scenarios
         if (currentGame.playerOne == Point.FORTY && currentGame.playerTwo == Point.FORTY) {
-            return current.copy(
-                currentGame = if (winnerIsPlayerOne) {
-                    GameScore(playerOne = Point.ADVANTAGE, playerTwo = Point.FORTY)
-                } else {
-                    GameScore(playerOne = Point.FORTY, playerTwo = Point.ADVANTAGE)
+            return when (scoringType) {
+                ScoringType.ADVANTAGE -> {
+                    // Traditional advantage scoring
+                    current.copy(
+                        currentGame = if (winnerIsPlayerOne) {
+                            GameScore(playerOne = Point.ADVANTAGE, playerTwo = Point.FORTY)
+                        } else {
+                            GameScore(playerOne = Point.FORTY, playerTwo = Point.ADVANTAGE)
+                        }
+                    )
                 }
-            )
+                ScoringType.GOLDEN_POINT, ScoringType.STAR_POINT -> {
+                    // Golden/Star Point: next point wins at deuce
+                    winGame(current, winnerIsPlayerOne)
+                }
+            }
         }
 
         if (winnerIsPlayerOne && currentGame.playerOne == Point.FORTY && currentGame.playerTwo != Point.FORTY) {

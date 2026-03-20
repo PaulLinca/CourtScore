@@ -11,6 +11,7 @@ struct ColorSchemeOption: Identifiable {
 struct SettingsView: View {
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
     @StateObject private var languageManager = LanguageManager.shared
+    @StateObject private var scoringTypeManager = ScoringTypeManager.shared
 
     var body: some View {
         ScrollView {
@@ -26,6 +27,21 @@ struct SettingsView: View {
                         isSelected: language.code == languageManager.selectedLanguageCode,
                         onSelect: {
                             languageManager.selectedLanguageCode = language.code
+                        }
+                    )
+                }
+
+                Text("scoring_type".localized())
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.top, 16)
+
+                ForEach(scoringTypeManager.scoringTypes) { scoringType in
+                    ScoringTypeCard(
+                        scoringType: scoringType,
+                        isSelected: scoringType.name == scoringTypeManager.selectedTypeName,
+                        onSelect: {
+                            scoringTypeManager.selectedTypeName = scoringType.name
                         }
                     )
                 }
@@ -101,6 +117,34 @@ struct LanguageCard: View {
             .padding(12)
             .background(isSelected ? Color(hex: "1E8FD5").opacity(0.3) : Color(hex: "222327"))
             .cornerRadius(12)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct ScoringTypeCard: View {
+    let scoringType: ScoringTypeOption
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    var body: some View {
+        Button(action: onSelect) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(scoringType.name)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.white)
+                Text(scoringType.description)
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(hex: "aaaab1"))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(12)
+            .background(isSelected ? Color(hex: "1E8FD5").opacity(0.3) : Color(hex: "222327"))
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: isSelected ? 2 : 0)
+            )
         }
         .buttonStyle(.plain)
     }

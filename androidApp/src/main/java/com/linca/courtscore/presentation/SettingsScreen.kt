@@ -38,6 +38,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.linca.courtscore.data.PreferencesManager
+import com.linca.courtscore.domain.model.ScoringType
 import com.linca.courtscore.presentation.theme.BackgroundColor
 import com.linca.courtscore.presentation.theme.ColorScheme
 import com.linca.courtscore.presentation.theme.ColorSchemes
@@ -54,6 +55,7 @@ fun SettingsScreen(
 ) {
     val currentColorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)
     val currentLanguage by preferencesManager.languageFlow.collectAsState(initial = "system")
+    val currentScoringType by preferencesManager.scoringTypeFlow.collectAsState(initial = ScoringType.ADVANTAGE)
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
     val context = LocalContext.current
@@ -119,6 +121,60 @@ fun SettingsScreen(
                         coroutineScope.launch {
                             preferencesManager.saveLanguage("ca")
                             (context as? ComponentActivity)?.recreate()
+                        }
+                    }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.scoring_type),
+                    style = MaterialTheme.typography.title3,
+                    color = PrimaryTextColor,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            item {
+                ScoringTypeCard(
+                    typeName = "Advantage",
+                    description = stringResource(R.string.scoring_advantage_desc),
+                    type = ScoringType.ADVANTAGE,
+                    isSelected = currentScoringType == ScoringType.ADVANTAGE,
+                    onSelect = {
+                        coroutineScope.launch {
+                            preferencesManager.saveScoringType(ScoringType.ADVANTAGE)
+                        }
+                    }
+                )
+            }
+
+            item {
+                ScoringTypeCard(
+                    typeName = "Golden Point",
+                    description = stringResource(R.string.scoring_golden_point_desc),
+                    type = ScoringType.GOLDEN_POINT,
+                    isSelected = currentScoringType == ScoringType.GOLDEN_POINT,
+                    onSelect = {
+                        coroutineScope.launch {
+                            preferencesManager.saveScoringType(ScoringType.GOLDEN_POINT)
+                        }
+                    }
+                )
+            }
+
+            item {
+                ScoringTypeCard(
+                    typeName = "Star Point",
+                    description = stringResource(R.string.scoring_star_point_desc),
+                    type = ScoringType.STAR_POINT,
+                    isSelected = currentScoringType == ScoringType.STAR_POINT,
+                    onSelect = {
+                        coroutineScope.launch {
+                            preferencesManager.saveScoringType(ScoringType.STAR_POINT)
                         }
                     }
                 )
@@ -248,6 +304,42 @@ fun LanguageCard(
                         .align(alignment = Alignment.CenterVertically)
                 )
                 Spacer(Modifier.weight(1f))
+            }
+        }
+    )
+}
+
+@Composable
+fun ScoringTypeCard(
+    typeName: String,
+    description: String,
+    @Suppress("UNUSED_PARAMETER") type: ScoringType,
+    isSelected: Boolean,
+    onSelect: () -> Unit
+) {
+    Chip(
+        onClick = onSelect,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        colors = ChipDefaults.chipColors(
+            backgroundColor = if (isSelected) PadelBlue.copy(alpha = 0.3f) else ElevatedBackgroundColor
+        ),
+        label = {
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = typeName,
+                    style = MaterialTheme.typography.body1,
+                    color = PrimaryTextColor,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.caption2,
+                    color = PrimaryTextColor.copy(alpha = 0.7f)
+                )
             }
         }
     )

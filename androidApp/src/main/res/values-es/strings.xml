@@ -9,6 +9,10 @@
     <!-- Settings Screen -->
     <string name="color_scheme">Esquema de colores</string>
     <string name="language">Idioma</string>
+    <string name="scoring_type">Tipo de puntuación</string>
+    <string name="scoring_advantage_desc">Deuce/ventaja tradicional</string>
+    <string name="scoring_golden_point_desc">Punto decisivo en deuce</string>
+    <string name="scoring_star_point_desc">Punto decisivo en deuce</string>
     <string name="done">Listo</string>
     <string name="english">Inglés</string>
     <string name="spanish">Español</string>

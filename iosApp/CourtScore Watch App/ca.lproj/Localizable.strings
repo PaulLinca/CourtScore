@@ -6,6 +6,10 @@
 /* Settings Screen */
 "color_scheme" = "Esquema de colors";
 "language" = "Idioma";
+"scoring_type" = "Tipus de puntuació";
+"scoring_advantage_desc" = "Deuce/avantatge tradicional";
+"scoring_golden_point_desc" = "Punt decisiu a deuce";
+"scoring_star_point_desc" = "Punt decisiu a deuce";
 "done" = "Fet";
 "english" = "Anglès";
 "spanish" = "Espanyol";

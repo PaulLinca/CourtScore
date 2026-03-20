@@ -79,6 +79,7 @@ fun WearApp(
 
             composable(route = "newMatch") {
                 MatchScreen(
+                    preferencesManager = preferencesManager,
                     onNavigateBack = {
                         navController.popBackStack()
                     }
