@@ -3,6 +3,11 @@
 "new_match" = "New match";
 "settings" = "Settings";
 
+/* Sport Selection */
+"select_sport" = "Select sport";
+"sport_padel" = "Padel";
+"sport_football" = "Football";
+
 /* Settings Screen */
 "color_scheme" = "Color Scheme";
 "language" = "Language";

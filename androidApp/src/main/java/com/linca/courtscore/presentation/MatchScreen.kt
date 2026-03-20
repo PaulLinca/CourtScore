@@ -73,7 +73,10 @@ import com.linca.courtscore.presentation.theme.PadelBlue
 import com.linca.courtscore.presentation.theme.PrimaryTextColor
 import com.linca.courtscore.presentation.theme.SecondaryTextColor
 import com.linca.courtscore.data.PreferencesManager
+import com.linca.courtscore.domain.model.Sport
 import com.linca.courtscore.domain.model.ScoringType
+import com.linca.courtscore.engine.FootballStrategy
+import com.linca.courtscore.engine.PadelStrategy
 import com.linca.courtscorewear.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -81,7 +84,13 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun MatchScreen(
     modifier: Modifier = Modifier,
-    viewModel: MatchViewModel = remember { MatchViewModel() },
+    sport: Sport = Sport.PADEL,
+    viewModel: MatchViewModel = remember(sport) {
+        when (sport) {
+            Sport.PADEL -> MatchViewModel(PadelStrategy())
+            Sport.FOOTBALL -> MatchViewModel(FootballStrategy())
+        }
+    },
     preferencesManager: PreferencesManager? = null,
     onNavigateBack: () -> Unit = {}
 ) {
@@ -183,20 +192,24 @@ private fun MatchScreenContent(
             ) {
                 Spacer(Modifier.weight(1f))
 
-                ServingIndicator(
-                    isPlayerOneServing = uiState.playerOneServing,
-                    onToggleServing = viewModel::toggleServing,
-                    enabled = !uiState.isFinished,
-                    playerOneColor = colorScheme.playerOneColor,
-                    playerTwoColor = colorScheme.playerTwoColor
-                )
+                if (uiState.showServingIndicator) {
+                    ServingIndicator(
+                        isPlayerOneServing = uiState.playerOneServing,
+                        onToggleServing = viewModel::toggleServing,
+                        enabled = !uiState.isFinished,
+                        playerOneColor = colorScheme.playerOneColor,
+                        playerTwoColor = colorScheme.playerTwoColor
+                    )
+                }
 
-                ScoreTable(
-                    player1SetScores = uiState.playerOneSetScores,
-                    player2SetScores = uiState.playerTwoSetScores,
-                    playerOneColor = colorScheme.playerOneColor,
-                    playerTwoColor = colorScheme.playerTwoColor
-                )
+                if (uiState.showSubScores) {
+                    ScoreTable(
+                        player1SetScores = uiState.playerOneSetScores,
+                        player2SetScores = uiState.playerTwoSetScores,
+                        playerOneColor = colorScheme.playerOneColor,
+                        playerTwoColor = colorScheme.playerTwoColor
+                    )
+                }
 
                 WinnerIndicator(
                     playerOneWon = uiState.playerOneWon,

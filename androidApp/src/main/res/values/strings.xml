@@ -6,6 +6,11 @@
     <string name="new_match">New match</string>
     <string name="settings">Settings</string>
 
+    <!-- Sport Selection -->
+    <string name="select_sport">Select sport</string>
+    <string name="sport_padel">Padel</string>
+    <string name="sport_football">Football</string>
+
     <!-- Settings Screen -->
     <string name="color_scheme">Color Scheme</string>
     <string name="language">Language</string>

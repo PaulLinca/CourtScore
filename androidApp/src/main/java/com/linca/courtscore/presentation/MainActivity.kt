@@ -13,6 +13,7 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.linca.courtscore.data.LocaleHelper
 import com.linca.courtscore.data.PreferencesManager
+import com.linca.courtscore.domain.model.Sport
 import com.linca.courtscore.presentation.theme.ColorScheme
 import com.linca.courtscore.presentation.theme.ColorSchemes
 import com.linca.courtscore.presentation.theme.CourtScoreTheme
@@ -69,7 +70,7 @@ fun WearApp(
             composable("start") {
                 MainScreen(
                     onNewMatch = {
-                        navController.navigate("newMatch")
+                        navController.navigate("sportSelect")
                     },
                     onSettingsClick = {
                         navController.navigate("settings")
@@ -77,8 +78,20 @@ fun WearApp(
                 )
             }
 
-            composable(route = "newMatch") {
+            composable("sportSelect") {
+                SportSelectScreen(
+                    onSportSelected = { sport ->
+                        navController.navigate("newMatch/${sport.name}")
+                    }
+                )
+            }
+
+            composable(route = "newMatch/{sport}") { backStackEntry ->
+                val sport = Sport.valueOf(
+                    backStackEntry.arguments?.getString("sport") ?: Sport.PADEL.name
+                )
                 MatchScreen(
+                    sport = sport,
                     preferencesManager = preferencesManager,
                     onNavigateBack = {
                         navController.popBackStack()

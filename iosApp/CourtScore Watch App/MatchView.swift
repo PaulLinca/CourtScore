@@ -3,10 +3,14 @@ import Combine
 import shared
 
 struct MatchView: View {
-    @StateObject private var viewModel = MatchViewModelWrapper()
+    @StateObject private var viewModel: MatchViewModelWrapper
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
     @Environment(\.dismiss) var dismiss
     @State private var showSetAnimation = false
+
+    init(sport: Sport = Sport.padel) {
+        _viewModel = StateObject(wrappedValue: MatchViewModelWrapper(sport: sport))
+    }
 
     // Detect screen size for responsive layout
     private var isSmallWatch: Bool {
@@ -42,20 +46,24 @@ struct MatchView: View {
                 HStack(alignment: .center, spacing: 0) {
                     Spacer()
 
-                    ServingIndicator(
-                        isPlayerOneServing: viewModel.uiState.playerOneServing,
-                        onToggleServing: viewModel.toggleServing,
-                        enabled: !viewModel.uiState.isFinished,
-                        playerOneColor: colorSchemeManager.playerOneColor,
-                        playerTwoColor: colorSchemeManager.playerTwoColor
-                    )
+                    if viewModel.uiState.showServingIndicator {
+                        ServingIndicator(
+                            isPlayerOneServing: viewModel.uiState.playerOneServing,
+                            onToggleServing: viewModel.toggleServing,
+                            enabled: !viewModel.uiState.isFinished,
+                            playerOneColor: colorSchemeManager.playerOneColor,
+                            playerTwoColor: colorSchemeManager.playerTwoColor
+                        )
+                    }
 
-                    ScoreTable(
-                        player1SetScores: viewModel.uiState.playerOneSetScores.map { $0.int32Value },
-                        player2SetScores: viewModel.uiState.playerTwoSetScores.map { $0.int32Value },
-                        playerOneColor: colorSchemeManager.playerOneColor,
-                        playerTwoColor: colorSchemeManager.playerTwoColor
-                    )
+                    if viewModel.uiState.showSubScores {
+                        ScoreTable(
+                            player1SetScores: viewModel.uiState.playerOneSetScores.map { $0.int32Value },
+                            player2SetScores: viewModel.uiState.playerTwoSetScores.map { $0.int32Value },
+                            playerOneColor: colorSchemeManager.playerOneColor,
+                            playerTwoColor: colorSchemeManager.playerTwoColor
+                        )
+                    }
 
                     WinnerIndicator(
                         playerOneWon: viewModel.uiState.playerOneWon,
@@ -459,7 +467,7 @@ struct WinnerIndicator: View {
 
 // MARK: - ViewModel Wrapper
 class MatchViewModelWrapper: ObservableObject {
-    private let viewModel = MatchViewModel()
+    private let viewModel: MatchViewModel
     @Published var uiState: MatchUiState
     @Published var showScoringTypeDialog = false
     @Published var showGoldenPointAnimation = false
@@ -467,13 +475,19 @@ class MatchViewModelWrapper: ObservableObject {
     private var scoringTypeChosen = false
     private var chosenTypeName = ""
     private var wasAtGoldenPointDeuce = false
+    private let sport: Sport
     private var timer: Timer?
 
-    init() {
+    init(sport: Sport = Sport.padel) {
+        self.sport = sport
+        // Use companion factory methods to avoid exposing SportStrategy at the ObjC boundary.
+        self.viewModel = sport == Sport.football
+            ? MatchViewModel.companion.forFootball()
+            : MatchViewModel.companion.forPadel()
         self.uiState = viewModel.uiState.value as! MatchUiState
 
-        // Apply saved scoring type if one is set; if "Ask Every Time", the in-match dialog handles it
-        if !ScoringTypeManager.shared.isAskEveryTime {
+        // Apply saved scoring type for padel if one is set; football ignores this.
+        if sport == Sport.padel && !ScoringTypeManager.shared.isAskEveryTime {
             applyScoringType(ScoringTypeManager.shared.selectedTypeName)
             scoringTypeChosen = true
         }

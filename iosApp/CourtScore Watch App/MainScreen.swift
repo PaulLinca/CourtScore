@@ -7,7 +7,7 @@ struct MainScreen: View {
 
     var menuItems: [(icon: String, label: String, destination: AnyView)] {
         [
-            ("tennisball.fill", "new_match".localized(), AnyView(MatchView())),
+            ("tennisball.fill", "new_match".localized(), AnyView(SportSelectView())),
             ("gear", "settings".localized(), AnyView(SettingsView()))
         ]
     }
