@@ -23,8 +23,7 @@ class ScoringTypeManager: ObservableObject {
     let scoringTypes: [ScoringTypeOption] = [
         ScoringTypeOption(name: "Ask Every Time", description: "scoring_ask_every_time_desc".localized()),
         ScoringTypeOption(name: "Advantage", description: "scoring_advantage_desc".localized()),
-        ScoringTypeOption(name: "Golden Point", description: "scoring_golden_point_desc".localized()),
-        ScoringTypeOption(name: "Star Point", description: "scoring_star_point_desc".localized())
+        ScoringTypeOption(name: "Golden Point", description: "scoring_golden_point_desc".localized())
     ]
 
     var isAskEveryTime: Bool {

@@ -178,19 +178,6 @@ fun SettingsScreen(
             }
 
             item {
-                ScoringTypeCard(
-                    typeName = stringResource(R.string.scoring_star_point),
-                    description = stringResource(R.string.scoring_star_point_desc),
-                    isSelected = currentScoringType == ScoringType.STAR_POINT,
-                    onSelect = {
-                        coroutineScope.launch {
-                            preferencesManager.saveScoringType(ScoringType.STAR_POINT)
-                        }
-                    }
-                )
-            }
-
-            item {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.color_scheme),

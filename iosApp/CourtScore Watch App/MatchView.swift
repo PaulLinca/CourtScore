@@ -196,16 +196,6 @@ struct MatchView: View {
                         .background(Color(hex: "222327"))
                         .cornerRadius(10)
 
-                        Button(action: { viewModel.onScoringTypeSelected(typeName: "Star Point") }) {
-                            Text("Star Point")
-                                .font(.system(size: 15, weight: .medium))
-                                .foregroundColor(Color(hex: "eeeff0"))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                        }
-                        .buttonStyle(.plain)
-                        .background(Color(hex: "222327"))
-                        .cornerRadius(10)
                     }
                     .padding(.horizontal, 10)
                 }

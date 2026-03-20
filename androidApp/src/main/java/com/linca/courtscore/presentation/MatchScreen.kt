@@ -720,22 +720,6 @@ private fun ScoringTypeSelectionDialog(
                     }
                 )
             }
-            item {
-                Chip(
-                    onClick = { onScoringTypeSelected(ScoringType.STAR_POINT) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 2.dp),
-                    colors = ChipDefaults.chipColors(backgroundColor = ElevatedBackgroundColor),
-                    label = {
-                        Text(
-                            text = stringResource(R.string.scoring_star_point),
-                            style = MaterialTheme.typography.body2,
-                            color = PrimaryTextColor
-                        )
-                    }
-                )
-            }
         }
     }
 }
