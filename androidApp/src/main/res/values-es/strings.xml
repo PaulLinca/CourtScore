@@ -21,7 +21,7 @@
     <string name="catalan">Catalán</string>
 
     <!-- Match Screen -->
-    <string name="deuce_choose_type">40-40! Elige el desempate</string>
+    <string name="deuce_choose_type">Elige el desempate</string>
     <string name="scoring_advantage">Ventaja</string>
     <string name="scoring_golden_point">Golden Point</string>
     <string name="scoring_star_point">Star Point</string>

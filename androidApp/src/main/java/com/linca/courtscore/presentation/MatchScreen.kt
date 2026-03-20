@@ -95,7 +95,7 @@ fun MatchScreen(
         preferencesManager?.scoringTypeFlow?.collect { type ->
             if (!applied) {
                 applied = true
-                if (type != null) viewModel.onScoringTypeSelected(type)
+                if (type != null) viewModel.setScoringType(type)
             }
         }
     }
@@ -358,7 +358,7 @@ private fun MatchScreenContent(
 
         if (uiState.showScoringTypeDialog) {
             ScoringTypeSelectionDialog(
-                onScoringTypeSelected = viewModel::onScoringTypeSelected
+                onScoringTypeSelected = viewModel::setScoringType
             )
         }
 

@@ -21,7 +21,7 @@
     <string name="catalan">Catalan</string>
 
     <!-- Match Screen -->
-    <string name="deuce_choose_type">40-40! Choose tiebreaker</string>
+    <string name="deuce_choose_type">Choose tiebreaker</string>
     <string name="scoring_advantage">Advantage</string>
     <string name="scoring_golden_point">Golden Point</string>
     <string name="scoring_star_point">Star Point</string>

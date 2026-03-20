@@ -162,52 +162,52 @@ struct MatchView: View {
                 }
             }
 
-            if viewModel.uiState.showScoringTypeDialog {
+            if viewModel.showScoringTypeDialog {
                 ZStack {
                     Color(hex: "000000")
                         .ignoresSafeArea()
 
-                    VStack(spacing: 6) {
+                    VStack(spacing: 8) {
                         Text("deuce_choose_type".localized())
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundColor(Color(hex: "eeeff0"))
                             .multilineTextAlignment(.center)
                             .padding(.bottom, 2)
 
-                        Button(action: { viewModel.onScoringTypeSelected(ScoringType.advantage) }) {
+                        Button(action: { viewModel.onScoringTypeSelected(typeName: "Advantage") }) {
                             Text("advantage".localized())
-                                .font(.system(size: 13))
+                                .font(.system(size: 15, weight: .medium))
                                 .foregroundColor(Color(hex: "eeeff0"))
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 6)
+                                .padding(.vertical, 10)
                         }
                         .buttonStyle(.plain)
                         .background(Color(hex: "222327"))
-                        .cornerRadius(8)
+                        .cornerRadius(10)
 
-                        Button(action: { viewModel.onScoringTypeSelected(ScoringType.goldenPoint) }) {
+                        Button(action: { viewModel.onScoringTypeSelected(typeName: "Golden Point") }) {
                             Text("Golden Point")
-                                .font(.system(size: 13))
+                                .font(.system(size: 15, weight: .medium))
                                 .foregroundColor(Color(hex: "eeeff0"))
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 6)
+                                .padding(.vertical, 10)
                         }
                         .buttonStyle(.plain)
                         .background(Color(hex: "222327"))
-                        .cornerRadius(8)
+                        .cornerRadius(10)
 
-                        Button(action: { viewModel.onScoringTypeSelected(ScoringType.starPoint) }) {
+                        Button(action: { viewModel.onScoringTypeSelected(typeName: "Star Point") }) {
                             Text("Star Point")
-                                .font(.system(size: 13))
+                                .font(.system(size: 15, weight: .medium))
                                 .foregroundColor(Color(hex: "eeeff0"))
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 6)
+                                .padding(.vertical, 10)
                         }
                         .buttonStyle(.plain)
                         .background(Color(hex: "222327"))
-                        .cornerRadius(8)
+                        .cornerRadius(10)
                     }
-                    .padding(.horizontal, 14)
+                    .padding(.horizontal, 10)
                 }
                 .transition(.opacity)
             }
@@ -447,15 +447,18 @@ struct WinnerIndicator: View {
 class MatchViewModelWrapper: ObservableObject {
     private let viewModel = MatchViewModel()
     @Published var uiState: MatchUiState
+    @Published var showScoringTypeDialog = false
+    private var scoringTypeChosen = false
     private var timer: Timer?
 
     init() {
-        // Apply saved scoring type if one is set; if nil (ask every time), the in-match dialog handles it
-        if let savedType = ScoringTypeManager.shared.selectedScoringType {
-            viewModel.onScoringTypeSelected(type: savedType)
-        }
-
         self.uiState = viewModel.uiState.value as! MatchUiState
+
+        // Apply saved scoring type if one is set; if "Ask Every Time", the in-match dialog handles it
+        if !ScoringTypeManager.shared.isAskEveryTime {
+            applyScoringType(ScoringTypeManager.shared.selectedTypeName)
+            scoringTypeChosen = true
+        }
 
         // Poll for state changes
         timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
@@ -463,7 +466,7 @@ class MatchViewModelWrapper: ObservableObject {
             let newState = self.viewModel.uiState.value as! MatchUiState
             if self.hasStateChanged(newState) {
                 DispatchQueue.main.async {
-                    self.uiState = newState
+                    self.applyNewState(newState)
                 }
             }
         }
@@ -474,51 +477,41 @@ class MatchViewModelWrapper: ObservableObject {
     }
 
     private func hasStateChanged(_ newState: MatchUiState) -> Bool {
-        return newState.playerOneGameScore != uiState.playerOneGameScore ||
-               newState.playerTwoGameScore != uiState.playerTwoGameScore ||
-               newState.isFinished != uiState.isFinished ||
-               newState.showFinishDialog != uiState.showFinishDialog ||
-               newState.showBackDialog != uiState.showBackDialog ||
-               newState.gameWinner != uiState.gameWinner ||
-               newState.setWinner != uiState.setWinner ||
-               newState.scoringType != uiState.scoringType ||
-               newState.showScoringTypeDialog != uiState.showScoringTypeDialog
+        return newState.playerOneGameScore != uiState.playerOneGameScore
+            || newState.playerTwoGameScore != uiState.playerTwoGameScore
+            || newState.isFinished != uiState.isFinished
+            || newState.showFinishDialog != uiState.showFinishDialog
+            || newState.showBackDialog != uiState.showBackDialog
+            || newState.gameWinner != uiState.gameWinner
+            || newState.setWinner != uiState.setWinner
     }
 
-    func onPlayerOneScored() {
-        viewModel.onPlayerOneScored()
-        updateState()
-    }
-
-    func onPlayerTwoScored() {
-        viewModel.onPlayerTwoScored()
+    // Called from the in-match dialog — typeName is "Advantage", "Golden Point", or "Star Point"
+    func onScoringTypeSelected(typeName: String) {
+        applyScoringType(typeName)
+        scoringTypeChosen = true
+        showScoringTypeDialog = false
         updateState()
     }
 
     func onUndo() {
         viewModel.onUndo()
+        // If the dialog was open, undo means we're no longer at deuce — close it
+        if showScoringTypeDialog {
+            showScoringTypeDialog = false
+            scoringTypeChosen = false
+        }
         updateState()
     }
 
-    func toggleServing() {
-        viewModel.toggleServing()
-        updateState()
-    }
-
-    func onFinishClicked() {
-        viewModel.onFinishClicked()
-        updateState()
-    }
-
-    func onFinishConfirmed() {
-        viewModel.onFinishConfirmed()
-        updateState()
-    }
-
-    func onFinishCancelled() {
-        viewModel.onFinishCancelled()
-        updateState()
-    }
+    func onPlayerOneScored() { viewModel.onPlayerOneScored(); updateState() }
+    func onPlayerTwoScored() { viewModel.onPlayerTwoScored(); updateState() }
+    func toggleServing() { viewModel.toggleServing(); updateState() }
+    func onFinishClicked() { viewModel.onFinishClicked(); updateState() }
+    func onFinishConfirmed() { viewModel.onFinishConfirmed(); updateState() }
+    func onFinishCancelled() { viewModel.onFinishCancelled(); updateState() }
+    func onAnimationComplete() { viewModel.onAnimationComplete(); updateState() }
+    func onSetAnimationComplete() { viewModel.onSetAnimationComplete(); updateState() }
 
     func onBackPressed() -> Bool {
         let result = viewModel.onBackPressed()
@@ -526,34 +519,30 @@ class MatchViewModelWrapper: ObservableObject {
         return result
     }
 
-    func onBackConfirmed() {
-        viewModel.onBackConfirmed()
-        updateState()
-    }
+    func onBackConfirmed() { viewModel.onBackConfirmed(); updateState() }
+    func onBackCancelled() { viewModel.onBackCancelled(); updateState() }
 
-    func onBackCancelled() {
-        viewModel.onBackCancelled()
-        updateState()
-    }
-
-    func onAnimationComplete() {
-        viewModel.onAnimationComplete()
-        updateState()
-    }
-
-    func onSetAnimationComplete() {
-        viewModel.onSetAnimationComplete()
-        updateState()
-    }
-
-    func onScoringTypeSelected(_ type: ScoringType) {
-        viewModel.onScoringTypeSelected(type: type)
-        updateState()
+    private func applyScoringType(_ name: String) {
+        switch name {
+        case "Advantage":    viewModel.setScoringTypeAdvantage()
+        case "Golden Point": viewModel.setScoringTypeGoldenPoint()
+        case "Star Point":   viewModel.setScoringTypeStarPoint()
+        default: break
+        }
     }
 
     private func updateState() {
         DispatchQueue.main.async {
-            self.uiState = self.viewModel.uiState.value as! MatchUiState
+            self.applyNewState(self.viewModel.uiState.value as! MatchUiState)
+        }
+    }
+
+    private func applyNewState(_ newState: MatchUiState) {
+        uiState = newState
+        if !scoringTypeChosen
+            && newState.playerOneGameScore == "40"
+            && newState.playerTwoGameScore == "40" {
+            showScoringTypeDialog = true
         }
     }
 }

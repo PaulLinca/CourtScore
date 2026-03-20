@@ -17,7 +17,7 @@
 "catalan" = "Català";
 
 /* Match Screen */
-"deuce_choose_type" = "40-40! Tria el desempat";
+"deuce_choose_type" = "Tria el desempat";
 "advantage" = "Avantatge";
 "undo" = "Desfer";
 "finish" = "Finalitzar";

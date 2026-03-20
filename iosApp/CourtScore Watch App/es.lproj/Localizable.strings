@@ -17,7 +17,7 @@
 "catalan" = "Catalán";
 
 /* Match Screen */
-"deuce_choose_type" = "40-40! Elige el desempate";
+"deuce_choose_type" = "Elige el desempate";
 "advantage" = "Ventaja";
 "undo" = "Deshacer";
 "finish" = "Finalizar";

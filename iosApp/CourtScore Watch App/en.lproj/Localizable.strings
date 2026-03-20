@@ -17,7 +17,7 @@
 "catalan" = "Catalan";
 
 /* Match Screen */
-"deuce_choose_type" = "40-40! Choose tiebreaker";
+"deuce_choose_type" = "Choose tiebreaker";
 "advantage" = "Advantage";
 "undo" = "Undo";
 "finish" = "Finish";

@@ -83,12 +83,6 @@ class MatchViewModel {
         }
     }
 
-    fun onScoringTypeSelected(type: ScoringType) {
-        engine.setScoringType(type)
-        scoringTypeChosen = true
-        showScoringTypeDialog = false
-        updateUiState()
-    }
 
     fun onAnimationComplete() {
         gameWinner = null
@@ -114,8 +108,15 @@ class MatchViewModel {
 
     fun setScoringType(type: ScoringType) {
         engine.setScoringType(type)
+        scoringTypeChosen = true
+        showScoringTypeDialog = false
         updateUiState()
     }
+
+    // Convenience helpers for Swift interop (avoids exposing ScoringType in the ObjC interface)
+    fun setScoringTypeAdvantage() = setScoringType(ScoringType.ADVANTAGE)
+    fun setScoringTypeGoldenPoint() = setScoringType(ScoringType.GOLDEN_POINT)
+    fun setScoringTypeStarPoint() = setScoringType(ScoringType.STAR_POINT)
 
     fun onFinishClicked() {
         showFinishDialog = true
