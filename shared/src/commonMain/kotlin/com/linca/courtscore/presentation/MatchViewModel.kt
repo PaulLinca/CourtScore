@@ -12,6 +12,8 @@ class MatchViewModel(
     private val strategy: SportStrategy = PadelStrategy()
 ) {
     private var playerOneServing = true
+    private var serveFromRight = true
+    private val serveFromRightHistory = mutableListOf<Boolean>()
     private var showFinishDialog = false
     private var showBackDialog = false
     private var gameWinner: Int? = null
@@ -23,7 +25,13 @@ class MatchViewModel(
 
     fun onPlayerOneScored() {
         val result = strategy.pointForPlayerOne()
-        if (result.scoringUnitWinner != null) playerOneServing = !playerOneServing
+        serveFromRightHistory.add(serveFromRight)
+        if (result.scoringUnitWinner != null) {
+            playerOneServing = !playerOneServing
+            serveFromRight = true
+        } else {
+            serveFromRight = !serveFromRight
+        }
         gameWinner = result.scoringUnitWinner
         setWinner = result.periodWinner
         goldenPointWinner = result.goldenPointWinner
@@ -32,7 +40,13 @@ class MatchViewModel(
 
     fun onPlayerTwoScored() {
         val result = strategy.pointForPlayerTwo()
-        if (result.scoringUnitWinner != null) playerOneServing = !playerOneServing
+        serveFromRightHistory.add(serveFromRight)
+        if (result.scoringUnitWinner != null) {
+            playerOneServing = !playerOneServing
+            serveFromRight = true
+        } else {
+            serveFromRight = !serveFromRight
+        }
         gameWinner = result.scoringUnitWinner
         setWinner = result.periodWinner
         goldenPointWinner = result.goldenPointWinner
@@ -57,6 +71,9 @@ class MatchViewModel(
     fun onUndo() {
         val result = strategy.undo()
         if (result.scoringUnitWinner != null) playerOneServing = !playerOneServing
+        if (serveFromRightHistory.isNotEmpty()) {
+            serveFromRight = serveFromRightHistory.removeAt(serveFromRightHistory.lastIndex)
+        }
         goldenPointWinner = null
         updateUiState()
     }
@@ -135,7 +152,8 @@ class MatchViewModel(
             showScoringTypeDialog = data.showConfigDialog,
             goldenPointWinner = goldenPointWinner,
             showSubScores = data.showSubScores,
-            showServingIndicator = data.showServingIndicator
+            showServingIndicator = data.showServingIndicator,
+            serveFromRight = serveFromRight
         )
     }
 
@@ -163,5 +181,6 @@ data class MatchUiState(
     val showScoringTypeDialog: Boolean = false,
     val goldenPointWinner: Int? = null,
     val showSubScores: Boolean = true,
-    val showServingIndicator: Boolean = true
+    val showServingIndicator: Boolean = true,
+    val serveFromRight: Boolean = true
 )

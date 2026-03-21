@@ -232,6 +232,8 @@ private fun MatchScreenContent(
                 gameWinner = uiState.gameWinner,
                 goldenPointWinner = uiState.goldenPointWinner,
                 onAnimationComplete = viewModel::onAnimationComplete,
+                serveFromRight = if (uiState.showServingIndicator) uiState.serveFromRight else null,
+                serveColor = if (uiState.playerOneServing) colorScheme.playerOneColor else colorScheme.playerTwoColor,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -479,6 +481,8 @@ fun CurrentGameScore(
     gameWinner: Int? = null,
     goldenPointWinner: Int? = null,
     onAnimationComplete: () -> Unit = {},
+    serveFromRight: Boolean? = null,
+    serveColor: Color = Color.White,
     modifier: Modifier
 ) {
     val configuration = LocalConfiguration.current
@@ -490,32 +494,55 @@ fun CurrentGameScore(
         else -> 10.dp
     }
 
-    Row(
-        modifier = modifier
-            .padding(vertical = verticalPadding),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        GameScoreButton(
-            score = player1GameScore,
-            onClick = onPlayer1Score,
-            enabled = enabled,
-            modifier = Modifier.weight(1f),
-            primaryColor = playerOneColor,
-            showWinAnimation = gameWinner != null,
-            isGoldenPointWin = goldenPointWinner == 1,
-            onAnimationComplete = onAnimationComplete
-        )
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                .padding(vertical = verticalPadding),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            GameScoreButton(
+                score = player1GameScore,
+                onClick = onPlayer1Score,
+                enabled = enabled,
+                modifier = Modifier.weight(1f),
+                primaryColor = playerOneColor,
+                showWinAnimation = gameWinner != null,
+                isGoldenPointWin = goldenPointWinner == 1,
+                onAnimationComplete = onAnimationComplete
+            )
 
-        GameScoreButton(
-            score = player2GameScore,
-            onClick = onPlayer2Score,
-            enabled = enabled,
-            modifier = Modifier.weight(1f),
-            primaryColor = playerTwoColor,
-            showWinAnimation = gameWinner != null,
-            isGoldenPointWin = goldenPointWinner == 2,
-            onAnimationComplete = onAnimationComplete
-        )
+            GameScoreButton(
+                score = player2GameScore,
+                onClick = onPlayer2Score,
+                enabled = enabled,
+                modifier = Modifier.weight(1f),
+                primaryColor = playerTwoColor,
+                showWinAnimation = gameWinner != null,
+                isGoldenPointWin = goldenPointWinner == 2,
+                onAnimationComplete = onAnimationComplete
+            )
+        }
+
+        if (serveFromRight != null) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                    if (!serveFromRight) {
+                        Box(modifier = Modifier.size(6.dp).background(serveColor, CircleShape))
+                    }
+                }
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                    if (serveFromRight) {
+                        Box(modifier = Modifier.size(6.dp).background(serveColor, CircleShape))
+                    }
+                }
+            }
+        }
     }
 }
 
