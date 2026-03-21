@@ -79,10 +79,11 @@ fun MainScreen(
 ) {
     val padelLabel = stringResource(R.string.sport_padel)
     val footballLabel = stringResource(R.string.sport_football)
+    val badmintonLabel = stringResource(R.string.sport_badminton)
     val settingsLabel = stringResource(R.string.settings)
     val appTitle = stringResource(R.string.app_title)
 
-    val actions = remember(onNewMatch, onSettingsClick, enabledSports, padelLabel, footballLabel, settingsLabel) {
+    val actions = remember(onNewMatch, onSettingsClick, enabledSports, padelLabel, footballLabel, badmintonLabel, settingsLabel) {
         buildList {
             if (Sport.PADEL in enabledSports) add(
                 ActionButton(
@@ -96,6 +97,13 @@ fun MainScreen(
                     description = footballLabel,
                     drawableId = R.drawable.football,
                     onClick = { onNewMatch(Sport.FOOTBALL) }
+                )
+            )
+            if (Sport.BADMINTON in enabledSports) add(
+                ActionButton(
+                    description = badmintonLabel,
+                    drawableId = R.drawable.badminton,
+                    onClick = { onNewMatch(Sport.BADMINTON) }
                 )
             )
             add(

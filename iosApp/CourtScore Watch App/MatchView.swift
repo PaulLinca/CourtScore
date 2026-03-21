@@ -7,9 +7,15 @@ struct MatchView: View {
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
     @Environment(\.dismiss) var dismiss
     @State private var showSetAnimation = false
+    private let sport: Sport
 
     init(sport: Sport = Sport.padel) {
+        self.sport = sport
         _viewModel = StateObject(wrappedValue: MatchViewModelWrapper(sport: sport))
+    }
+
+    private var servingIconName: String {
+        sport == Sport.badminton ? "figure.badminton" : "tennisball.fill"
     }
 
     // Detect screen size for responsive layout
@@ -52,7 +58,8 @@ struct MatchView: View {
                             onToggleServing: viewModel.toggleServing,
                             enabled: !viewModel.uiState.isFinished,
                             playerOneColor: colorSchemeManager.playerOneColor,
-                            playerTwoColor: colorSchemeManager.playerTwoColor
+                            playerTwoColor: colorSchemeManager.playerTwoColor,
+                            iconName: servingIconName
                         )
                     }
 
@@ -437,11 +444,12 @@ struct ServingIndicator: View {
     let enabled: Bool
     let playerOneColor: Color
     let playerTwoColor: Color
+    var iconName: String = "tennisball.fill"
 
     var body: some View {
         Button(action: onToggleServing) {
             VStack(spacing: 2) {
-                Image(systemName: "tennisball.fill")
+                Image(systemName: iconName)
                     .font(.system(size: 10))
                     .foregroundColor(isPlayerOneServing ?
                         (enabled ? playerOneColor : playerOneColor.opacity(0.3)) :
@@ -449,7 +457,7 @@ struct ServingIndicator: View {
 
                 Spacer()
 
-                Image(systemName: "tennisball.fill")
+                Image(systemName: iconName)
                     .font(.system(size: 10))
                     .foregroundColor(!isPlayerOneServing ?
                         (enabled ? playerTwoColor : playerTwoColor.opacity(0.3)) :
@@ -501,9 +509,13 @@ class MatchViewModelWrapper: ObservableObject {
     init(sport: Sport = Sport.padel) {
         self.sport = sport
         // Use companion factory methods to avoid exposing SportStrategy at the ObjC boundary.
-        self.viewModel = sport == Sport.football
-            ? MatchViewModel.companion.forFootball()
-            : MatchViewModel.companion.forPadel()
+        if sport == Sport.football {
+            self.viewModel = MatchViewModel.companion.forFootball()
+        } else if sport == Sport.badminton {
+            self.viewModel = MatchViewModel.companion.forBadminton()
+        } else {
+            self.viewModel = MatchViewModel.companion.forPadel()
+        }
         self.uiState = viewModel.uiState.value as! MatchUiState
 
         // Apply saved scoring type for padel if one is set; football ignores this.

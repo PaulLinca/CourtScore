@@ -87,6 +87,7 @@ fun SettingsScreen(
                 val sportName = when (sport) {
                     Sport.PADEL -> stringResource(R.string.sport_padel)
                     Sport.FOOTBALL -> stringResource(R.string.sport_football)
+                    Sport.BADMINTON -> stringResource(R.string.sport_badminton)
                 }
                 SportToggleCard(
                     sportName = sportName,

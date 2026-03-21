@@ -14,6 +14,9 @@ struct MainScreen: View {
         if enabledSports.contains("FOOTBALL") {
             items.append(("soccerball", "sport_football".localized(), AnyView(MatchView(sport: Sport.football))))
         }
+        if enabledSports.contains("BADMINTON") {
+            items.append(("figure.badminton", "sport_badminton".localized(), AnyView(MatchView(sport: Sport.badminton))))
+        }
         items.append(("gear", "settings".localized(), AnyView(SettingsView())))
         return items
     }

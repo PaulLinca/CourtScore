@@ -10,6 +10,7 @@
     <string name="select_sport">Select sport</string>
     <string name="sport_padel">Padel</string>
     <string name="sport_football">Football</string>
+    <string name="sport_badminton">Badminton</string>
 
     <!-- Sports Section -->
     <string name="sports">Sports</string>

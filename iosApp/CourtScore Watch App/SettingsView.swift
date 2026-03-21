@@ -16,7 +16,8 @@ struct SettingsView: View {
 
     private let allSports: [(key: String, label: String)] = [
         ("PADEL", "sport_padel"),
-        ("FOOTBALL", "sport_football")
+        ("FOOTBALL", "sport_football"),
+        ("BADMINTON", "sport_badminton")
     ]
 
     var body: some View {

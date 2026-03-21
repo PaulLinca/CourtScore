@@ -1,6 +1,7 @@
 package com.linca.courtscore.presentation
 
 import com.linca.courtscore.domain.model.ScoringType
+import com.linca.courtscore.engine.BadmintonStrategy
 import com.linca.courtscore.engine.FootballStrategy
 import com.linca.courtscore.engine.PadelStrategy
 import com.linca.courtscore.engine.SportStrategy
@@ -141,7 +142,7 @@ class MatchViewModel(
             playerOneSetScores = data.playerOneSubScores,
             playerTwoSetScores = data.playerTwoSubScores,
             isFinished = data.isFinished,
-            playerOneServing = playerOneServing,
+            playerOneServing = data.playerOneServing ?: playerOneServing,
             playerOneWon = data.playerOneWins,
             playerTwoWon = data.playerTwoWins,
             showFinishDialog = showFinishDialog,
@@ -153,7 +154,7 @@ class MatchViewModel(
             goldenPointWinner = goldenPointWinner,
             showSubScores = data.showSubScores,
             showServingIndicator = data.showServingIndicator,
-            serveFromRight = serveFromRight
+            serveFromRight = data.serveFromRight ?: serveFromRight
         )
     }
 
@@ -161,6 +162,7 @@ class MatchViewModel(
         // Factory helpers for Swift interop — avoids exposing SportStrategy at the ObjC boundary.
         fun forPadel(): MatchViewModel = MatchViewModel(PadelStrategy())
         fun forFootball(): MatchViewModel = MatchViewModel(FootballStrategy())
+        fun forBadminton(): MatchViewModel = MatchViewModel(BadmintonStrategy())
     }
 }
 

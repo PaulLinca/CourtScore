@@ -38,7 +38,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
@@ -75,6 +74,7 @@ import com.linca.courtscore.presentation.theme.SecondaryTextColor
 import com.linca.courtscore.data.PreferencesManager
 import com.linca.courtscore.domain.model.Sport
 import com.linca.courtscore.domain.model.ScoringType
+import com.linca.courtscore.engine.BadmintonStrategy
 import com.linca.courtscore.engine.FootballStrategy
 import com.linca.courtscore.engine.PadelStrategy
 import com.linca.courtscorewear.R
@@ -89,6 +89,7 @@ fun MatchScreen(
         when (sport) {
             Sport.PADEL -> MatchViewModel(PadelStrategy())
             Sport.FOOTBALL -> MatchViewModel(FootballStrategy())
+            Sport.BADMINTON -> MatchViewModel(BadmintonStrategy())
         }
     },
     preferencesManager: PreferencesManager? = null,
@@ -141,7 +142,8 @@ fun MatchScreen(
                 uiState = uiState,
                 viewModel = viewModel,
                 colorScheme = colorScheme,
-                onNavigateBack = onNavigateBack
+                onNavigateBack = onNavigateBack,
+                sport = sport
             )
         }
     }
@@ -153,7 +155,8 @@ private fun MatchScreenContent(
     viewModel: MatchViewModel,
     colorScheme: ColorScheme,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sport: Sport
 ) {
     LaunchedEffect(uiState.gameWinner) {
         if (uiState.gameWinner != null) {
@@ -198,7 +201,8 @@ private fun MatchScreenContent(
                         onToggleServing = viewModel::toggleServing,
                         enabled = !uiState.isFinished,
                         playerOneColor = colorScheme.playerOneColor,
-                        playerTwoColor = colorScheme.playerTwoColor
+                        playerTwoColor = colorScheme.playerTwoColor,
+                        iconDrawableId = if (sport == Sport.BADMINTON) R.drawable.badminton else R.drawable.tennis_ball
                     )
                 }
 
@@ -694,7 +698,8 @@ fun ServingIndicator(
     onToggleServing: () -> Unit,
     enabled: Boolean = true,
     playerOneColor: Color,
-    playerTwoColor: Color
+    playerTwoColor: Color,
+    iconDrawableId: Int = R.drawable.tennis_ball
 ) {
     Button(
         onClick = onToggleServing,
@@ -711,7 +716,7 @@ fun ServingIndicator(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.tennis_ball),
+                painter = painterResource(iconDrawableId),
                 contentDescription = stringResource(R.string.player_one_serving),
                 tint = if (isPlayerOneServing)
                     (if (enabled) playerOneColor else playerOneColor.copy(alpha = 0.3f))
@@ -723,7 +728,7 @@ fun ServingIndicator(
             Spacer(Modifier.weight(1f))
 
             Icon(
-                painter = painterResource(R.drawable.tennis_ball),
+                painter = painterResource(iconDrawableId),
                 contentDescription = stringResource(R.string.player_two_serving),
                 tint = if (!isPlayerOneServing)
                     (if (enabled) playerTwoColor else playerTwoColor.copy(alpha = 0.3f))

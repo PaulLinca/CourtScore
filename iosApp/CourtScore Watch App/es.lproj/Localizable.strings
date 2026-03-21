@@ -7,6 +7,7 @@
 "select_sport" = "Seleccionar deporte";
 "sport_padel" = "Pádel";
 "sport_football" = "Fútbol";
+"sport_badminton" = "Bádminton";
 
 /* Settings Screen */
 "sports" = "Deportes";

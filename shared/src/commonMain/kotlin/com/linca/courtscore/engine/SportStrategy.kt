@@ -35,7 +35,19 @@ data class SportDisplayData(
     /** Whether to show the sub-scores table (sets in padel, periods in other sports). */
     val showSubScores: Boolean = true,
     /** Whether to show the serving indicator. */
-    val showServingIndicator: Boolean = true
+    val showServingIndicator: Boolean = true,
+    /**
+     * When non-null, overrides the ViewModel's serve-side tracking. Use this for sports
+     * (e.g. badminton) where serve side is determined by a rule rather than positional alternation.
+     * Null means "let the ViewModel manage serve side as usual."
+     */
+    val serveFromRight: Boolean? = null,
+    /**
+     * When non-null, overrides the ViewModel's server tracking. Use this for sports
+     * (e.g. badminton) where the server is always the point winner rather than alternating.
+     * Null means "let the ViewModel manage the current server as usual."
+     */
+    val playerOneServing: Boolean? = null
 )
 
 /**
