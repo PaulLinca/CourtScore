@@ -1,6 +1,7 @@
 package com.linca.courtscore.presentation
 
 import android.graphics.BlurMaskFilter
+import android.widget.Space
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -532,17 +534,17 @@ fun CurrentGameScore(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 4.dp),
+                    .padding(top = 2.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     if (!serveFromRight) {
-                        Box(modifier = Modifier.size(6.dp).background(serveColor, CircleShape))
+                        Box(modifier = Modifier.size(3.dp).background(serveColor, CircleShape))
                     }
                 }
                 Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                     if (serveFromRight) {
-                        Box(modifier = Modifier.size(6.dp).background(serveColor, CircleShape))
+                        Box(modifier = Modifier.size(3.dp).background(serveColor, CircleShape))
                     }
                 }
             }
@@ -606,7 +608,7 @@ private fun GameScoreButton(
     isGoldenPointWin: Boolean = false,
     onAnimationComplete: () -> Unit = {}
 ) {
-    val goldenColor = Color(0xFFFFD700)
+    val goldenColor = Color(0xFFFFDC5F)
     val shouldAnimate = showWinAnimation && score == "0"
 
     LaunchedEffect(showWinAnimation) {
