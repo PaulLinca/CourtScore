@@ -14,8 +14,8 @@ struct MatchView: View {
         _viewModel = StateObject(wrappedValue: MatchViewModelWrapper(sport: sport))
     }
 
-    private var servingIconName: String {
-        sport == Sport.badminton ? "figure.badminton" : "tennisball.fill"
+    private var servingIcon: Image {
+        sport == Sport.badminton ? Image("badminton") : Image(systemName: "tennisball.fill")
     }
 
     // Detect screen size for responsive layout
@@ -59,7 +59,7 @@ struct MatchView: View {
                             enabled: !viewModel.uiState.isFinished,
                             playerOneColor: colorSchemeManager.playerOneColor,
                             playerTwoColor: colorSchemeManager.playerTwoColor,
-                            iconName: servingIconName
+                            servingIcon: servingIcon
                         )
                     }
 
@@ -444,12 +444,12 @@ struct ServingIndicator: View {
     let enabled: Bool
     let playerOneColor: Color
     let playerTwoColor: Color
-    var iconName: String = "tennisball.fill"
+    var servingIcon: Image = Image(systemName: "tennisball.fill")
 
     var body: some View {
         Button(action: onToggleServing) {
             VStack(spacing: 2) {
-                Image(systemName: iconName)
+                servingIcon
                     .font(.system(size: 10))
                     .foregroundColor(isPlayerOneServing ?
                         (enabled ? playerOneColor : playerOneColor.opacity(0.3)) :
@@ -457,7 +457,7 @@ struct ServingIndicator: View {
 
                 Spacer()
 
-                Image(systemName: iconName)
+                servingIcon
                     .font(.system(size: 10))
                     .foregroundColor(!isPlayerOneServing ?
                         (enabled ? playerTwoColor : playerTwoColor.opacity(0.3)) :
