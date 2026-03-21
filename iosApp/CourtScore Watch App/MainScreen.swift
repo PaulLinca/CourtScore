@@ -4,14 +4,14 @@ import shared
 struct MainScreen: View {
     @State private var selectedIndex = 0
     @StateObject private var languageManager = LanguageManager.shared
-    @StateObject private var sportVisibilityManager = SportVisibilityManager.shared
+    @State private var enabledSports: Set<String> = SportVisibilityManager.shared.enabledSports
 
     var menuItems: [(icon: String, label: String, destination: AnyView)] {
         var items: [(icon: String, label: String, destination: AnyView)] = []
-        if sportVisibilityManager.isEnabled("PADEL") {
+        if enabledSports.contains("PADEL") {
             items.append(("tennisball.fill", "sport_padel".localized(), AnyView(MatchView(sport: Sport.padel))))
         }
-        if sportVisibilityManager.isEnabled("FOOTBALL") {
+        if enabledSports.contains("FOOTBALL") {
             items.append(("soccerball", "sport_football".localized(), AnyView(MatchView(sport: Sport.football))))
         }
         items.append(("gear", "settings".localized(), AnyView(SettingsView())))
@@ -71,12 +71,18 @@ struct MainScreen: View {
 
                 Spacer(minLength: 10)
 
-                Text(menuItems[selectedIndex].label)
+                Text(selectedIndex < menuItems.count ? menuItems[selectedIndex].label : "")
                     .font(.headline)
                     .foregroundColor(.white)
                     .animation(.easeInOut, value: selectedIndex)
             }
             .background(Color.black)
+            .onAppear {
+                enabledSports = SportVisibilityManager.shared.enabledSports
+                if selectedIndex >= menuItems.count {
+                    selectedIndex = menuItems.count - 1
+                }
+            }
         }
     }
 }
