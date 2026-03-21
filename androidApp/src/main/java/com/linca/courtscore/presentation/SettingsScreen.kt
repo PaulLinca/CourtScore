@@ -39,6 +39,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.linca.courtscore.data.PreferencesManager
 import com.linca.courtscore.domain.model.ScoringType
+import com.linca.courtscore.domain.model.Sport
 import com.linca.courtscore.presentation.theme.BackgroundColor
 import com.linca.courtscore.presentation.theme.ColorScheme
 import com.linca.courtscore.presentation.theme.ColorSchemes
@@ -56,6 +57,7 @@ fun SettingsScreen(
     val currentColorSchemeName by preferencesManager.colorSchemeFlow.collectAsState(initial = ColorSchemes.SunsetOcean.name)
     val currentLanguage by preferencesManager.languageFlow.collectAsState(initial = "system")
     val currentScoringType by preferencesManager.scoringTypeFlow.collectAsState(initial = null)
+    val enabledSports by preferencesManager.enabledSportsFlow.collectAsState(initial = Sport.values().toSet())
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberScalingLazyListState()
     val context = LocalContext.current
@@ -71,6 +73,39 @@ fun SettingsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
+                Text(
+                    text = stringResource(R.string.sports),
+                    style = MaterialTheme.typography.title3,
+                    color = PrimaryTextColor,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            items(Sport.values().toList()) { sport ->
+                val sportName = when (sport) {
+                    Sport.PADEL -> stringResource(R.string.sport_padel)
+                    Sport.FOOTBALL -> stringResource(R.string.sport_football)
+                }
+                SportToggleCard(
+                    sportName = sportName,
+                    isEnabled = sport in enabledSports,
+                    onToggle = {
+                        coroutineScope.launch {
+                            val updated = if (sport in enabledSports) {
+                                if (enabledSports.size > 1) enabledSports - sport else enabledSports
+                            } else {
+                                enabledSports + sport
+                            }
+                            preferencesManager.saveEnabledSports(updated)
+                        }
+                    }
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.language),
                     style = MaterialTheme.typography.title3,
@@ -302,6 +337,31 @@ fun LanguageCard(
                 )
                 Spacer(Modifier.weight(1f))
             }
+        }
+    )
+}
+
+@Composable
+fun SportToggleCard(
+    sportName: String,
+    isEnabled: Boolean,
+    onToggle: () -> Unit
+) {
+    Chip(
+        onClick = onToggle,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp),
+        colors = ChipDefaults.chipColors(
+            backgroundColor = if (isEnabled) PadelBlue.copy(alpha = 0.3f) else ElevatedBackgroundColor
+        ),
+        label = {
+            Text(
+                text = sportName,
+                style = MaterialTheme.typography.body1,
+                color = PrimaryTextColor,
+                fontWeight = if (isEnabled) FontWeight.Bold else FontWeight.Normal
+            )
         }
     )
 }

@@ -9,6 +9,7 @@
 "sport_football" = "Fútbol";
 
 /* Settings Screen */
+"sports" = "Deportes";
 "color_scheme" = "Esquema de colores";
 "language" = "Idioma";
 "scoring_type" = "Tipo de puntuación";

@@ -68,20 +68,14 @@ fun WearApp(
             startDestination = "start"
         ) {
             composable("start") {
+                val enabledSports by preferencesManager.enabledSportsFlow.collectAsState(initial = Sport.values().toSet())
                 MainScreen(
-                    onNewMatch = {
-                        navController.navigate("sportSelect")
+                    onNewMatch = { sport ->
+                        navController.navigate("newMatch/${sport.name}")
                     },
+                    enabledSports = enabledSports,
                     onSettingsClick = {
                         navController.navigate("settings")
-                    }
-                )
-            }
-
-            composable("sportSelect") {
-                SportSelectScreen(
-                    onSportSelected = { sport ->
-                        navController.navigate("newMatch/${sport.name}")
                     }
                 )
             }

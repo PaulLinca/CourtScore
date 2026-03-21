@@ -4,12 +4,18 @@ import shared
 struct MainScreen: View {
     @State private var selectedIndex = 0
     @StateObject private var languageManager = LanguageManager.shared
+    @StateObject private var sportVisibilityManager = SportVisibilityManager.shared
 
     var menuItems: [(icon: String, label: String, destination: AnyView)] {
-        [
-            ("tennisball.fill", "new_match".localized(), AnyView(SportSelectView())),
-            ("gear", "settings".localized(), AnyView(SettingsView()))
-        ]
+        var items: [(icon: String, label: String, destination: AnyView)] = []
+        if sportVisibilityManager.isEnabled("PADEL") {
+            items.append(("tennisball.fill", "sport_padel".localized(), AnyView(MatchView(sport: Sport.padel))))
+        }
+        if sportVisibilityManager.isEnabled("FOOTBALL") {
+            items.append(("soccerball", "sport_football".localized(), AnyView(MatchView(sport: Sport.football))))
+        }
+        items.append(("gear", "settings".localized(), AnyView(SettingsView())))
+        return items
     }
 
     // Detect screen size for responsive layout

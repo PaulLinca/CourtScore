@@ -11,6 +11,9 @@
     <string name="sport_padel">Pàdel</string>
     <string name="sport_football">Futbol</string>
 
+    <!-- Sports Section -->
+    <string name="sports">Esports</string>
+
     <!-- Settings Screen -->
     <string name="color_scheme">Esquema de colors</string>
     <string name="language">Idioma</string>

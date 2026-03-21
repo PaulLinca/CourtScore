@@ -12,10 +12,29 @@ struct SettingsView: View {
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
     @StateObject private var languageManager = LanguageManager.shared
     @StateObject private var scoringTypeManager = ScoringTypeManager.shared
+    @StateObject private var sportVisibilityManager = SportVisibilityManager.shared
+
+    private let allSports: [(key: String, label: String)] = [
+        ("PADEL", "sport_padel"),
+        ("FOOTBALL", "sport_football")
+    ]
 
     var body: some View {
         ScrollView {
             VStack(spacing: 12) {
+                Text("sports".localized())
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.top, 8)
+
+                ForEach(allSports, id: \.key) { sport in
+                    SportToggleCard(
+                        name: sport.label.localized(),
+                        isEnabled: sportVisibilityManager.isEnabled(sport.key),
+                        onToggle: { sportVisibilityManager.toggle(sport.key) }
+                    )
+                }
+
                 Text("language".localized())
                     .font(.headline)
                     .foregroundColor(.white)
@@ -65,6 +84,29 @@ struct SettingsView: View {
             .padding(.bottom, 16)
         }
         .background(Color(hex: "000000"))
+    }
+}
+
+struct SportToggleCard: View {
+    let name: String
+    let isEnabled: Bool
+    let onToggle: () -> Void
+
+    var body: some View {
+        Button(action: onToggle) {
+            Text(name)
+                .font(.system(size: 14, weight: isEnabled ? .bold : .regular))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(12)
+                .background(isEnabled ? Color(hex: "1E8FD5").opacity(0.3) : Color(hex: "222327"))
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(isEnabled ? Color.white : Color.clear, lineWidth: isEnabled ? 2 : 0)
+                )
+        }
+        .buttonStyle(.plain)
     }
 }
 

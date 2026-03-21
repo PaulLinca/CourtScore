@@ -32,6 +32,7 @@ import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.linca.courtscore.domain.model.Sport
 import com.linca.courtscore.presentation.theme.BackgroundColor
 import com.linca.courtscore.presentation.theme.PadelBlue
 import com.linca.courtscore.presentation.theme.PrimaryTextColor
@@ -72,26 +73,39 @@ private fun PagerIndicator(
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    onNewMatch: () -> Unit,
+    onNewMatch: (Sport) -> Unit,
+    enabledSports: Set<Sport> = Sport.values().toSet(),
     onSettingsClick: () -> Unit = {}
 ) {
-    val newMatchLabel = stringResource(R.string.new_match)
+    val padelLabel = stringResource(R.string.sport_padel)
+    val footballLabel = stringResource(R.string.sport_football)
     val settingsLabel = stringResource(R.string.settings)
     val appTitle = stringResource(R.string.app_title)
 
-    val actions = remember(onNewMatch, onSettingsClick, newMatchLabel, settingsLabel) {
-        listOf(
-            ActionButton(
-                description = newMatchLabel,
-                drawableId = R.drawable.tennis_ball_filled,
-                onClick = onNewMatch
-            ),
-            ActionButton(
-                description = settingsLabel,
-                drawableId = R.drawable.settings_filled,
-                onClick = onSettingsClick
+    val actions = remember(onNewMatch, onSettingsClick, enabledSports, padelLabel, footballLabel, settingsLabel) {
+        buildList {
+            if (Sport.PADEL in enabledSports) add(
+                ActionButton(
+                    description = padelLabel,
+                    drawableId = R.drawable.tennis_ball_filled,
+                    onClick = { onNewMatch(Sport.PADEL) }
+                )
             )
-        )
+            if (Sport.FOOTBALL in enabledSports) add(
+                ActionButton(
+                    description = footballLabel,
+                    drawableId = R.drawable.football,
+                    onClick = { onNewMatch(Sport.FOOTBALL) }
+                )
+            )
+            add(
+                ActionButton(
+                    description = settingsLabel,
+                    drawableId = R.drawable.settings_filled,
+                    onClick = onSettingsClick
+                )
+            )
+        }
     }
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { actions.size })
     val currentActionLabel by remember(actions, pagerState) {
