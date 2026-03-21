@@ -90,7 +90,9 @@ struct MatchView: View {
                     spacing: gameScoreSpacing,
                     height: gameScoreHeight,
                     fontSize: scoreFontSize,
-                    cornerRadius: scoreCornerRadius
+                    cornerRadius: scoreCornerRadius,
+                    serveFromRight: viewModel.uiState.showServingIndicator ? viewModel.uiState.serveFromRight : nil,
+                    serveColor: viewModel.uiState.playerOneServing ? colorSchemeManager.playerOneColor : colorSchemeManager.playerTwoColor
                 )
                                 
                 HStack(spacing: bottomButtonSpacing) {
@@ -283,34 +285,52 @@ struct CurrentGameScore: View {
     let height: CGFloat
     let fontSize: CGFloat
     let cornerRadius: CGFloat
+    var serveFromRight: Bool? = nil
+    var serveColor: Color = .white
 
     var body: some View {
-        HStack(spacing: spacing) {
-            GameScoreButton(
-                score: player1GameScore,
-                onClick: onPlayer1Score,
-                enabled: enabled,
-                primaryColor: playerOneColor,
-                showWinAnimation: gameWinner != nil,
-                isGoldenPointWin: goldenWinner == 1,
-                onAnimationComplete: onAnimationComplete,
-                fontSize: fontSize,
-                cornerRadius: cornerRadius
-            )
+        VStack(spacing: 4) {
+            HStack(spacing: spacing) {
+                GameScoreButton(
+                    score: player1GameScore,
+                    onClick: onPlayer1Score,
+                    enabled: enabled,
+                    primaryColor: playerOneColor,
+                    showWinAnimation: gameWinner != nil,
+                    isGoldenPointWin: goldenWinner == 1,
+                    onAnimationComplete: onAnimationComplete,
+                    fontSize: fontSize,
+                    cornerRadius: cornerRadius
+                )
 
-            GameScoreButton(
-                score: player2GameScore,
-                onClick: onPlayer2Score,
-                enabled: enabled,
-                primaryColor: playerTwoColor,
-                showWinAnimation: gameWinner != nil,
-                isGoldenPointWin: goldenWinner == 2,
-                onAnimationComplete: onAnimationComplete,
-                fontSize: fontSize,
-                cornerRadius: cornerRadius
-            )
+                GameScoreButton(
+                    score: player2GameScore,
+                    onClick: onPlayer2Score,
+                    enabled: enabled,
+                    primaryColor: playerTwoColor,
+                    showWinAnimation: gameWinner != nil,
+                    isGoldenPointWin: goldenWinner == 2,
+                    onAnimationComplete: onAnimationComplete,
+                    fontSize: fontSize,
+                    cornerRadius: cornerRadius
+                )
+            }
+            .frame(height: height)
+
+            if let serveFromRight = serveFromRight {
+                HStack(spacing: spacing) {
+                    Spacer()
+                    Circle()
+                        .fill(serveFromRight ? Color.clear : serveColor)
+                        .frame(width: 6, height: 6)
+                    Spacer()
+                    Circle()
+                        .fill(serveFromRight ? serveColor : Color.clear)
+                        .frame(width: 6, height: 6)
+                    Spacer()
+                }
+            }
         }
-        .frame(height: height)
     }
 }
 
@@ -516,6 +536,8 @@ class MatchViewModelWrapper: ObservableObject {
             || newState.showBackDialog != uiState.showBackDialog
             || newState.gameWinner != uiState.gameWinner
             || newState.setWinner != uiState.setWinner
+            || newState.serveFromRight != uiState.serveFromRight
+            || newState.playerOneServing != uiState.playerOneServing
     }
 
     // Called from the in-match dialog — typeName is "Advantage", "Golden Point", or "Star Point"
