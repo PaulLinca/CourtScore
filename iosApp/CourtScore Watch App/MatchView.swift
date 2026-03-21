@@ -522,7 +522,9 @@ class MatchViewModelWrapper: ObservableObject {
     func onScoringTypeSelected(typeName: String) {
         applyScoringType(typeName)
         scoringTypeChosen = true
-        showScoringTypeDialog = false
+        withAnimation(.easeInOut(duration: 0.3)) {
+            showScoringTypeDialog = false
+        }
         updateState()
     }
 
@@ -530,7 +532,9 @@ class MatchViewModelWrapper: ObservableObject {
         viewModel.onUndo()
         // If the dialog was open, undo means we're no longer at deuce — close it
         if showScoringTypeDialog {
-            showScoringTypeDialog = false
+            withAnimation(.easeInOut(duration: 0.3)) {
+                showScoringTypeDialog = false
+            }
             scoringTypeChosen = false
         }
         wasAtGoldenPointDeuce = false
@@ -598,7 +602,9 @@ class MatchViewModelWrapper: ObservableObject {
         if !scoringTypeChosen
             && newState.playerOneGameScore == "40"
             && newState.playerTwoGameScore == "40" {
-            showScoringTypeDialog = true
+            withAnimation(.easeInOut(duration: 0.4)) {
+                showScoringTypeDialog = true
+            }
         }
         if wasAtGoldenPointDeuce && newState.gameWinner != nil && previousGameWinner == nil {
             goldenWinnerPlayer = Int(newState.gameWinner!.int32Value)

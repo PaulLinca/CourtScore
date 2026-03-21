@@ -376,7 +376,11 @@ private fun MatchScreenContent(
             )
         }
 
-        if (uiState.showScoringTypeDialog) {
+        AnimatedVisibility(
+            visible = uiState.showScoringTypeDialog,
+            enter = fadeIn(animationSpec = tween(durationMillis = 400)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 300))
+        ) {
             ScoringTypeSelectionDialog(
                 onScoringTypeSelected = viewModel::setScoringType
             )
