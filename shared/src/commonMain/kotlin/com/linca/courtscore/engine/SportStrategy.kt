@@ -47,7 +47,7 @@ data class SportDisplayData(
 interface SportStrategy {
     fun pointForPlayerOne(): ScoringResult
     fun pointForPlayerTwo(): ScoringResult
-    fun undo()
+    fun undo(): ScoringResult
     fun finishMatch()
     fun isFinished(): Boolean
     fun toDisplayData(): SportDisplayData

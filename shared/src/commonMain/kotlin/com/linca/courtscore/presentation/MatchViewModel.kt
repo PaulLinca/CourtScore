@@ -23,7 +23,7 @@ class MatchViewModel(
 
     fun onPlayerOneScored() {
         val result = strategy.pointForPlayerOne()
-        playerOneServing = !playerOneServing
+        if (result.scoringUnitWinner != null) playerOneServing = !playerOneServing
         gameWinner = result.scoringUnitWinner
         setWinner = result.periodWinner
         goldenPointWinner = result.goldenPointWinner
@@ -32,7 +32,7 @@ class MatchViewModel(
 
     fun onPlayerTwoScored() {
         val result = strategy.pointForPlayerTwo()
-        playerOneServing = !playerOneServing
+        if (result.scoringUnitWinner != null) playerOneServing = !playerOneServing
         gameWinner = result.scoringUnitWinner
         setWinner = result.periodWinner
         goldenPointWinner = result.goldenPointWinner
@@ -55,8 +55,8 @@ class MatchViewModel(
     }
 
     fun onUndo() {
-        strategy.undo()
-        playerOneServing = !playerOneServing
+        val result = strategy.undo()
+        if (result.scoringUnitWinner != null) playerOneServing = !playerOneServing
         goldenPointWinner = null
         updateUiState()
     }

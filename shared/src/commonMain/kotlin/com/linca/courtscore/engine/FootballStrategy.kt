@@ -34,10 +34,11 @@ class FootballStrategy : SportStrategy {
         return ScoringResult(scoringUnitWinner = 2)
     }
 
-    override fun undo() {
+    override fun undo(): ScoringResult {
         if (history.isNotEmpty()) {
             state = history.removeAt(history.lastIndex)
         }
+        return ScoringResult()
     }
 
     override fun finishMatch() {

@@ -39,9 +39,13 @@ class PadelStrategy : SportStrategy {
         )
     }
 
-    override fun undo() {
+    override fun undo(): ScoringResult {
+        val prevGames = totalGames()
+        val prevSets = totalSets()
         engine.undo()
         showConfigDialog = false
+        val gameReverted = totalGames() < prevGames || totalSets() < prevSets
+        return ScoringResult(scoringUnitWinner = if (gameReverted) 0 else null)
     }
 
     override fun finishMatch() = engine.finishMatch()
