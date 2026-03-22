@@ -6,18 +6,18 @@ struct MainScreen: View {
     @StateObject private var languageManager = LanguageManager.shared
     @State private var enabledSports: Set<String> = SportVisibilityManager.shared.enabledSports
 
-    var menuItems: [(icon: String, label: String, destination: AnyView)] {
-        var items: [(icon: String, label: String, destination: AnyView)] = []
+    var menuItems: [(icon: AnyView, label: String, destination: AnyView)] {
+        var items: [(icon: AnyView, label: String, destination: AnyView)] = []
         if enabledSports.contains("PADEL") {
-            items.append(("tennisball.fill", "sport_padel".localized(), AnyView(MatchView(sport: Sport.padel))))
+            items.append((AnyView(Image(systemName: "tennisball.fill").font(.system(size: iconSize)).foregroundColor(Color(hex: "1E8FD5"))), "sport_padel".localized(), AnyView(MatchView(sport: Sport.padel))))
         }
         if enabledSports.contains("FOOTBALL") {
-            items.append(("soccerball", "sport_football".localized(), AnyView(MatchView(sport: Sport.football))))
+            items.append((AnyView(Image(systemName: "soccerball").font(.system(size: iconSize)).foregroundColor(Color(hex: "1E8FD5"))), "sport_football".localized(), AnyView(MatchView(sport: Sport.football))))
         }
         if enabledSports.contains("BADMINTON") {
-            items.append(("figure.badminton", "sport_badminton".localized(), AnyView(MatchView(sport: Sport.badminton))))
+            items.append((AnyView(Image("badminton").renderingMode(.template).resizable().scaledToFit().padding(iconFrameSize * 0.25).foregroundColor(Color(hex: "1E8FD5"))), "sport_badminton".localized(), AnyView(MatchView(sport: Sport.badminton))))
         }
-        items.append(("gear", "settings".localized(), AnyView(SettingsView())))
+        items.append((AnyView(Image(systemName: "gear").font(.system(size: iconSize)).foregroundColor(Color(hex: "1E8FD5"))), "settings".localized(), AnyView(SettingsView())))
         return items
     }
 
@@ -57,9 +57,7 @@ struct MainScreen: View {
                 TabView(selection: $selectedIndex) {
                     ForEach(0..<menuItems.count, id: \.self) { index in
                         NavigationLink(destination: menuItems[index].destination) {
-                            Image(systemName: menuItems[index].icon)
-                                .font(.system(size: iconSize))
-                                .foregroundColor(Color(hex: "1E8FD5"))
+                            menuItems[index].icon
                                 .frame(width: iconFrameSize, height: iconFrameSize)
                                 .background(Color.clear)
                                 .clipShape(Circle())
