@@ -14,7 +14,10 @@ android {
         targetSdk = 35
         versionCode = 10
         versionName = "1.3.0"
+    }
 
+    androidResources {
+        localeFilters += listOf("en", "es", "ca")
     }
 
     buildTypes {

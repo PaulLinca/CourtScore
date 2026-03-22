@@ -1,6 +1,7 @@
 package com.linca.courtscore.presentation
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,6 +35,16 @@ class MainActivity : ComponentActivity() {
             newBase
         }
         super.attachBaseContext(context)
+    }
+
+    override fun applyOverrideConfiguration(overrideConfiguration: Configuration?) {
+        if (overrideConfiguration != null) {
+            val languageCode = runBlocking { preferencesManager.languageFlow.first() }
+            if (languageCode != "system") {
+                LocaleHelper.applyToConfiguration(overrideConfiguration, languageCode)
+            }
+        }
+        super.applyOverrideConfiguration(overrideConfiguration)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

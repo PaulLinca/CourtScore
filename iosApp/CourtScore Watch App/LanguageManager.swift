@@ -41,11 +41,12 @@ class LanguageManager: ObservableObject {
 
 extension String {
     func localized() -> String {
-        guard let path = Bundle.main.path(forResource: LanguageManager.shared.selectedLanguageCode, ofType: "lproj"),
-              let bundle = Bundle(path: path) else {
-            return NSLocalizedString(self, comment: "")
+        let code = LanguageManager.shared.selectedLanguageCode
+        if let url = Bundle.main.url(forResource: code, withExtension: "lproj"),
+           let bundle = Bundle(url: url) {
+            return NSLocalizedString(self, bundle: bundle, comment: "")
         }
-        return NSLocalizedString(self, bundle: bundle, comment: "")
+        return NSLocalizedString(self, comment: "")
     }
 }
 
