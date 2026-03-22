@@ -80,6 +80,17 @@ struct SettingsView: View {
                         }
                     )
                 }
+
+                Text("rate_app".localized())
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .padding(.top, 16)
+
+                Text("rate_app_message".localized())
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(hex: "aaaab1"))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 4)
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 16)

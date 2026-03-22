@@ -239,6 +239,27 @@ fun SettingsScreen(
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(R.string.rate_app),
+                    style = MaterialTheme.typography.title3,
+                    color = PrimaryTextColor,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            item {
+                Text(
+                    text = stringResource(R.string.rate_app_message),
+                    style = MaterialTheme.typography.caption2,
+                    color = PrimaryTextColor.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                )
+            }
+
+            item {
                 Button(
                     onClick = { onNavigateBack() },
                     modifier = Modifier

@@ -25,6 +25,8 @@
     <string name="scoring_golden_point_desc">Punto decisivo en deuce</string>
     <string name="scoring_star_point_desc">Punto decisivo en deuce</string>
     <string name="done">Listo</string>
+    <string name="rate_app">Valorar la app</string>
+    <string name="rate_app_message">Si disfrutas de Court Score, dejarnos una reseña en Play Store nos lo dice todo. Ayuda a que otros descubran la app y nos da fuerzas para seguir. ¡Gracias! ♥</string>
     <string name="english">Inglés</string>
     <string name="spanish">Español</string>
     <string name="catalan">Catalán</string>

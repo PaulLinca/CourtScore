@@ -19,6 +19,8 @@
 "scoring_golden_point_desc" = "Punto decisivo en deuce";
 "scoring_star_point_desc" = "Punto decisivo en deuce";
 "done" = "Listo";
+"rate_app" = "Valorar la app";
+"rate_app_message" = "Si disfrutas de Court Score, dejarnos una reseña en App Store nos lo dice todo. Ayuda a que otros descubran la app y nos da fuerzas para seguir. ¡Gracias! ♥";
 "english" = "Inglés";
 "spanish" = "Español";
 "catalan" = "Catalán";

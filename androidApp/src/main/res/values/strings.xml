@@ -25,6 +25,8 @@
     <string name="scoring_golden_point_desc">Deciding point at deuce</string>
     <string name="scoring_star_point_desc">Deciding point at deuce</string>
     <string name="done">Done</string>
+    <string name="rate_app">Rate App</string>
+    <string name="rate_app_message">If you enjoy Court Score, leaving a review on the Play Store means the world to us. It helps others discover the app and keeps us motivated. Thank you! ♥</string>
     <string name="english">English</string>
     <string name="spanish">Spanish</string>
     <string name="catalan">Catalan</string>
