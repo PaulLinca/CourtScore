@@ -9,8 +9,6 @@ import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
@@ -26,14 +24,9 @@ import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
     private lateinit var preferencesManager: PreferencesManager
-    private var isAmbient by mutableStateOf(false)
     private val ambientCallback = object : AmbientLifecycleObserver.AmbientLifecycleCallback {
-        override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {
-            isAmbient = true
-        }
-        override fun onExitAmbient() {
-            isAmbient = false
-        }
+        override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {}
+        override fun onExitAmbient() {}
         override fun onUpdateAmbient() {}
     }
     private val ambientObserver = AmbientLifecycleObserver(this, ambientCallback)
@@ -75,8 +68,7 @@ class MainActivity : ComponentActivity() {
 
             WearApp(
                 colorScheme = colorScheme,
-                preferencesManager = preferencesManager,
-                isAmbient = isAmbient
+                preferencesManager = preferencesManager
             )
         }
     }
@@ -85,8 +77,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WearApp(
     colorScheme: ColorScheme,
-    preferencesManager: PreferencesManager,
-    isAmbient: Boolean = false
+    preferencesManager: PreferencesManager
 ) {
     CourtScoreTheme(colorScheme = colorScheme) {
         val navController = rememberSwipeDismissableNavController()
@@ -115,7 +106,6 @@ fun WearApp(
                 MatchScreen(
                     sport = sport,
                     preferencesManager = preferencesManager,
-                    isAmbient = isAmbient,
                     onNavigateBack = {
                         navController.popBackStack()
                     }

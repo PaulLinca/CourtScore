@@ -1,6 +1,8 @@
 package com.linca.courtscore.presentation
 
+import android.app.Activity
 import android.graphics.BlurMaskFilter
+import android.view.WindowManager
 import android.widget.Space
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -30,6 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -95,11 +99,19 @@ fun MatchScreen(
         }
     },
     preferencesManager: PreferencesManager? = null,
-    isAmbient: Boolean = false,
     onNavigateBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colorScheme = LocalColorScheme.current
+
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val window = (context as? Activity)?.window
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 
     // On match start, apply the saved scoring type if one is set.
     // If null (ask every time), the in-match dialog will handle it at first deuce.
@@ -128,16 +140,11 @@ fun MatchScreen(
             }
     }
 
-    BackHandler(enabled = !isAmbient) {
+    BackHandler {
         val isMatchFinished = viewModel.onBackPressed()
         if (!isMatchFinished) {
             onNavigateBack()
         }
-    }
-
-    if (isAmbient) {
-        AmbientMatchScreen(uiState = uiState)
-        return
     }
 
     SwipeToDismissBox(
@@ -153,55 +160,6 @@ fun MatchScreen(
                 onNavigateBack = onNavigateBack,
                 sport = sport
             )
-        }
-    }
-}
-
-@Composable
-private fun AmbientMatchScreen(uiState: MatchUiState) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (uiState.playerOneSetScores.isNotEmpty()) {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    uiState.playerOneSetScores.zip(uiState.playerTwoSetScores).forEach { (p1, p2) ->
-                        Text(
-                            text = "$p1-$p2",
-                            style = MaterialTheme.typography.body2,
-                            color = Color.Gray
-                        )
-                    }
-                }
-            }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = uiState.playerOneGameScore,
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Gray
-                )
-                Text(
-                    text = "–",
-                    fontSize = 32.sp,
-                    color = Color.DarkGray
-                )
-                Text(
-                    text = uiState.playerTwoGameScore,
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Gray
-                )
-            }
         }
     }
 }
