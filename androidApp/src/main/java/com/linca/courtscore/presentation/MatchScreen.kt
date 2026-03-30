@@ -95,6 +95,7 @@ fun MatchScreen(
         }
     },
     preferencesManager: PreferencesManager? = null,
+    isAmbient: Boolean = false,
     onNavigateBack: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -127,11 +128,16 @@ fun MatchScreen(
             }
     }
 
-    BackHandler {
+    BackHandler(enabled = !isAmbient) {
         val isMatchFinished = viewModel.onBackPressed()
         if (!isMatchFinished) {
             onNavigateBack()
         }
+    }
+
+    if (isAmbient) {
+        AmbientMatchScreen(uiState = uiState)
+        return
     }
 
     SwipeToDismissBox(
@@ -147,6 +153,55 @@ fun MatchScreen(
                 onNavigateBack = onNavigateBack,
                 sport = sport
             )
+        }
+    }
+}
+
+@Composable
+private fun AmbientMatchScreen(uiState: MatchUiState) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (uiState.playerOneSetScores.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    uiState.playerOneSetScores.zip(uiState.playerTwoSetScores).forEach { (p1, p2) ->
+                        Text(
+                            text = "$p1-$p2",
+                            style = MaterialTheme.typography.body2,
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = uiState.playerOneGameScore,
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
+                Text(
+                    text = "–",
+                    fontSize = 32.sp,
+                    color = Color.DarkGray
+                )
+                Text(
+                    text = uiState.playerTwoGameScore,
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }
