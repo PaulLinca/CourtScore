@@ -6,6 +6,10 @@
 	<array>
 		<string>college_clean_italic.ttf</string>
 	</array>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>self-care</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleLocalizations</key>

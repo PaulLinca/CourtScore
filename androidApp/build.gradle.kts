@@ -12,8 +12,8 @@ android {
         applicationId = "com.linca.courtscorewear"
         minSdk = 30
         targetSdk = 35
-        versionCode = 11
-        versionName = "1.3.1"
+        versionCode = 12
+        versionName = "1.3.2"
     }
 
     androidResources {
@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.wear.compose.navigation)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.wear)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.compose.ui.tooling)

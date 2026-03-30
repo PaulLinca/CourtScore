@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.wear.ambient.AmbientLifecycleObserver
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,6 +24,12 @@ import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
     private lateinit var preferencesManager: PreferencesManager
+    private val ambientCallback = object : AmbientLifecycleObserver.AmbientLifecycleCallback {
+        override fun onEnterAmbient(ambientDetails: AmbientLifecycleObserver.AmbientDetails) {}
+        override fun onExitAmbient() {}
+        override fun onUpdateAmbient() {}
+    }
+    private val ambientObserver = AmbientLifecycleObserver(this, ambientCallback)
 
     override fun attachBaseContext(newBase: Context) {
         preferencesManager = PreferencesManager(newBase)
@@ -48,6 +55,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        lifecycle.addObserver(ambientObserver)
         installSplashScreen()
 
         super.onCreate(savedInstanceState)

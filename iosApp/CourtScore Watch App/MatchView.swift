@@ -5,6 +5,7 @@ import shared
 struct MatchView: View {
     @StateObject private var viewModel: MatchViewModelWrapper
     @StateObject private var colorSchemeManager = ColorSchemeManager.shared
+    @StateObject private var sessionManager = MatchSessionManager()
     @Environment(\.dismiss) var dismiss
     @State private var showSetAnimation = false
     private let sport: Sport
@@ -273,6 +274,8 @@ struct MatchView: View {
                 }
             }
         }
+        .onAppear { sessionManager.start() }
+        .onDisappear { sessionManager.stop() }
     }
 }
 
@@ -646,5 +649,35 @@ class MatchViewModelWrapper: ObservableObject {
             wasAtGoldenPointDeuce = false
         }
     }
+}
+
+// MARK: - Extended Runtime Session
+
+private class MatchSessionManager: NSObject, ObservableObject, WKExtendedRuntimeSessionDelegate {
+    private var session: WKExtendedRuntimeSession?
+
+    func start() {
+        guard session == nil else { return }
+        let newSession = WKExtendedRuntimeSession()
+        newSession.delegate = self
+        newSession.start()
+        session = newSession
+    }
+
+    func stop() {
+        session?.invalidate()
+        session = nil
+    }
+
+    func extendedRuntimeSessionDidStart(_ extendedRuntimeSession: WKExtendedRuntimeSession) {}
+
+    func extendedRuntimeSessionWillExpire(_ extendedRuntimeSession: WKExtendedRuntimeSession) {
+        session = nil
+        start()
+    }
+
+    func extendedRuntimeSession(_ extendedRuntimeSession: WKExtendedRuntimeSession,
+                                didInvalidateWith reason: WKExtendedRuntimeSessionInvalidationReason,
+                                error: Error?) {}
 }
 
