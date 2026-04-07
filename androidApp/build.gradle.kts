@@ -12,8 +12,8 @@ android {
         applicationId = "com.linca.courtscorewear"
         minSdk = 30
         targetSdk = 35
-        versionCode = 14
-        versionName = "1.3.4"
+        versionCode = 15
+        versionName = "1.3.5"
     }
 
     androidResources {
