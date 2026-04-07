@@ -36,6 +36,7 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Text
 import com.linca.courtscore.data.PreferencesManager
 import com.linca.courtscore.domain.model.ScoringType
@@ -278,6 +279,7 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
+        PositionIndicator(scalingLazyListState = listState)
     }
 }
 
