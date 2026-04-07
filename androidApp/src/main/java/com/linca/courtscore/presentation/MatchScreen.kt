@@ -65,6 +65,7 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
+import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.SwipeToDismissBox
 import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.compose.material.Text
@@ -173,6 +174,9 @@ private fun MatchScreenContent(
     modifier: Modifier = Modifier,
     sport: Sport
 ) {
+    val finishDialogScrollState = rememberScalingLazyListState()
+    val backDialogScrollState = rememberScalingLazyListState()
+
     LaunchedEffect(uiState.gameWinner) {
         if (uiState.gameWinner != null) {
             delay(1500)
@@ -305,96 +309,88 @@ private fun MatchScreenContent(
         }
 
         if (uiState.showFinishDialog) {
-            Alert(
-                backgroundColor = BackgroundColor,
-                title = {
-                    Text(
-                        text = stringResource(R.string.finish_dialog_title),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body2
-                    )
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.finish),
-                        contentDescription = stringResource(R.string.finish),
-                        tint = SecondaryTextColor,
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                negativeButton = {
-                    Button(
-                        onClick = viewModel::onFinishCancelled,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = ElevatedBackgroundColor
-                        )
-                    ) {
-                        Text(stringResource(R.string.no), color = PrimaryTextColor, style = MaterialTheme.typography.body2)
-                    }
-                },
-                positiveButton = {
-                    Button(
-                        onClick = viewModel::onFinishConfirmed,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = PadelBlue
-                        )
-                    ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Alert(
+                    scrollState = finishDialogScrollState,
+                    backgroundColor = BackgroundColor,
+                    title = {
                         Text(
-                            stringResource(R.string.yes),
-                            color = PrimaryTextColor,
+                            text = stringResource(R.string.finish_dialog_title),
+                            textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.body2
                         )
+                    },
+                    negativeButton = {
+                        Button(
+                            onClick = viewModel::onFinishCancelled,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = ElevatedBackgroundColor
+                            )
+                        ) {
+                            Text(stringResource(R.string.no), color = PrimaryTextColor, style = MaterialTheme.typography.body2)
+                        }
+                    },
+                    positiveButton = {
+                        Button(
+                            onClick = viewModel::onFinishConfirmed,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = PadelBlue
+                            )
+                        ) {
+                            Text(
+                                stringResource(R.string.yes),
+                                color = PrimaryTextColor,
+                                style = MaterialTheme.typography.body2
+                            )
+                        }
                     }
-                }
-            )
+                )
+                PositionIndicator(scalingLazyListState = finishDialogScrollState)
+            }
         }
 
         if (uiState.showBackDialog) {
-            Alert(
-                backgroundColor = BackgroundColor,
-                title = {
-                    Text(
-                        text = stringResource(R.string.back_dialog_title),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body2
-                    )
-                },
-                icon = {
-                    Icon(
-                        painter = painterResource(R.drawable.undo),
-                        contentDescription = stringResource(R.string.undo),
-                        tint = SecondaryTextColor,
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                negativeButton = {
-                    Button(
-                        onClick = viewModel::onBackCancelled,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = ElevatedBackgroundColor
-                        )
-                    ) {
-                        Text(stringResource(R.string.no), color = PrimaryTextColor, style = MaterialTheme.typography.body2)
-                    }
-                },
-                positiveButton = {
-                    Button(
-                        onClick = {
-                            viewModel.onBackConfirmed()
-                            onNavigateBack()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = PadelBlue
-                        )
-                    ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Alert(
+                    scrollState = backDialogScrollState,
+                    backgroundColor = BackgroundColor,
+                    title = {
                         Text(
-                            stringResource(R.string.yes),
-                            color = PrimaryTextColor,
+                            text = stringResource(R.string.back_dialog_title),
+                            textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.body2
                         )
+                    },
+                    negativeButton = {
+                        Button(
+                            onClick = viewModel::onBackCancelled,
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = ElevatedBackgroundColor
+                            )
+                        ) {
+                            Text(stringResource(R.string.no), color = PrimaryTextColor, style = MaterialTheme.typography.body2)
+                        }
+                    },
+                    positiveButton = {
+                        Button(
+                            onClick = {
+                                viewModel.onBackConfirmed()
+                                onNavigateBack()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                backgroundColor = PadelBlue
+                            )
+                        ) {
+                            Text(
+                                stringResource(R.string.yes),
+                                color = PrimaryTextColor,
+                                style = MaterialTheme.typography.body2
+                            )
+                        }
                     }
-                }
-            )
+                )
+                PositionIndicator(scalingLazyListState = backDialogScrollState)
+            }
         }
 
         AnimatedVisibility(
@@ -812,6 +808,7 @@ private fun ScoringTypeSelectionDialog(
                 )
             }
         }
+        PositionIndicator(scalingLazyListState = listState)
     }
 }
 
